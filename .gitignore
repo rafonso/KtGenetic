@@ -49,3 +49,7 @@ Temporary Items
 #
 .idea/
 target/
+.metadata/
+.settings/
+.classpath
+.project

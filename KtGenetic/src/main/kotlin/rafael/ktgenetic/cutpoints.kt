@@ -5,7 +5,7 @@ val MUTATION_FACTOR = 5
 
 fun getCutPositions(size: Int): Pair<Int, Int> {
     val pos1 = 1 + random.nextInt(size - 2)
-    val pos2 = 1 + random.nextInt(size - 2 - pos1) + pos1
+    val pos2 = 1 + random.nextInt(size - 1 - pos1) + pos1
 
     return Pair(pos1, pos2)
 }
