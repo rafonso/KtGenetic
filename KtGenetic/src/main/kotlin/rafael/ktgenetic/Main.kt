@@ -12,7 +12,7 @@ private const val CHILDREN_TO_SURVIVE_PARAMETER = "c"
 private const val HELPER_PARAMETER = "h"
 private const val LOG_LEVEL_PARAMETER = "l"
 
-val log: Logger = LoggerFactory.getLogger("Main")
+private val log: Logger = LoggerFactory.getLogger("Main")
 
 private fun getOptions(): Options {
     val options = Options()
@@ -73,6 +73,8 @@ fun main(args: Array<String>) {
         val parameters = getProcessorParameters(line)
 
         val processor = GeneticProcessor(parameters)
+        processor.addListener(LogProcessorListener())
+        processor.addListener(ConsoleProcessorListener())
         processor.process(word)
 
         log.info("Finished. Time: {} ms", (System.currentTimeMillis() - t0))

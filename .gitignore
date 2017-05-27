@@ -53,3 +53,4 @@ target/
 .settings/
 .classpath
 .project
+*.jar
