@@ -1,7 +1,10 @@
 import java.util.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 val random = Random()
 val MUTATION_FACTOR = 5
+val log: Logger  = LoggerFactory.getLogger("cutpoints")
 
 fun getCutPositions(size: Int): Pair<Int, Int> {
     val pos1 = 1 + random.nextInt(size - 2)
@@ -21,7 +24,7 @@ fun submitMutation(segment: String): String {
         val bases = segment.toCharArray();
         val mutationPoint = random.nextInt(bases.size)
         val mutatedGene: Char = 'a' + random.nextInt('z' - 'a')
-        println("MUTATION: Putting '${mutatedGene}' at position ${mutationPoint}  in ${segment}")
+		log.debug("MUTATION: Putting '${mutatedGene}' at position ${mutationPoint}  in ${segment}")
         bases[mutationPoint] = mutatedGene
 
         return String(bases)
@@ -35,25 +38,25 @@ fun main(args: Array<String>) {
     val parent1 = args[0]
     var parent2 = args[1]
 
-    println(parent1 + " - " + parent2)
+    log.debug(parent1 + " - " + parent2)
 
     if (parent1.length != parent2.length) {
         error("different sizes")
     }
 
     val cutPositions = getCutPositions(parent1.length)
-    println(cutPositions)
+    log.debug(cutPositions.toString())
 
     val cutString1 = cutString(parent1, cutPositions)
     val cutString2 = cutString(parent2, cutPositions)
 
-    println(cutString1.toList())
-    println(cutString2.toList())
+    log.debug(cutString1.toList().toString())
+    log.debug(cutString2.toList().toString())
 
     // Crossing
     val child1 = submitMutation(cutString2[0]) + cutString1[1] + submitMutation(cutString2[2])
     val child2 = submitMutation(cutString1[0]) + cutString2[1] + submitMutation(cutString1[2])
 
-    println(child1)
-    println(child2)
+    log.debug(child1)
+    log.debug(child2)
 }
