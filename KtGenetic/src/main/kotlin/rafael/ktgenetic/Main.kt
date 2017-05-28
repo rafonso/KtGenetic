@@ -75,8 +75,9 @@ fun main(args: Array<String>) {
         val processor = GeneticProcessor(parameters)
         processor.addListener(LogProcessorListener())
         processor.addListener(ConsoleProcessorListener())
-        processor.process(word)
+        val result = processor.process(word)
 
+        log.info("Result: {}", result)
         log.info("Finished. Time: {} ms", (System.currentTimeMillis() - t0))
     } catch (e: ParseException) {
         log.error("Invalid Command Line: " + e.message, e)

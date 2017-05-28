@@ -88,7 +88,7 @@ class LogProcessorListener : ProcessorListener {
                     val selected = event.value as List<Word>
                     val averageFitness = selected.map { it.fitness }.sum() / selected.size
 
-                    log.debug("Generation $currentGeneration - Best Option: {}. General Fitness {}", selected[0], averageFitness)
+                    log.debug("Generation %d - Best Option: %s. General Fitness %.3f".format(currentGeneration, selected[0], averageFitness))
                 })
             }
             ProcessorEventEnum.ENDED_BY_GENERATIONS -> {
