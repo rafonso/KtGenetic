@@ -1,23 +1,24 @@
 package rafael.ktgenetic
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.*
-import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashSet
 
 class GeneticProcessor(val parameter: ProcessorParameters) {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 
-    val log: Logger = LoggerFactory.getLogger("GeneticProcessor")
-
     val random = Random()
 
     private val range = ' '.rangeTo('~') + 192.toChar().rangeTo(255.toChar())
 
+    private val fitnessFunction: StringFitness = EqualCharsFitness()
+
+    private val breeder = Breeder()
+
+    val wordComparator = WordFitnessComparator()
+
     private fun notifyEvent(event: ProcessorEvent) {
-        listeners.parallelStream().forEach({it.onEvent(event)})
+        listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
     private fun randomChar(): Char = range[random.nextInt(range.size)]
@@ -30,7 +31,13 @@ class GeneticProcessor(val parameter: ProcessorParameters) {
             .map { _ -> createRandomWord(target.length) }
             .sorted().map { Word(it) }
 
-    public fun process(target: String): String {
+    private fun createChidrenOf(parent1: Word, population: List<Word>): List<Word> {
+        return population.flatMap { parent2 -> breeder.cross(parent1.value, parent2.value) }.map { Word(it) }
+    }
+
+    private fun resultFound(population: List<Word>, target: String): Boolean = population[0].value.equals(target)
+
+    public fun process(target: String): List<Word> {
         notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, parameter.maxGenerations))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATING, target))
@@ -38,19 +45,27 @@ class GeneticProcessor(val parameter: ProcessorParameters) {
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATED, population))
 
         var generation = 1
-        while (true && (generation <= parameter.maxGenerations)) { //}terminate(population, target)) {
+        while (!resultFound(population, target) && (generation <= parameter.maxGenerations)) { //}terminate(population, target)) {
             notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATING, generation))
 
             notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCING, population))
             val children: List<Word> = population
+                    .flatMap { parent1 -> population.flatMap { parent2 -> breeder.cross(parent1.value, parent2.value) } }
+                    .map { Word(it) }
             notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCED, children))
 
             notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, children))
             // Calculate Fitness
+            children.forEach({
+                it.fitness = fitnessFunction.calculate(it.value, target)
+            })
             notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATED, children))
 
             notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTING, children))
             val selected = children
+                    .sortedWith(wordComparator)
+                    .reversed()
+                    .subList(0, parameter.childrenToSave)
             notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTED, selected))
 
 
@@ -60,8 +75,12 @@ class GeneticProcessor(val parameter: ProcessorParameters) {
             generation++
         }
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_GENERATIONS))
-        return ""
+        if(generation <= parameter.maxGenerations) {
+            notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_FITNESS, population[0]))
+        } else {
+            notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_GENERATIONS))
+        }
+        return population
     }
 
     public fun addListener(listener: ProcessorListener): Boolean = listeners.add(listener)

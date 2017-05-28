@@ -64,7 +64,7 @@ class LogProcessorListener : ProcessorListener {
             ProcessorEventEnum.FITNESS_CALCULATING -> {
                 log(log.isTraceEnabled, {
                     val population = event.value as List<Word>
-                    log.debug("Generation $currentGeneration - Calculating Fitness: {}", populationToConsole(population))
+                    log.trace("Generation $currentGeneration - Calculating Fitness: {}", populationToConsole(population))
                 })
             }
             ProcessorEventEnum.FITNESS_CALCULATED -> {
@@ -78,7 +78,7 @@ class LogProcessorListener : ProcessorListener {
                 })
             }
             ProcessorEventEnum.SELECTED -> {
-                log(log.isTraceEnabled, {
+                log(log.isDebugEnabled, {
                     val selected = event.value as List<Word>
                     log.trace("Generation $currentGeneration - Fitted selected: {}", populationToConsole(selected))
                 })
@@ -86,12 +86,19 @@ class LogProcessorListener : ProcessorListener {
             ProcessorEventEnum.GENERATION_EVALUATED -> {
                 log(log.isDebugEnabled, {
                     val selected = event.value as List<Word>
-                    log.debug("Generation $currentGeneration - Best Option: {}", selected[0])
+                    val averageFitness = selected.map { it.fitness }.sum() / selected.size
+
+                    log.debug("Generation $currentGeneration - Best Option: {}. General Fitness {}", selected[0], averageFitness)
                 })
             }
             ProcessorEventEnum.ENDED_BY_GENERATIONS -> {
                 log(log.isDebugEnabled, {
                     log.trace("Processing concluded by Generations concluded: $maxGenerations")
+                })
+            }
+            ProcessorEventEnum.ENDED_BY_FITNESS -> {
+                log(log.isDebugEnabled, {
+                    log.debug("Word found: {}", (event.value as Word).value)
                 })
             }
             else -> error("Event not recognized: $event")
