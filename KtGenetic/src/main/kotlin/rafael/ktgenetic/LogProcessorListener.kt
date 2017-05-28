@@ -3,7 +3,7 @@ package rafael.ktgenetic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class LogProcessorListener : ProcessorListener {
+class LogProcessorListener<G> : ProcessorListener {
 
     private val CONSOLE_SIZE = 120
 
@@ -12,11 +12,13 @@ class LogProcessorListener : ProcessorListener {
     private var currentGeneration: Int = 0
     private var maxGenerations: Int = 0
 
-    private fun populationToConsole(population: List<Word>): String {
-        val wordsByLine = CONSOLE_SIZE / (population[0].toString().length + 1)
+    private fun populationToConsole(population: List<Genotype<G>>): String {
+        val genotypesByLine =
+                if(population[0].toString().length < CONSOLE_SIZE ) CONSOLE_SIZE / (population[0].toString().length + 1)
+                else 1
 
-        return population.mapIndexed({ index, word ->
-            if (index % wordsByLine == 0) ("\n$word") else ("$word")
+        return population.mapIndexed({ index, genotype ->
+            if (index % genotypesByLine == 0) ("\n$genotype") else ("$genotype")
         }
         ).joinToString(separator = " ") // { separator = " " }
     }
@@ -40,7 +42,7 @@ class LogProcessorListener : ProcessorListener {
             }
             ProcessorEventEnum.FIRST_GENERATION_CREATED -> {
                 log(log.isTraceEnabled, {
-                    val population = event.value as List<Word>
+                    val population = event.value as List<Genotype<G>>
                     log.trace("First Generation: {}", populationToConsole(population))
                 })
             }
@@ -57,13 +59,13 @@ class LogProcessorListener : ProcessorListener {
             }
             ProcessorEventEnum.REPRODUCED -> {
                 log(log.isTraceEnabled, {
-                    val children = event.value as List<Word>
+                    val children = event.value as List<Genotype<G>>
                     log.trace("Generation $currentGeneration - Reproduced: {}", populationToConsole(children))
                 })
             }
             ProcessorEventEnum.FITNESS_CALCULATING -> {
                 log(log.isTraceEnabled, {
-                    val population = event.value as List<Word>
+                    val population = event.value as List<Genotype<G>>
                     log.trace("Generation $currentGeneration - Calculating Fitness: {}", populationToConsole(population))
                 })
             }
@@ -79,13 +81,13 @@ class LogProcessorListener : ProcessorListener {
             }
             ProcessorEventEnum.SELECTED -> {
                 log(log.isDebugEnabled, {
-                    val selected = event.value as List<Word>
+                    val selected = event.value as List<Genotype<G>>
                     log.trace("Generation $currentGeneration - Fitted selected: {}", populationToConsole(selected))
                 })
             }
             ProcessorEventEnum.GENERATION_EVALUATED -> {
                 log(log.isDebugEnabled, {
-                    val selected = event.value as List<Word>
+                    val selected = event.value as List<Genotype<G>>
                     val averageFitness = selected.map { it.fitness }.sum() / selected.size
 
                     log.debug("Generation %d - Best Option: %s. General Fitness %.3f".format(currentGeneration, selected[0], averageFitness))
@@ -98,7 +100,7 @@ class LogProcessorListener : ProcessorListener {
             }
             ProcessorEventEnum.ENDED_BY_FITNESS -> {
                 log(log.isDebugEnabled, {
-                    log.debug("Word found: {}", (event.value as Word).value)
+                    log.debug("Value found: {}", event.value)
                 })
             }
             else -> error("Event not recognized: $event")

@@ -43,11 +43,17 @@ private fun getProcessorParameters(line: CommandLine) = ProcessorParameters(
         line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "10").toInt()
 )
 
+private fun getParameters(line: CommandLine) =
+        EqualStringParameters(
+                line.getOptionValue(WORD_PARAMETER), //
+                line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "10").toInt(),
+                line.getOptionValue(GENERATIONS_PARAMETER, "100").toInt())
+
 private fun configureLogLevel(line: CommandLine) {
     val logLevel = line.getOptionValue(LOG_LEVEL_PARAMETER, "")
-    when(logLevel) {
-        "1" ->  org.apache.log4j.Logger.getRootLogger().level = org.apache.log4j.Level.DEBUG
-        "2" ->  org.apache.log4j.Logger.getRootLogger().level = org.apache.log4j.Level.TRACE
+    when (logLevel) {
+        "1" -> org.apache.log4j.Logger.getRootLogger().level = org.apache.log4j.Level.DEBUG
+        "2" -> org.apache.log4j.Logger.getRootLogger().level = org.apache.log4j.Level.TRACE
         else -> log.warn("Log level unrecognised: {}.", logLevel)
     }
 }
@@ -71,11 +77,12 @@ fun main(args: Array<String>) {
 
         val word = line.getOptionValue(WORD_PARAMETER)
         val parameters = getProcessorParameters(line)
+        val geneticParameters = getParameters(line)
 
-        val processor = GeneticProcessor(parameters)
-        processor.addListener(LogProcessorListener())
+        val processor = GeneticProcessor<String>()
+        processor.addListener(LogProcessorListener<String>())
         processor.addListener(ConsoleProcessorListener())
-        val result = processor.process(word)
+        val result = processor.process(word, geneticParameters)
 
         log.info("Result: {}", result)
         log.info("Finished. Time: {} ms", (System.currentTimeMillis() - t0))
