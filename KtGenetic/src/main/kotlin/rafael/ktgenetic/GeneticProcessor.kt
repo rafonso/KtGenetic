@@ -4,8 +4,6 @@ class GeneticProcessor<G>() {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 
-    private val fitnessFunction: StringFitness = EqualCharsFitness()
-
     val genotypeComparator = GenotypeFitnessComparator<G>()
 
     private fun notifyEvent(event: ProcessorEvent) {
@@ -79,6 +77,5 @@ class GeneticProcessor<G>() {
     public fun addListener(listener: ProcessorListener): Boolean = listeners.add(listener)
 
     public fun removeListener(listener: ProcessorListener): Boolean = listeners.remove(listener)
-
 
 }

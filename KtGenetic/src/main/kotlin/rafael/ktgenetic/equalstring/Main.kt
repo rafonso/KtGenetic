@@ -1,7 +1,8 @@
-package rafael.ktgenetic
+package rafael.ktgenetic.equalstring
 
-import org.apache.commons.cli.*
-import org.apache.log4j.Level
+import org.apache.commons.cli.CommandLine
+import org.apache.commons.cli.HelpFormatter
+import org.apache.commons.cli.Options
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -37,19 +38,19 @@ private fun validateParameters(line: CommandLine) {
         throw IllegalArgumentException("Please provide the word to be processed")
     }
 }
-
-private fun getProcessorParameters(line: CommandLine) = ProcessorParameters(
+/*
+private fun getProcessorParameters(line: org.apache.commons.cli.CommandLine) = ProcessorParameters(
         line.getOptionValue(GENERATIONS_PARAMETER, "100").toInt(), //
         line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "10").toInt()
 )
-
-private fun getParameters(line: CommandLine) =
+*/
+private fun getParameters(line: org.apache.commons.cli.CommandLine) =
         EqualStringParameters(
                 line.getOptionValue(WORD_PARAMETER), //
                 line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "10").toInt(),
                 line.getOptionValue(GENERATIONS_PARAMETER, "100").toInt())
 
-private fun configureLogLevel(line: CommandLine) {
+private fun configureLogLevel(line: org.apache.commons.cli.CommandLine) {
     val logLevel = line.getOptionValue(LOG_LEVEL_PARAMETER, "")
     when (logLevel) {
         "1" -> org.apache.log4j.Logger.getRootLogger().level = org.apache.log4j.Level.DEBUG
@@ -65,7 +66,7 @@ fun main(args: Array<String>) {
     val options = getOptions()
 
     try {
-        val parser: CommandLineParser = DefaultParser()
+        val parser: org.apache.commons.cli.CommandLineParser = org.apache.commons.cli.DefaultParser()
         val line = parser.parse(options, args);
 
         if (line.hasOption(HELPER_PARAMETER)) {
@@ -76,17 +77,16 @@ fun main(args: Array<String>) {
         configureLogLevel(line)
 
         val word = line.getOptionValue(WORD_PARAMETER)
-        val parameters = getProcessorParameters(line)
         val geneticParameters = getParameters(line)
 
-        val processor = GeneticProcessor<String>()
-        processor.addListener(LogProcessorListener<String>())
-        processor.addListener(ConsoleProcessorListener())
+        val processor = rafael.ktgenetic.GeneticProcessor<String>()
+        processor.addListener(rafael.ktgenetic.LogProcessorListener<String>())
+        processor.addListener(rafael.ktgenetic.ConsoleProcessorListener())
         val result = processor.process(word, geneticParameters)
 
         log.info("Result: {}", result)
         log.info("Finished. Time: {} ms", (System.currentTimeMillis() - t0))
-    } catch (e: ParseException) {
+    } catch (e: org.apache.commons.cli.ParseException) {
         log.error("Invalid Command Line: " + e.message, e)
         showOptions(options);
     } catch (e: IllegalArgumentException) {

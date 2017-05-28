@@ -1,5 +1,7 @@
-package rafael.ktgenetic
+package rafael.ktgenetic.equalstring
 
+import rafael.ktgenetic.GeneticParameters
+import rafael.ktgenetic.Genotype
 import java.util.*
 
 class EqualStringParameters(val target: String,
@@ -7,6 +9,7 @@ class EqualStringParameters(val target: String,
                             override val maxGenerations: Int,
                             override val mutationFactor: Double = 0.01) :
         GeneticParameters<String> {
+
     val random = Random()
 
     private val range = ' '.rangeTo('~') + 192.toChar().rangeTo(255.toChar())
@@ -48,8 +51,8 @@ class EqualStringParameters(val target: String,
 
     override fun calculateFitness(genotype: String): Double = fitness.calculate(genotype, target)
 
-    override fun resultFound(genotypes: List<Genotype<String>>): Boolean = genotypes[0].value.equals(target)
+    override fun resultFound(genotypes: List<Genotype<String>>) = genotypes[0].value.equals(target)
 
-    override fun getNewGenetotype(gene: String): Genotype<String> = Word(gene)
+    override fun getNewGenetotype(genotype: String): Genotype<String> = Word(genotype)
 
 }

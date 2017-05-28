@@ -29,7 +29,6 @@ class LogProcessorListener<G> : ProcessorListener {
         }
     }
 
-
     override fun onEvent(event: ProcessorEvent) {
         when (event.event) {
             ProcessorEventEnum.STARTING -> {

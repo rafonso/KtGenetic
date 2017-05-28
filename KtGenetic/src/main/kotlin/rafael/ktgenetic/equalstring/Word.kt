@@ -1,4 +1,7 @@
-package rafael.ktgenetic
+package rafael.ktgenetic.equalstring
+
+import rafael.ktgenetic.Genotype
+import rafael.ktgenetic.GenotypeFitnessComparator
 
 data class Word(override val value: String) : Genotype<String>() {
 
@@ -7,6 +10,4 @@ data class Word(override val value: String) : Genotype<String>() {
     override fun toString() = super.toString()
 
 }
-
-class WordFitnessComparator : GenotypeFitnessComparator<String>() {}
 

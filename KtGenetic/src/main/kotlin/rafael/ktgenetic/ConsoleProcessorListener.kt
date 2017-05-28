@@ -2,9 +2,6 @@ package rafael.ktgenetic
 
 import java.util.*
 
-/**
- * Created by rucaf_000 on 27/05/2017.
- */
 class ConsoleProcessorListener : ProcessorListener {
 
     val scanner = Scanner(System.`in`)

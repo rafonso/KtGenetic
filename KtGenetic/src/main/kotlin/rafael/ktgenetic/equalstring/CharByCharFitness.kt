@@ -1,4 +1,4 @@
-package rafael.ktgenetic
+package rafael.ktgenetic.equalstring
 
 abstract class CharByCharFitness : StringFitness {
 
