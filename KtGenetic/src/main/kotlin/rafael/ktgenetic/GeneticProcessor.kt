@@ -1,5 +1,8 @@
 package rafael.ktgenetic
 
+/**
+ * Executes the evolutionary process.
+ */
 class GeneticProcessor<G>() {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
@@ -23,7 +26,7 @@ class GeneticProcessor<G>() {
         return listOf(child1, child2)
     }
 
-    public fun process(target: String, geneticParameter: GeneticParameters<G>): List<Genotype<G>> {
+    public fun process(geneticParameter: GeneticParameters<G>): List<Genotype<G>> {
         notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, geneticParameter.maxGenerations))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATING))
@@ -69,7 +72,7 @@ class GeneticProcessor<G>() {
         if (generation <= geneticParameter.maxGenerations) {
             notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_FITNESS, population[0]))
         } else {
-            notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_GENERATIONS))
+            notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_GENERATIONS, population[0]))
         }
         return population
     }

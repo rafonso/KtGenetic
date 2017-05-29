@@ -3,6 +3,9 @@ package rafael.ktgenetic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+/**
+ * Emits log messages according the [ProcessorEvent].
+ */
 class LogProcessorListener<G> : ProcessorListener {
 
     private val CONSOLE_SIZE = 120
