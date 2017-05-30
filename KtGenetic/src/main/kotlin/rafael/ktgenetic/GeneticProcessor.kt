@@ -13,9 +13,9 @@ class GeneticProcessor<G, C :  Chromosome<G>>() {
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
-    public fun <G, C :  Chromosome<G>> cross(parent1: G, parent2: G, environment: Environment<G, C>): List<G> {
+    private fun <G, C :  Chromosome<G>> cross(parent1: List<G>, parent2: List<G>, environment: Environment<G, C>): List<List<G>> {
 
-        fun submitMutation(segment: G): G =
+        fun submitMutation(segment: List<G>): List<G> =
                 if (Math.random() < environment.mutationFactor)
                     environment.executeMutation(segment)
                 else segment
@@ -31,8 +31,8 @@ class GeneticProcessor<G, C :  Chromosome<G>>() {
         val parent2Piece2Selected = submitMutation(parent2Segment2)
 
         // Crossing
-        val child1 = environment.joinPieces(listOf(parent2Piece1Selected, parent1Core, parent2Piece2Selected))
-        val child2 = environment.joinPieces(listOf(parent1Piece1Selected, parent2Core, parent1Piece2Selected))
+        val child1 = parent2Piece1Selected + parent1Core + parent2Piece2Selected
+        val child2 = parent1Piece1Selected + parent2Core + parent1Piece2Selected
 
         return listOf(child1, child2)
     }
@@ -54,7 +54,7 @@ class GeneticProcessor<G, C :  Chromosome<G>>() {
                         parent1 ->
                         population.flatMap {
                             parent2 ->
-                            cross(parent1.value, parent2.value, environment)
+                            cross(parent1.content, parent2.content, environment)
                         }
                     }
                     .map { environment.getNewGenetotype(it) }
@@ -63,7 +63,7 @@ class GeneticProcessor<G, C :  Chromosome<G>>() {
             notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, children))
             // Calculate Fitness
             children.forEach({
-                it.fitness = environment.calculateFitness(it.value)
+                it.fitness = environment.calculateFitness(it.content)
             })
             notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATED, children))
 

@@ -18,15 +18,15 @@ interface Environment<G, C :  Chromosome<G>> {
 
     fun getCutPositions(): Pair<Int, Int>
 
-    fun cutIntoPieces(gene: G, cutPositions: Pair<Int, Int>): Triple<G, G, G>
+    fun cutIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>): Triple<List<G>, List<G>, List<G>>
 
-    fun executeMutation(gene: G): G
+    fun executeMutation(sequence: List<G>): List<G>
 
-    fun joinPieces(segments: List<G>): G
+//    fun joinPieces(segments: List<G>): G
 
-    fun getNewGenetotype(gene: G): C
+    fun getNewGenetotype(sequence: List<G>): C
 
-    fun calculateFitness(gene: G): Double
+    fun calculateFitness(sequence: List<G>): Double
 
     fun resultFound(genotypes: List<C>): Boolean = false
 

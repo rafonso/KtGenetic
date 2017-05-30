@@ -3,7 +3,7 @@ package rafael.ktgenetic
 /**
  * Represents a Chromosome with a set of Genes.
  *
- * @param G the type of this genotype
+ * @param G the gene type of this Chromosome
  * @constructor Creates a new genotype with a initial fitness, by default 0.0
  */
 abstract class Chromosome<G>(private var _fitness: Double = 0.0) {
@@ -20,12 +20,13 @@ abstract class Chromosome<G>(private var _fitness: Double = 0.0) {
     /**
      * Chromosome value
      */
-    abstract val value: G;
+    abstract val content: List<G>
+//    abstract val value: G;
 
     /**
      * String representation of [value] to be used in [toString]
      */
-    open protected fun valueToString(): String = value.toString()
+    open protected fun valueToString(): String = content.toString()
 
     override fun toString() = "[${valueToString()}, ${"%.3f".format(fitness)}]"
 

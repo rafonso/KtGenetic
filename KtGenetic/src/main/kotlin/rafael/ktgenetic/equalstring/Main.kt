@@ -7,7 +7,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import rafael.ktgenetic.GeneticProcessor
 
-
 private const val WORD_PARAMETER = "w"
 private const val GENERATIONS_PARAMETER = "g"
 private const val CHILDREN_TO_SURVIVE_PARAMETER = "c"
@@ -79,7 +78,7 @@ fun main(args: Array<String>) {
 
         val environment = getEnvironment(line)
 
-        val processor = GeneticProcessor<String, Word>()
+        val processor = GeneticProcessor<Char, Word>()
         processor.addListener(rafael.ktgenetic.LogProcessorListener<String>())
         processor.addListener(rafael.ktgenetic.ConsoleProcessorListener())
         val result = processor.process(environment)

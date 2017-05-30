@@ -5,8 +5,8 @@ abstract class CharByCharFitness : StringFitness {
     abstract fun calculateDiff(ch1: Char, ch2: Char): Int;
 
     override fun calculate(str1: String, str2: String): Double {
-        if (str1.length != str1.length) {
-            error("tamanhos diferentes")
+        if (str1.length != str2.length) {
+            error("Different sizes: '$str1' x '$str2'")
         }
 
         var diff = 0
