@@ -1,14 +1,14 @@
 package rafael.ktgenetic.equalstring
 
-import rafael.ktgenetic.GeneticParameters
+import rafael.ktgenetic.Environment
 import rafael.ktgenetic.Genotype
 import java.util.*
 
-class EqualStringParameters(val target: String,
-                            override val generationSize: Int,
-                            override val maxGenerations: Int,
-                            override val mutationFactor: Double = 0.01) :
-        GeneticParameters<String> {
+class EqualStringEnvironment(val target: String,
+                             override val generationSize: Int,
+                             override val maxGenerations: Int,
+                             override val mutationFactor: Double = 0.01) :
+        Environment<String> {
 
     val random = Random()
 

@@ -3,7 +3,7 @@ package rafael.ktgenetic
 /**
  * Indicates the parameters to be used during the processing in [GeneticProcessor].
  */
-interface GeneticParameters<G> {
+interface Environment<G> {
 
     /**
      *

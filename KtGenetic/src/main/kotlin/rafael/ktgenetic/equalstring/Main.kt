@@ -5,6 +5,7 @@ import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.Options
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import rafael.ktgenetic.GeneticProcessor
 
 
 private const val WORD_PARAMETER = "w"
@@ -44,8 +45,8 @@ private fun getProcessorParameters(line: org.apache.commons.cli.CommandLine) = P
         line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "10").toInt()
 )
 */
-private fun getParameters(line: org.apache.commons.cli.CommandLine) =
-        EqualStringParameters(
+private fun getEnvironment(line: org.apache.commons.cli.CommandLine) =
+        EqualStringEnvironment(
                 line.getOptionValue(WORD_PARAMETER), //
                 line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "10").toInt(),
                 line.getOptionValue(GENERATIONS_PARAMETER, "100").toInt())
@@ -77,12 +78,12 @@ fun main(args: Array<String>) {
         configureLogLevel(line)
 
         val word = line.getOptionValue(WORD_PARAMETER)
-        val geneticParameters = getParameters(line)
+        val environment = getEnvironment(line)
 
-        val processor = rafael.ktgenetic.GeneticProcessor<String>()
+        val processor = GeneticProcessor<String>()
         processor.addListener(rafael.ktgenetic.LogProcessorListener<String>())
         processor.addListener(rafael.ktgenetic.ConsoleProcessorListener())
-        val result = processor.process(word, geneticParameters)
+        val result = processor.process(environment)
 
         log.info("Result: {}", result)
         log.info("Finished. Time: {} ms", (System.currentTimeMillis() - t0))

@@ -13,7 +13,7 @@ class GeneticProcessor<G>() {
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
-    public fun cross(parent1: G, parent2: G, parameter: GeneticParameters<G>): List<G> {
+    public fun cross(parent1: G, parent2: G, parameter: Environment<G>): List<G> {
         val cutPositions = parameter.getCutPositions()
 
         val pieces1 = parameter.cutIntoPieces(parent1, cutPositions)
@@ -26,7 +26,7 @@ class GeneticProcessor<G>() {
         return listOf(child1, child2)
     }
 
-    public fun process(geneticParameter: GeneticParameters<G>): List<Genotype<G>> {
+    public fun process(geneticParameter: Environment<G>): List<Genotype<G>> {
         notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, geneticParameter.maxGenerations))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATING))

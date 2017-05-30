@@ -6,7 +6,7 @@ package rafael.ktgenetic
  */
 enum class ProcessorEventEnum {
     /**
-     * Stating of processing. Companion: Tha max number of generations ([GeneticParameters.maxGenerations])
+     * Stating of processing. Companion: Tha max number of generations ([Environment.maxGenerations])
      */
     STARTING,
     /**
@@ -58,11 +58,11 @@ enum class ProcessorEventEnum {
     GENERATION_EVALUATED,
     /**
      * Processing ended because the generation number reached the maximum number of generations indicated by
-     * [GeneticParameters.maxGenerations]. Companion: The genotype with the highest [Genotype.fitness]
+     * [Environment.maxGenerations]. Companion: The genotype with the highest [Genotype.fitness]
      */
     ENDED_BY_FITNESS,
     /**
-     * Processing ended because the desired criteria indicated by [GeneticParameters.resultFound] was reached.
+     * Processing ended because the desired criteria indicated by [Environment.resultFound] was reached.
      * Companion: The genotype with the highest [Genotype.fitness]
      */
     ENDED_BY_GENERATIONS
