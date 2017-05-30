@@ -14,7 +14,7 @@ enum class ProcessorEventEnum {
      */
     FIRST_GENERATION_CREATING,
     /**
-     * The first generation was created. Companion: First generation population ([Genotype]).
+     * The first generation was created. Companion: First generation population ([Chromosome]).
      */
     FIRST_GENERATION_CREATED,
     /**
@@ -23,32 +23,32 @@ enum class ProcessorEventEnum {
     GENERATION_EVALUATING,
     /**
      * The member of the population will be crossed to generate the children. Companion: the current population
-     * ([Genotype]).
+     * ([Chromosome]).
      */
     REPRODUCING,
     /**
-     * The children of the population was generated. Companion: the created children ([Genotype]).
+     * The children of the population was generated. Companion: the created children ([Chromosome]).
      */
     REPRODUCED,
     /**
-     * The children of the population will have their [Genotype.fitness] calculated. Companion: the created children
-     * ([Genotype])
-     * with their [Genotype.fitness] as zero.
+     * The children of the population will have their [Chromosome.fitness] calculated. Companion: the created children
+     * ([Chromosome])
+     * with their [Chromosome.fitness] as zero.
      */
     FITNESS_CALCULATING,
     /**
-     * The children of the population had their [Genotype.fitness] calculated. Companion: the created children
-     * ([Genotype]) with their [Genotype.fitness] filled.
+     * The children of the population had their [Chromosome.fitness] calculated. Companion: the created children
+     * ([Chromosome]) with their [Chromosome.fitness] filled.
      */
     FITNESS_CALCULATED,
     /**
-     * The children will selected according their [Genotype.fitness]. Companion: the created children [Genotype])
-     * with their [Genotype.fitness] filled.
+     * The children will selected according their [Chromosome.fitness]. Companion: the created children [Chromosome])
+     * with their [Chromosome.fitness] filled.
      */
     SELECTING,
     /**
-     * The children where selected according their [Genotype.fitness]; just those with the greatest [Genotype.fitness]
-     * survived to the next generation. Companion: the surviving children [Genotype]).
+     * The children where selected according their [Chromosome.fitness]; just those with the greatest [Chromosome.fitness]
+     * survived to the next generation. Companion: the surviving children [Chromosome]).
      */
     SELECTED,
     /**
@@ -58,12 +58,12 @@ enum class ProcessorEventEnum {
     GENERATION_EVALUATED,
     /**
      * Processing ended because the generation number reached the maximum number of generations indicated by
-     * [Environment.maxGenerations]. Companion: The genotype with the highest [Genotype.fitness]
+     * [Environment.maxGenerations]. Companion: The genotype with the highest [Chromosome.fitness]
      */
     ENDED_BY_FITNESS,
     /**
      * Processing ended because the desired criteria indicated by [Environment.resultFound] was reached.
-     * Companion: The genotype with the highest [Genotype.fitness]
+     * Companion: The genotype with the highest [Chromosome.fitness]
      */
     ENDED_BY_GENERATIONS
 }

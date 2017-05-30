@@ -3,7 +3,7 @@ package rafael.ktgenetic
 /**
  * Indicates the parameters to be used during the processing in [GeneticProcessor].
  */
-interface Environment<G, N :  Genotype<G>> {
+interface Environment<G, C :  Chromosome<G>> {
 
     /**
      *
@@ -14,7 +14,7 @@ interface Environment<G, N :  Genotype<G>> {
 
     val generationSize: Int;
 
-    fun getFirstGeneration(): List<N>;
+    fun getFirstGeneration(): List<C>;
 
     fun getCutPositions(): Pair<Int, Int>
 
@@ -24,10 +24,10 @@ interface Environment<G, N :  Genotype<G>> {
 
     fun joinPieces(segments: List<G>): G
 
-    fun getNewGenetotype(gene: G): N
+    fun getNewGenetotype(gene: G): C
 
     fun calculateFitness(gene: G): Double
 
-    fun resultFound(genotypes: List<N>): Boolean = false
+    fun resultFound(genotypes: List<C>): Boolean = false
 
 }

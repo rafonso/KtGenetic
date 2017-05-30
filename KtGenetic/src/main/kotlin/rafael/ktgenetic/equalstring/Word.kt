@@ -1,9 +1,8 @@
 package rafael.ktgenetic.equalstring
 
-import rafael.ktgenetic.Genotype
-import rafael.ktgenetic.GenotypeFitnessComparator
+import rafael.ktgenetic.Chromosome
 
-data class Word(override val value: String) : Genotype<String>() {
+data class Word(override val value: String) : Chromosome<String>() {
 
     override fun valueToString(): String = "'$value'"
 

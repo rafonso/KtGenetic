@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory
 /**
  * Emits log messages according the [ProcessorEvent].
  */
-class LogProcessorListener<G> : ProcessorListener {
+class LogProcessorListener<C> : ProcessorListener {
 
     private val CONSOLE_SIZE = 120
 
@@ -15,7 +15,7 @@ class LogProcessorListener<G> : ProcessorListener {
     private var currentGeneration: Int = 0
     private var maxGenerations: Int = 0
 
-    private fun populationToConsole(population: List<Genotype<G>>): String {
+    private fun populationToConsole(population: List<Chromosome<C>>): String {
         val genotypesByLine =
                 if(population[0].toString().length < CONSOLE_SIZE ) CONSOLE_SIZE / (population[0].toString().length + 1)
                 else 1
@@ -44,7 +44,7 @@ class LogProcessorListener<G> : ProcessorListener {
             }
             ProcessorEventEnum.FIRST_GENERATION_CREATED -> {
                 log(log.isTraceEnabled, {
-                    val population = event.value as List<Genotype<G>>
+                    val population = event.value as List<Chromosome<C>>
                     log.trace("First Generation: {}", populationToConsole(population))
                 })
             }
@@ -61,13 +61,13 @@ class LogProcessorListener<G> : ProcessorListener {
             }
             ProcessorEventEnum.REPRODUCED -> {
                 log(log.isTraceEnabled, {
-                    val children = event.value as List<Genotype<G>>
+                    val children = event.value as List<Chromosome<C>>
                     log.trace("Generation $currentGeneration - Reproduced: {}", populationToConsole(children))
                 })
             }
             ProcessorEventEnum.FITNESS_CALCULATING -> {
                 log(log.isTraceEnabled, {
-                    val population = event.value as List<Genotype<G>>
+                    val population = event.value as List<Chromosome<C>>
                     log.trace("Generation $currentGeneration - Calculating Fitness: {}", populationToConsole(population))
                 })
             }
@@ -83,13 +83,13 @@ class LogProcessorListener<G> : ProcessorListener {
             }
             ProcessorEventEnum.SELECTED -> {
                 log(log.isDebugEnabled, {
-                    val selected = event.value as List<Genotype<G>>
+                    val selected = event.value as List<Chromosome<C>>
                     log.trace("Generation $currentGeneration - Fitted selected: {}", populationToConsole(selected))
                 })
             }
             ProcessorEventEnum.GENERATION_EVALUATED -> {
                 log(log.isDebugEnabled, {
-                    val selected = event.value as List<Genotype<G>>
+                    val selected = event.value as List<Chromosome<C>>
                     val averageFitness = selected.map { it.fitness }.sum() / selected.size
 
                     log.debug("Generation %d - Best Option: %s. General Fitness %.3f".format(currentGeneration, selected[0], averageFitness))

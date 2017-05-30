@@ -1,12 +1,12 @@
 package rafael.ktgenetic
 
 /**
- * Represents a genotype.
+ * Represents a Chromosome with a set of Genes.
  *
  * @param G the type of this genotype
  * @constructor Creates a new genotype with a initial fitness, by default 0.0
  */
-abstract class Genotype<G>(private var _fitness: Double = 0.0) {
+abstract class Chromosome<G>(private var _fitness: Double = 0.0) {
 
     /**
      * Fitness value indicating how much this genotype value is near from the goal. The greater, better.
@@ -18,7 +18,7 @@ abstract class Genotype<G>(private var _fitness: Double = 0.0) {
         }
 
     /**
-     * Genotype value
+     * Chromosome value
      */
     abstract val value: G;
 
