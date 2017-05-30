@@ -25,7 +25,7 @@ abstract class Genotype<G>(private var _fitness: Double = 0.0) {
     /**
      * String representation of [value] to be used in [toString]
      */
-    abstract protected fun valueToString(): String;
+    open protected fun valueToString(): String = value.toString()
 
     override fun toString() = "[${valueToString()}, ${"%.3f".format(fitness)}]"
 

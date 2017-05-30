@@ -1,14 +1,13 @@
 package rafael.ktgenetic.equalstring
 
 import rafael.ktgenetic.Environment
-import rafael.ktgenetic.Genotype
 import java.util.*
 
 class EqualStringEnvironment(val target: String,
                              override val generationSize: Int,
                              override val maxGenerations: Int,
                              override val mutationFactor: Double = 0.01) :
-        Environment<String> {
+        Environment<String, Word> {
 
     val random = Random()
 
@@ -18,16 +17,16 @@ class EqualStringEnvironment(val target: String,
 
     private fun randomChar(): Char = range[random.nextInt(range.size)]
 
-    private fun createRandomWord(): String = 1.rangeTo(target.length).map { _ -> randomChar() }.joinToString("")
+    private fun createRandomWord(): Word = Word(1.rangeTo(target.length).map { _ -> randomChar() }.joinToString(""))
 
-    override fun getFirstGeneration(): List<String> =
+    override fun getFirstGeneration(): List<Word> =
             1.rangeTo(generationSize)
                     .map { _ -> createRandomWord() }
-                    .sorted()
+//                   .sorted({(w1, w2) -> w1.value.compareTo(w2.value)})
 
 
-    override fun executeMutation(segment: String): String {
-        val bases = segment.toCharArray();
+    override fun executeMutation(gene: String): String {
+        val bases = gene.toCharArray();
         val mutationPoint = random.nextInt(bases.size)
         val mutatedGene: Char = range[random.nextInt(range.size)]
         bases[mutationPoint] = mutatedGene
@@ -47,12 +46,12 @@ class EqualStringEnvironment(val target: String,
             gene.substring(cutPositions.first, cutPositions.second),
             gene.substring(cutPositions.second))
 
-    override fun joinPieces(pieces: List<String>): String = pieces.joinToString("")
+    override fun joinPieces(segments: List<String>): String = segments.joinToString("")
 
-    override fun calculateFitness(genotype: String): Double = fitness.calculate(genotype, target)
+    override fun calculateFitness(gene: String): Double = fitness.calculate(gene, target)
 
-    override fun resultFound(genotypes: List<Genotype<String>>) = genotypes[0].value.equals(target)
+    override fun resultFound(genotypes: List<Word>) = genotypes[0].value.equals(target)
 
-    override fun getNewGenetotype(genotype: String): Genotype<String> = Word(genotype)
+    override fun getNewGenetotype(gene: String): Word = Word(gene)
 
 }

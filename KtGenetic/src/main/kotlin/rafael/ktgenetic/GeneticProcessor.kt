@@ -3,18 +3,18 @@ package rafael.ktgenetic
 /**
  * Executes the evolutionary process.
  */
-class GeneticProcessor<G>() {
+class GeneticProcessor<G, N :  Genotype<G>>() {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 
-    val genotypeComparator = GenotypeFitnessComparator<G>()
+    val genotypeComparator = GenotypeFitnessComparator<G, N>()
 
     private fun notifyEvent(event: ProcessorEvent) {
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
 
-    public fun cross(parent1: G, parent2: G, environment: Environment<G>): List<G> {
+    public fun <G, N :  Genotype<G>> cross(parent1: G, parent2: G, environment: Environment<G, N>): List<G> {
 
         fun submitMutation(segment: G): G =
                 if (Math.random() < environment.mutationFactor)
@@ -38,11 +38,11 @@ class GeneticProcessor<G>() {
         return listOf(child1, child2)
     }
 
-    public fun process(environment: Environment<G>): List<Genotype<G>> {
+    public  fun process(environment: Environment<G, N>): List<N> {
         notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, environment.maxGenerations))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATING))
-        var population = environment.getFirstGeneration().map { environment.getNewGenetotype(it) }
+        var population = environment.getFirstGeneration() // .map { environment.getNewGenetotype(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATED, population))
 
         var generation = 1

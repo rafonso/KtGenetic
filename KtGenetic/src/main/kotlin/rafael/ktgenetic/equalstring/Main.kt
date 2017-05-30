@@ -77,10 +77,9 @@ fun main(args: Array<String>) {
         validateParameters(line)
         configureLogLevel(line)
 
-        val word = line.getOptionValue(WORD_PARAMETER)
         val environment = getEnvironment(line)
 
-        val processor = GeneticProcessor<String>()
+        val processor = GeneticProcessor<String, Word>()
         processor.addListener(rafael.ktgenetic.LogProcessorListener<String>())
         processor.addListener(rafael.ktgenetic.ConsoleProcessorListener())
         val result = processor.process(environment)

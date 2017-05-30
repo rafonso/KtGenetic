@@ -3,6 +3,6 @@ package rafael.ktgenetic
 /**
  * Compares 2 [Genotype]'s according their [Genotype.fitness]
  */
-class GenotypeFitnessComparator<G>: Comparator<Genotype<G>> {
-    override fun compare(g1: Genotype<G>, g2: Genotype<G>): Int = g1.fitness.compareTo(g2.fitness)
+class GenotypeFitnessComparator<G, N :  Genotype<G>>: Comparator<N> {
+    override fun compare(g1: N, g2: N): Int = g1.fitness.compareTo(g2.fitness)
 }
