@@ -13,7 +13,7 @@ abstract class Chromosome<G>(private var _fitness: Double = 0.0) {
      */
     var fitness: Double
         get() = _fitness
-        set(f) {
+        internal set(f) {
             _fitness = f
         }
 
