@@ -18,7 +18,7 @@ interface Environment<G> {
 
     fun getCutPositions(): Pair<Int, Int>
 
-    fun cutIntoPieces(gene: G, cutPositions: Pair<Int, Int>): Array<G>
+    fun cutIntoPieces(gene: G, cutPositions: Pair<Int, Int>): Triple<G, G, G>
 
     fun executeMutation(segment: G): G
 

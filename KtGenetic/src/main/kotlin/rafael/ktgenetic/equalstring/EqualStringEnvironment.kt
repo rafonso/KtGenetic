@@ -42,7 +42,7 @@ class EqualStringEnvironment(val target: String,
         return Pair(pos1, pos2)
     }
 
-    override fun cutIntoPieces(gene: String, cutPositions: Pair<Int, Int>): Array<String> = arrayOf(
+    override fun cutIntoPieces(gene: String, cutPositions: Pair<Int, Int>): Triple<String, String, String> = Triple(
             gene.substring(0, cutPositions.first),
             gene.substring(cutPositions.first, cutPositions.second),
             gene.substring(cutPositions.second))

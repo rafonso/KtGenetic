@@ -13,46 +13,58 @@ class GeneticProcessor<G>() {
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
-    public fun cross(parent1: G, parent2: G, parameter: Environment<G>): List<G> {
-        val cutPositions = parameter.getCutPositions()
 
-        val pieces1 = parameter.cutIntoPieces(parent1, cutPositions)
-        val pieces2 = parameter.cutIntoPieces(parent2, cutPositions)
+    public fun cross(parent1: G, parent2: G, environment: Environment<G>): List<G> {
+
+        fun submitMutation(segment: G): G =
+                if (Math.random() < environment.mutationFactor)
+                    environment.executeMutation(segment)
+                else segment
+
+        val cutPositions = environment.getCutPositions()
+
+        val (parent1Segment1, parent1Core, parent1Segment2) = environment.cutIntoPieces(parent1, cutPositions)
+        val (parent2Segment1, parent2Core, parent2Segment2) = environment.cutIntoPieces(parent2, cutPositions)
+
+        val parent1Piece1Selected = submitMutation(parent1Segment1)
+        val parent1Piece2Selected = submitMutation(parent1Segment2)
+        val parent2Piece1Selected = submitMutation(parent2Segment1)
+        val parent2Piece2Selected = submitMutation(parent2Segment2)
 
         // Crossing
-        val child1 = parameter.joinPieces(listOf(parameter.executeMutation(pieces2[0]), pieces1[1], parameter.executeMutation(pieces2[2])))
-        val child2 = parameter.joinPieces(listOf(parameter.executeMutation(pieces1[0]), pieces2[1], parameter.executeMutation(pieces1[2])))
+        val child1 = environment.joinPieces(listOf(parent2Piece1Selected, parent1Core, parent2Piece2Selected))
+        val child2 = environment.joinPieces(listOf(parent1Piece1Selected, parent2Core, parent1Piece2Selected))
 
         return listOf(child1, child2)
     }
 
-    public fun process(geneticParameter: Environment<G>): List<Genotype<G>> {
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, geneticParameter.maxGenerations))
+    public fun process(environment: Environment<G>): List<Genotype<G>> {
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, environment.maxGenerations))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATING))
-        var population = geneticParameter.getFirstGeneration().map {  geneticParameter.getNewGenetotype(it)  }
+        var population = environment.getFirstGeneration().map { environment.getNewGenetotype(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATED, population))
 
         var generation = 1
-        while (!geneticParameter.resultFound(population) && (generation <= geneticParameter.maxGenerations)) { //}terminate(population, target)) {
+        while (!environment.resultFound(population) && (generation <= environment.maxGenerations)) {
             notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATING, generation))
 
             notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCING, population))
-            val children  = population
+            val children = population
                     .flatMap {
                         parent1 ->
                         population.flatMap {
                             parent2 ->
-                            cross(parent1.value, parent2.value, geneticParameter)
+                            cross(parent1.value, parent2.value, environment)
                         }
                     }
-                    .map { geneticParameter.getNewGenetotype(it) }
+                    .map { environment.getNewGenetotype(it) }
             notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCED, children))
 
             notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, children))
             // Calculate Fitness
             children.forEach({
-                it.fitness = geneticParameter.calculateFitness(it.value)
+                it.fitness = environment.calculateFitness(it.value)
             })
             notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATED, children))
 
@@ -60,20 +72,20 @@ class GeneticProcessor<G>() {
             val selected = children
                     .sortedWith(genotypeComparator)
                     .reversed()
-                    .subList(0, geneticParameter.generationSize)
+                    .subList(0, environment.generationSize)
             notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTED, selected))
-
 
             population = selected
             notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATED, population))
             generation++
         }
 
-        if (generation <= geneticParameter.maxGenerations) {
+        if (generation <= environment.maxGenerations) {
             notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_FITNESS, population[0]))
         } else {
             notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_GENERATIONS, population[0]))
         }
+
         return population
     }
 
