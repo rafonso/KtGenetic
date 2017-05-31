@@ -20,6 +20,8 @@ class GeneticProcessor<G, C :  Chromosome<G>>() {
                     environment.executeMutation(segment)
                 else segment
 
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSING, Pair(parent1, parent2)))
+
         val cutPositions = environment.getCutPositions()
 
         val (parent1Segment1, parent1Core, parent1Segment2) = environment.cutIntoPieces(parent1, cutPositions)
@@ -33,6 +35,8 @@ class GeneticProcessor<G, C :  Chromosome<G>>() {
         // Crossing
         val child1 = parent2Piece1Selected + parent1Core + parent2Piece2Selected
         val child2 = parent1Piece1Selected + parent2Core + parent1Piece2Selected
+
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSED, Pair(child1, child2)))
 
         return listOf(child1, child2)
     }

@@ -27,6 +27,14 @@ enum class ProcessorEventEnum {
      */
     REPRODUCING,
     /**
+     * 2 [Chromosome]s are about to cross. Companion: The 2 Chromosome to be crossed.
+     */
+    CROSSING,
+    /**
+     * 2 [Chromosome]s were crossed. Companion: The 2 Chromosome created from crosseding.
+     */
+    CROSSED,
+    /**
      * The children of the population was generated. Companion: the created children ([Chromosome]).
      */
     REPRODUCED,

@@ -1,23 +1,28 @@
 package rafael.ktgenetic
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.apache.logging.log4j.Level
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+
+
+val TRACER: Level = Level.forName("TRACER", 700)
 
 /**
  * Emits log messages according the [ProcessorEvent].
  */
-class LogProcessorListener<C> : ProcessorListener {
+class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
 
     private val CONSOLE_SIZE = 120
 
-    private val log: Logger = LoggerFactory.getLogger("ProcessorLog")
+    private val log: Logger = LogManager.getLogger("LOG");
 
     private var currentGeneration: Int = 0
     private var maxGenerations: Int = 0
 
     private fun populationToConsole(population: List<Chromosome<C>>): String {
+
         val genotypesByLine =
-                if(population[0].toString().length < CONSOLE_SIZE ) CONSOLE_SIZE / (population[0].toString().length + 1)
+                if (population[0].toString().length < CONSOLE_SIZE) CONSOLE_SIZE / (population[0].toString().length + 1)
                 else 1
 
         return population.mapIndexed({ index, genotype ->
@@ -57,6 +62,18 @@ class LogProcessorListener<C> : ProcessorListener {
             ProcessorEventEnum.REPRODUCING -> {
                 log(log.isTraceEnabled, {
                     log.trace("Generation $currentGeneration - Reproducing")
+                })
+            }
+            ProcessorEventEnum.CROSSING -> {
+                log(log.isEnabled(TRACER), {
+                    val (parent1, parent2) = event.value as Pair<List<G>, List<G>>
+                    log.log(TRACER, "Generation $currentGeneration - Crossing: {} x {}", parent1, parent2)
+                })
+            }
+            ProcessorEventEnum.CROSSED -> {
+                log(log.isEnabled(TRACER), {
+                    val (children1, children2) = event.value as Pair<List<G>, List<G>>
+                    log.log(TRACER, "Generation $currentGeneration - Crossed : {} x {}", children1, children2)
                 })
             }
             ProcessorEventEnum.REPRODUCED -> {
