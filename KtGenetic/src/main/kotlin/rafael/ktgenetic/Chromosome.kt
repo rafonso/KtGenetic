@@ -26,7 +26,7 @@ abstract class Chromosome<G>(private var _fitness: Double = 0.0) {
     /**
      * String representation of [value] to be used in [toString]
      */
-    open protected fun valueToString(): String = content.toString()
+    open fun valueToString(): String = content.toString()
 
     override fun toString() = "[${valueToString()}, ${"%.3f".format(fitness)}]"
 

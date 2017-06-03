@@ -19,14 +19,20 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
     private var currentGeneration: Int = 0
     private var maxGenerations: Int = 0
 
-    private fun populationToConsole(population: List<Chromosome<C>>): String {
+
+    private fun chromosomeToString(c: Chromosome<C>) = c.toString()
+
+    private fun chromosomeToValueString(c: Chromosome<C>) = c.valueToString()
+
+
+    private fun populationToConsole(population: List<Chromosome<C>>, toString: (Chromosome<C>) -> String ): String {
 
         val genotypesByLine =
-                if (population[0].toString().length < CONSOLE_SIZE) CONSOLE_SIZE / (population[0].toString().length + 1)
+                if (toString(population[0]).length < CONSOLE_SIZE) CONSOLE_SIZE / (toString(population[0]).length + 1)
                 else 1
 
         return population.mapIndexed({ index, genotype ->
-            if (index % genotypesByLine == 0) ("\n$genotype") else ("$genotype")
+            if (index % genotypesByLine == 0) ("\n${toString(genotype)}") else ("${toString(genotype)}")
         }
         ).joinToString(separator = " ") // { separator = " " }
     }
@@ -44,13 +50,15 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
                 log.info("Starting. Max generations: {}", maxGenerations)
             }
             ProcessorEventEnum.FIRST_GENERATION_CREATING -> {
-                val target = event.value as String
-                log.info("Starting. Target: {}", target)
+                log(log.isDebugEnabled, {
+                    //                val target = event.value as String
+                    log.info("Creating First Generation")
+                })
             }
             ProcessorEventEnum.FIRST_GENERATION_CREATED -> {
                 log(log.isTraceEnabled, {
                     val population = event.value as List<Chromosome<C>>
-                    log.trace("First Generation: {}", populationToConsole(population))
+                    log.trace("First Generation: {}", populationToConsole(population, this::chromosomeToValueString))
                 })
             }
             ProcessorEventEnum.GENERATION_EVALUATING -> {
@@ -79,18 +87,19 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
             ProcessorEventEnum.REPRODUCED -> {
                 log(log.isTraceEnabled, {
                     val children = event.value as List<Chromosome<C>>
-                    log.trace("Generation $currentGeneration - Reproduced: {}", populationToConsole(children))
+                    log.trace("Generation $currentGeneration - Reproduced: {}", populationToConsole(children, this::chromosomeToValueString))
                 })
             }
             ProcessorEventEnum.FITNESS_CALCULATING -> {
                 log(log.isTraceEnabled, {
                     val population = event.value as List<Chromosome<C>>
-                    log.trace("Generation $currentGeneration - Calculating Fitness: {}", populationToConsole(population))
+                    log.trace("Generation $currentGeneration - Calculating Fitness: {}", populationToConsole(population, this::chromosomeToValueString))
                 })
             }
             ProcessorEventEnum.FITNESS_CALCULATED -> {
                 log(log.isTraceEnabled, {
-                    log.trace("Generation $currentGeneration - Fitness Calculated")
+                    val children = event.value as List<Chromosome<C>>
+                    log.trace("Generation $currentGeneration - Fitness Calculated: {}", populationToConsole(children, this::chromosomeToString))
                 })
             }
             ProcessorEventEnum.SELECTING -> {
@@ -101,7 +110,7 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
             ProcessorEventEnum.SELECTED -> {
                 log(log.isDebugEnabled, {
                     val selected = event.value as List<Chromosome<C>>
-                    log.trace("Generation $currentGeneration - Fitted selected: {}", populationToConsole(selected))
+                    log.trace("Generation $currentGeneration - Fitted selected: {}", populationToConsole(selected, this::chromosomeToString))
                 })
             }
             ProcessorEventEnum.GENERATION_EVALUATED -> {
