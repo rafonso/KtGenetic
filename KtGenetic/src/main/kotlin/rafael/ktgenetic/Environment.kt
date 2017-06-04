@@ -22,7 +22,7 @@ interface Environment<G, C :  Chromosome<G>> {
 
     fun executeMutation(sequence: List<G>): List<G>
 
-//    fun joinPieces(segments: List<G>): G
+    fun joinPieces(tail1: List<G>, core: List<G>, tail2: List<G>): List<G> = tail1 + core + tail2
 
     fun getNewGenetotype(sequence: List<G>): C
 

@@ -13,7 +13,8 @@ class GeneticProcessor<G, C :  Chromosome<G>>() {
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
-    private fun <G, C :  Chromosome<G>> cross(parent1: List<G>, parent2: List<G>, environment: Environment<G, C>): List<List<G>> {
+    private fun <G, C :  Chromosome<G>> cross(parent1: List<G>, parent2: List<G>, environment: Environment<G, C>):
+            List<List<G>> {
 
         fun submitMutation(segment: List<G>): List<G> =
                 if (Math.random() < environment.mutationFactor)
@@ -24,17 +25,17 @@ class GeneticProcessor<G, C :  Chromosome<G>>() {
 
         val cutPositions = environment.getCutPositions()
 
-        val (parent1Segment1, parent1Core, parent1Segment2) = environment.cutIntoPieces(parent1, cutPositions)
-        val (parent2Segment1, parent2Core, parent2Segment2) = environment.cutIntoPieces(parent2, cutPositions)
+        val (tail1Left, parent1Core, tail1Right) = environment.cutIntoPieces(parent1, cutPositions)
+        val (tail2Left, parent2Core, tail2Right) = environment.cutIntoPieces(parent2, cutPositions)
 
-        val parent1Piece1Selected = submitMutation(parent1Segment1)
-        val parent1Piece2Selected = submitMutation(parent1Segment2)
-        val parent2Piece1Selected = submitMutation(parent2Segment1)
-        val parent2Piece2Selected = submitMutation(parent2Segment2)
+        val tail1LeftFinal = submitMutation(tail1Left)
+        val tail1RightFinal = submitMutation(tail1Right)
+        val tail2LeftFinal = submitMutation(tail2Left)
+        val tail2RightFinal = submitMutation(tail2Right)
 
         // Crossing
-        val child1 = parent2Piece1Selected + parent1Core + parent2Piece2Selected
-        val child2 = parent1Piece1Selected + parent2Core + parent1Piece2Selected
+        val child1 = environment.joinPieces(tail2LeftFinal, parent1Core, tail2RightFinal)
+        val child2 = environment.joinPieces(tail1LeftFinal, parent2Core, tail1RightFinal)
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSED, Pair(child1, child2)))
 
