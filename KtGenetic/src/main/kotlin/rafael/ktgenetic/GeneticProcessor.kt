@@ -3,7 +3,7 @@ package rafael.ktgenetic
 /**
  * Executes the evolutionary process.
  */
-class GeneticProcessor<G, C :  Chromosome<G>>() {
+class GeneticProcessor<G, C : Chromosome<G>>() {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 
@@ -13,7 +13,17 @@ class GeneticProcessor<G, C :  Chromosome<G>>() {
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
-    private fun <G, C :  Chromosome<G>> cross(parent1: List<G>, parent2: List<G>, environment: Environment<G, C>):
+    protected fun <G, C : Chromosome<G>> executeCrossing(
+            pieces1: Triple<List<G>, List<G>, List<G>>,
+            pieces2: Triple<List<G>, List<G>, List<G>>,
+            environment: Environment<G, C>):
+            Pair<List<G>, List<G>> =
+            Pair(
+                    pieces2.first + pieces1.second + pieces2.third,
+                    pieces1.first + pieces1.second + pieces1.third
+            )
+
+    private fun <G, C : Chromosome<G>> cross(parent1: List<G>, parent2: List<G>, environment: Environment<G, C>):
             List<List<G>> {
 
         fun submitMutation(segment: List<G>): List<G> =
@@ -25,24 +35,21 @@ class GeneticProcessor<G, C :  Chromosome<G>>() {
 
         val cutPositions = environment.getCutPositions()
 
-        val (tail1Left, parent1Core, tail1Right) = environment.cutIntoPieces(parent1, cutPositions)
-        val (tail2Left, parent2Core, tail2Right) = environment.cutIntoPieces(parent2, cutPositions)
+        val pieces1 = environment.cutIntoPieces(parent1, cutPositions)
+        val pieces2 = environment.cutIntoPieces(parent2, cutPositions)
 
-        val tail1LeftFinal = submitMutation(tail1Left)
-        val tail1RightFinal = submitMutation(tail1Right)
-        val tail2LeftFinal = submitMutation(tail2Left)
-        val tail2RightFinal = submitMutation(tail2Right)
+        val pieces1AfterMutation = Triple(submitMutation(pieces1.first), submitMutation(pieces1.second), submitMutation(pieces1.third))
+        val pieces2AfterMutation = Triple(submitMutation(pieces2.first), submitMutation(pieces2.second), submitMutation(pieces2.third))
 
         // Crossing
-        val child1 = environment.joinPieces(tail2LeftFinal, parent1Core, tail2RightFinal)
-        val child2 = environment.joinPieces(tail1LeftFinal, parent2Core, tail1RightFinal)
+        val children = executeCrossing(pieces1AfterMutation, pieces2AfterMutation, environment)
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSED, Pair(child1, child2)))
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSED, children))
 
-        return listOf(child1, child2)
+        return children.toList()
     }
 
-    public  fun process(environment: Environment<G, C>): List<C> {
+    public fun process(environment: Environment<G, C>): List<C> {
         notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, environment.maxGenerations))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATING))
