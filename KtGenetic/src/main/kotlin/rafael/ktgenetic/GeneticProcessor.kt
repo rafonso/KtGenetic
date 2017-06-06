@@ -20,7 +20,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
             Pair<List<G>, List<G>> =
             Pair(
                     pieces2.first + pieces1.second + pieces2.third,
-                    pieces1.first + pieces1.second + pieces1.third
+                    pieces1.first + pieces2.second + pieces1.third
             )
 
     private fun cross(parent1: List<G>, parent2: List<G>, environment: Environment<G, C>):
@@ -59,15 +59,11 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATING, generation))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCING, population))
-        val children: List<C> = population
-                .flatMap {
-                    parent1 ->
-                    population.flatMap {
-                        parent2 ->
-                        cross(parent1.content, parent2.content, environment)
-                    }
-                }
-                .map { environment.getNewGenetotype(it) }
+        val children: List<C> = (0 until population.size).flatMap { i ->
+            (i until population.size).flatMap { j ->
+                cross(population[i].content, population[j].content, environment)
+            }
+        }.map { environment.getNewGenetotype(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, children))
