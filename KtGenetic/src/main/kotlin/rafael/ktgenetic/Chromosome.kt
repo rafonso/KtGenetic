@@ -21,13 +21,12 @@ abstract class Chromosome<G>(private var _fitness: Double = 0.0) {
      * Chromosome value
      */
     abstract val content: List<G>
-//    abstract val value: G;
 
     /**
-     * String representation of [value] to be used in [toString]
+     * String representation of [content] to be used in [toString]
      */
     open fun valueToString(): String = content.toString()
 
-    override fun toString() = "[${valueToString()}, ${"%.3f".format(fitness)}]"
+    override fun toString() = "[${"%.3f".format(fitness)}, ${valueToString()}]"
 
 }

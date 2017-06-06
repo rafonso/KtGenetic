@@ -13,4 +13,5 @@ interface ProcessorListener {
      * @param event Event fired from [GeneticProcessor].
      */
     fun onEvent(event: ProcessorEvent)
+
 }

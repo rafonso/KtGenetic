@@ -14,7 +14,7 @@ interface Environment<G, C :  Chromosome<G>> {
 
     val generationSize: Int;
 
-    fun getFirstGeneration(): List<C>;
+    fun getFirstGeneration(): List<C>
 
     fun getCutPositions(): Pair<Int, Int>
 

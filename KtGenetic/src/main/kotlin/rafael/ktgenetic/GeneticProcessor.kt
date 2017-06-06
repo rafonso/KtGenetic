@@ -15,15 +15,14 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
 
     open protected fun <G, C : Chromosome<G>> executeCrossing(
             pieces1: Triple<List<G>, List<G>, List<G>>,
-            pieces2: Triple<List<G>, List<G>, List<G>>,
-            environment: Environment<G, C>):
+            pieces2: Triple<List<G>, List<G>, List<G>>):
             Pair<List<G>, List<G>> =
             Pair(
                     pieces2.first + pieces1.second + pieces2.third,
                     pieces1.first + pieces2.second + pieces1.third
             )
 
-    private fun cross(parent1: List<G>, parent2: List<G>, environment: Environment<G, C>):
+    private fun cross(parent1: List<G>, parent2: List<G>):
             List<List<G>> {
 
         fun submitMutation(segment: List<G>): List<G> =
@@ -42,26 +41,24 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         val pieces2AfterMutation = Triple(submitMutation(pieces2.first), submitMutation(pieces2.second), submitMutation(pieces2.third))
 
         // Crossing
-        val children = executeCrossing(pieces1AfterMutation, pieces2AfterMutation, environment)
+        val children = executeCrossing(pieces1AfterMutation, pieces2AfterMutation)
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSED, children))
 
         return children.toList()
     }
 
-    private tailrec fun processGeneration(generation: Int,
-                                          population: List<C>):
-            Pair<Int, List<C>> {
-        if (environment.resultFound(population) || (generation > environment.maxGenerations)) {
-            return Pair(generation, population)
+    private tailrec fun processGeneration(generation: Int, parents: List<C>): Pair<Int, List<C>> {
+        if (environment.resultFound(parents) || (generation > environment.maxGenerations)) {
+            return Pair(generation, parents)
         }
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATING, generation))
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCING, population))
-        val children: List<C> = (0 until population.size).flatMap { i ->
-            (i until population.size).flatMap { j ->
-                cross(population[i].content, population[j].content, environment)
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCING, parents))
+        val children: List<C> = (0 until parents.size).flatMap { i ->
+            (i until parents.size).flatMap { j ->
+                cross(parents[i].content, parents[j].content)
             }
         }.map { environment.getNewGenetotype(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCED, children))

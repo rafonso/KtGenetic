@@ -17,7 +17,6 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
         if (event.event == ProcessorEventEnum.FITNESS_CALCULATING) {
             val chromosomes = event.value as List<Balance>
             greatestMomentOfInertia = chromosomes.map { it.momentOfInertia }.max() as Double
-            println("greatestMomentOfInertia = $greatestMomentOfInertia")
         }
     }
 
@@ -44,11 +43,6 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
                 return copy.toList()
             }
         }
-    }
-
-    private fun applyChanges(tail1: List<Box>, core: List<Box>, tail2: List<Box>): List<Box> {
-//        println()
-        return tail1 + core + tail2
     }
 
     override fun getFirstGeneration(): List<Balance> {

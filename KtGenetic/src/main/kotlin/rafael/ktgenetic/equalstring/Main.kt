@@ -1,14 +1,15 @@
 package rafael.ktgenetic.equalstring
 
-import org.apache.commons.cli.CommandLine
-import org.apache.commons.cli.HelpFormatter
-import org.apache.commons.cli.Options
+import org.apache.commons.cli.*
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.apache.logging.log4j.core.LoggerContext
+import rafael.ktgenetic.ConsoleProcessorListener
 import rafael.ktgenetic.GeneticProcessor
+import rafael.ktgenetic.LogProcessorListener
 import rafael.ktgenetic.TRACER
+import kotlin.system.measureTimeMillis
 
 
 private const val WORD_PARAMETER = "w"
@@ -28,7 +29,6 @@ private fun getOptions(): Options {
     options.addOption(CHILDREN_TO_SURVIVE_PARAMETER, true, "Quantity of Children to survive to next generation");
     options.addOption(LOG_LEVEL_PARAMETER, true, "Log Level: 1 = DEBUG, 2 = TRACE (Default INFO)");
 
-
     return options
 }
 
@@ -43,12 +43,6 @@ private fun validateParameters(line: CommandLine) {
     }
 }
 
-/*
-private fun getProcessorParameters(line: org.apache.commons.cli.CommandLine) = ProcessorParameters(
-        line.getOptionValue(GENERATIONS_PARAMETER, "100").toInt(), //
-        line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "10").toInt()
-)
-*/
 private fun getEnvironment(line: org.apache.commons.cli.CommandLine) =
         EqualStringEnvironment(
                 line.getOptionValue(WORD_PARAMETER), //
@@ -75,14 +69,11 @@ private fun configureLogLevel(line: org.apache.commons.cli.CommandLine) {
     }
 }
 
-
 fun main(args: Array<String>) {
-    val t0 = System.currentTimeMillis()
-
     val options = getOptions()
 
     try {
-        val parser: org.apache.commons.cli.CommandLineParser = org.apache.commons.cli.DefaultParser()
+        val parser: CommandLineParser = DefaultParser()
         val line = parser.parse(options, args);
 
         if (line.hasOption(HELPER_PARAMETER)) {
@@ -92,15 +83,17 @@ fun main(args: Array<String>) {
         validateParameters(line)
         configureLogLevel(line)
 
-        val environment = getEnvironment(line)
+        val executionTime = measureTimeMillis {
+            val environment = getEnvironment(line)
 
-        val processor = GeneticProcessor<Char, Word>(environment)
-        processor.addListener(rafael.ktgenetic.LogProcessorListener<Char, Word>())
-        processor.addListener(rafael.ktgenetic.ConsoleProcessorListener())
-        val result = processor.process()
+            val processor = GeneticProcessor<Char, Word>(environment)
+            processor.addListener(LogProcessorListener<Char, Word>())
+            processor.addListener(ConsoleProcessorListener())
+            val result = processor.process()
 
-        log.info("Result: {}", result)
-        log.info("Finished. Time: {} ms", (System.currentTimeMillis() - t0))
+            log.info("Result: {}", result)
+        }
+        log.info("Finished. Time: $executionTime ms")
     } catch (e: org.apache.commons.cli.ParseException) {
         log.error("Invalid Command Line: " + e.message, e)
         showOptions(options);

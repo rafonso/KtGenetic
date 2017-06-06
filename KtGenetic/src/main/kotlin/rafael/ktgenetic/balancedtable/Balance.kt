@@ -28,4 +28,5 @@ data class Balance(override val content: Boxes) : Chromosome<Box>() {
 
     override fun toString(): String = "[CM = %.3f, MI = %2.3f - %s]".
             format(centerOfMass, momentOfInertia, content.map { it.weight })
+
 }

@@ -22,8 +22,6 @@ class EqualStringEnvironment(val target: String,
     override fun getFirstGeneration(): List<Word> =
             1.rangeTo(generationSize)
                     .map { _ -> createRandomWord() }
-//                   .sorted({(w1, w2) -> w1.value.compareTo(w2.value)})
-
 
     override fun executeMutation(sequence: List<Char>): List<Char> {
         val mutationPoint = random.nextInt(sequence.size)
@@ -45,8 +43,6 @@ class EqualStringEnvironment(val target: String,
             sequence.subList(0, cutPositions.first),
             sequence.subList(cutPositions.first, cutPositions.second),
             sequence.subList(cutPositions.second, sequence.size))
-
-//    override fun joinPieces(segments: List<String>): String = segments.joinToString("")
 
     override fun calculateFitness(sequence: List<Char>): Double = fitness.calculate(String(sequence.toCharArray()), target)
 
