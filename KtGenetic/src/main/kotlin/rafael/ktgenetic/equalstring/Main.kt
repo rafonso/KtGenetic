@@ -94,10 +94,10 @@ fun main(args: Array<String>) {
 
         val environment = getEnvironment(line)
 
-        val processor = GeneticProcessor<Char, Word>()
+        val processor = GeneticProcessor<Char, Word>(environment)
         processor.addListener(rafael.ktgenetic.LogProcessorListener<Char, Word>())
         processor.addListener(rafael.ktgenetic.ConsoleProcessorListener())
-        val result = processor.process(environment)
+        val result = processor.process()
 
         log.info("Result: {}", result)
         log.info("Finished. Time: {} ms", (System.currentTimeMillis() - t0))

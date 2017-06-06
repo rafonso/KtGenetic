@@ -3,7 +3,7 @@ package rafael.ktgenetic
 /**
  * Executes the evolutionary process.
  */
-open class GeneticProcessor<G, C : Chromosome<G>>() {
+open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G, C>) {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 
@@ -23,7 +23,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>() {
                     pieces1.first + pieces1.second + pieces1.third
             )
 
-    private fun <G, C : Chromosome<G>> cross(parent1: List<G>, parent2: List<G>, environment: Environment<G, C>):
+    private fun cross(parent1: List<G>, parent2: List<G>, environment: Environment<G, C>):
             List<List<G>> {
 
         fun submitMutation(segment: List<G>): List<G> =
@@ -49,9 +49,8 @@ open class GeneticProcessor<G, C : Chromosome<G>>() {
         return children.toList()
     }
 
-    private tailrec fun <G, C : Chromosome<G>> processGeneration(generation: Int,
-                                                                 population: List<C>,
-                                                                 environment: Environment<G, C>):
+    private tailrec fun processGeneration(generation: Int,
+                                          population: List<C>):
             Pair<Int, List<C>> {
         if (environment.resultFound(population) || (generation > environment.maxGenerations)) {
             return Pair(generation, population)
@@ -73,31 +72,31 @@ open class GeneticProcessor<G, C : Chromosome<G>>() {
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, children))
         // Calculate Fitness
-        children.forEach({
+        children.forEach {
             it.fitness = environment.calculateFitness(it.content)
-        })
+        }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTING, children))
         val selected = children
-                .sortedWith(ChromosomeFitnessComparator<G, C>())
+                .sortedWith(genotypeComparator)
                 .reversed()
                 .subList(0, environment.generationSize)
         notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTED, selected))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATED, selected))
 
-        return processGeneration(generation + 1, selected, environment)
+        return processGeneration(generation + 1, selected)
     }
 
-    public fun process(environment: Environment<G, C>): List<C> {
+    public fun process(): List<C> {
         notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, environment.maxGenerations))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATING))
         val population = environment.getFirstGeneration() // .map { environment.getNewGenetotype(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATED, population))
 
-        val (generation, finalPopulation) = processGeneration(1, population, environment)
+        val (generation, finalPopulation) = processGeneration(1, population)
 
         if (generation <= environment.maxGenerations) {
             notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_FITNESS, finalPopulation[0]))
@@ -105,7 +104,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>() {
             notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_GENERATIONS, finalPopulation[0]))
         }
 
-        return population
+        return finalPopulation
     }
 
     public fun addListener(listener: ProcessorListener): Boolean = listeners.add(listener)
