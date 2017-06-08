@@ -39,6 +39,14 @@ enum class ProcessorEventEnum {
      */
     REPRODUCED,
     /**
+     * The children of the population will be submitted to mutation. Companion: the created children ([Chromosome]).
+     */
+    MUTATION_EXECUTING,
+    /**
+     * The children of the population were submitted to mutation. Companion: the mutated children ([Chromosome]).
+     */
+    MUTATION_EXECUTED,
+    /**
      * The children of the population will have their [Chromosome.fitness] calculated. Companion: the created children
      * ([Chromosome])
      * with their [Chromosome.fitness] as zero.

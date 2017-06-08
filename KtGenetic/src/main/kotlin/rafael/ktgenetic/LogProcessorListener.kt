@@ -90,6 +90,18 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
                     log.trace("Generation $currentGeneration - Reproduced: {}", populationToConsole(children, this::chromosomeToValueString))
                 })
             }
+            ProcessorEventEnum.MUTATION_EXECUTING -> {
+                log(log.isTraceEnabled, {
+                    val children = event.value as List<Chromosome<C>>
+                    log.trace("Generation $currentGeneration - Mutating: {}", populationToConsole(children, this::chromosomeToValueString))
+                })
+            }
+            ProcessorEventEnum.MUTATION_EXECUTED -> {
+                log(log.isTraceEnabled, {
+                    val children = event.value as List<Chromosome<C>>
+                    log.trace("Generation $currentGeneration - Mutaded: {}", populationToConsole(children, this::chromosomeToValueString))
+                })
+            }
             ProcessorEventEnum.FITNESS_CALCULATING -> {
                 log(log.isTraceEnabled, {
                     val population = event.value as List<Chromosome<C>>

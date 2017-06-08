@@ -22,14 +22,14 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
                     pieces1.first + pieces2.second + pieces1.third
             )
 
+    fun executeMutation(chromosome: C): C =
+            if (Math.random() < environment.mutationFactor)
+                environment.getNewGenetotype(environment.executeMutation(chromosome.content))
+            else chromosome
+
+
     private fun cross(parent1: List<G>, parent2: List<G>):
             List<List<G>> {
-
-        fun submitMutation(segment: List<G>): List<G> =
-                if (Math.random() < environment.mutationFactor)
-                    environment.executeMutation(segment)
-                else segment
-
         notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSING, Pair(parent1, parent2)))
 
         val cutPositions = environment.getCutPositions()
@@ -37,11 +37,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         val pieces1 = environment.cutIntoPieces(parent1, cutPositions)
         val pieces2 = environment.cutIntoPieces(parent2, cutPositions)
 
-        val pieces1AfterMutation = Triple(submitMutation(pieces1.first), submitMutation(pieces1.second), submitMutation(pieces1.third))
-        val pieces2AfterMutation = Triple(submitMutation(pieces2.first), submitMutation(pieces2.second), submitMutation(pieces2.third))
-
-        // Crossing
-        val children = executeCrossing(pieces1AfterMutation, pieces2AfterMutation)
+        val children = executeCrossing(pieces1, pieces2)
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSED, children))
 
@@ -63,12 +59,16 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATING, generation))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCING, parents))
-        val children: List<C> = (0 until parents.size).flatMap { i ->
+        var children: List<C> = (0 until parents.size).flatMap { i ->
             (i until parents.size).flatMap { j ->
                 cross(parents[i].content, parents[j].content)
             }
         }.map { environment.getNewGenetotype(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCED, children))
+
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTING, children))
+        children = children.map { executeMutation(it) }
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, children))
         // Calculate Fitness
