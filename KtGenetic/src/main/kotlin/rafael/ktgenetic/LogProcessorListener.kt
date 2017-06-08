@@ -104,7 +104,8 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
             }
             ProcessorEventEnum.SELECTING -> {
                 log(log.isTraceEnabled, {
-                    log.trace("Generation $currentGeneration - Selecting ...")
+                    val selected = event.value as List<Chromosome<C>>
+                    log.trace("Generation $currentGeneration - Selecting {}", populationToConsole(selected, this::chromosomeToString))
                 })
             }
             ProcessorEventEnum.SELECTED -> {
@@ -134,4 +135,5 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
             else -> error("Event not recognized: $event")
         }
     }
+
 }

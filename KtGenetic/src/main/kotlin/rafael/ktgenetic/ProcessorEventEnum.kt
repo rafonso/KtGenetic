@@ -66,12 +66,12 @@ enum class ProcessorEventEnum {
     GENERATION_EVALUATED,
     /**
      * Processing ended because the generation number reached the maximum number of generations indicated by
-     * [Environment.maxGenerations]. Companion: The genotype with the highest [Chromosome.fitness]
+     * [Environment.maxGenerations]. Companion: The last Generation.
      */
     ENDED_BY_FITNESS,
     /**
      * Processing ended because the desired criteria indicated by [Environment.resultFound] was reached.
-     * Companion: The genotype with the highest [Chromosome.fitness]
+     * Companion: The last Generation.
      */
     ENDED_BY_GENERATIONS
 }

@@ -48,6 +48,13 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         return children.toList()
     }
 
+    open protected fun select(children: List<C>): List<C> {
+        return children
+                .sortedWith(genotypeComparator)
+                .reversed()
+                .subList(0, environment.generationSize)
+    }
+
     private tailrec fun processGeneration(generation: Int, parents: List<C>): Pair<Int, List<C>> {
         if (environment.resultFound(parents) || (generation > environment.maxGenerations)) {
             return Pair(generation, parents)
@@ -71,16 +78,14 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTING, children))
-        val selected = children
-                .sortedWith(genotypeComparator)
-                .reversed()
-                .subList(0, environment.generationSize)
+        val selected = select(children)
         notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTED, selected))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATED, selected))
 
         return processGeneration(generation + 1, selected)
     }
+
 
     public fun process(): List<C> {
         notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, environment.maxGenerations))
@@ -92,9 +97,9 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         val (generation, finalPopulation) = processGeneration(1, population)
 
         if (generation <= environment.maxGenerations) {
-            notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_FITNESS, finalPopulation[0]))
+            notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_FITNESS, finalPopulation))
         } else {
-            notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_GENERATIONS, finalPopulation[0]))
+            notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_GENERATIONS, finalPopulation))
         }
 
         return finalPopulation
