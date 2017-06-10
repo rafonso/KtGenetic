@@ -92,7 +92,7 @@ fun main(args: Array<String>) {
 
             val processor = OrderedGeneticProcessor<Box, Balance>(environment)
             processor.addListener(LogProcessorListener<Box, Balance>())
-            processor.addListener(ConsoleProcessorListener())
+            processor.addListener(ConsoleProcessorListener<Box, Balance>(processor))
             processor.addListener(environment)
             val result = processor.process()
 

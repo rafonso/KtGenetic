@@ -2,7 +2,7 @@ package rafael.ktgenetic
 
 import java.util.*
 
-class ConsoleProcessorListener : ProcessorListener {
+class ConsoleProcessorListener<G, C : Chromosome<G>>(val processor: GeneticProcessor<G, C>) : ProcessorListener {
 
     val scanner = Scanner(System.`in`)
 
@@ -16,7 +16,8 @@ class ConsoleProcessorListener : ProcessorListener {
             if (currentGeneration >= generationsToWait) {
                 println("Type <Enter> to process the next generation. " +
                         "Type n to process 'n' generations. " +
-                        "Type 0 to process until the end.")
+                        "Type 0 to process until the end. " +
+                        "Type x to interrupt the program")
                 val input = scanner.nextLine()
                 if(input.matches(Regex("\\d+"))) {
                     val x = Integer.parseInt(input)
@@ -26,6 +27,8 @@ class ConsoleProcessorListener : ProcessorListener {
                         generationsToWait = x
                         currentGeneration = 0
                     }
+                } else if(input.equals("x")) {
+                    processor.stop()
                 }
             }
         }

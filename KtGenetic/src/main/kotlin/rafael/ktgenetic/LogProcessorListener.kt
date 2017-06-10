@@ -144,6 +144,11 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
                     log.debug("Value found: {}", event.value)
                 })
             }
+            ProcessorEventEnum.ENDED_BY_INTERRUPTION -> {
+                log(log.isDebugEnabled, {
+                    log.debug("Interrupted: {}", event.value)
+                })
+            }
             else -> error("Event not recognized: $event")
         }
     }

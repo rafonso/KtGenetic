@@ -78,6 +78,11 @@ enum class ProcessorEventEnum {
      */
     ENDED_BY_FITNESS,
     /**
+     * Processing ended because the generator was interrupted by calling [GeneticProcessor#stop()].
+     * Companion: The last Generation.
+     */
+    ENDED_BY_INTERRUPTION,
+    /**
      * Processing ended because the desired criteria indicated by [Environment.resultFound] was reached.
      * Companion: The last Generation.
      */

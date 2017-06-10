@@ -88,7 +88,7 @@ fun main(args: Array<String>) {
 
             val processor = GeneticProcessor<Char, Word>(environment)
             processor.addListener(LogProcessorListener<Char, Word>())
-            processor.addListener(ConsoleProcessorListener())
+            processor.addListener(ConsoleProcessorListener<Char, Word>(processor))
             val result = processor.process()
 
             log.info("Result: {}", result)

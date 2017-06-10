@@ -9,6 +9,8 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
 
     val genotypeComparator = ChromosomeFitnessComparator<G, C>()
 
+    var continueProcessing = true
+
     private fun notifyEvent(event: ProcessorEvent) {
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
@@ -52,7 +54,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
     }
 
     private tailrec fun processGeneration(generation: Int, parents: List<C>): Pair<Int, List<C>> {
-        if (environment.resultFound(parents) || (generation > environment.maxGenerations)) {
+        if (!continueProcessing || environment.resultFound(parents) || (generation > environment.maxGenerations)) {
             return Pair(generation, parents)
         }
 
@@ -91,18 +93,25 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, environment.maxGenerations))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATING))
-        val population = environment.getFirstGeneration() // .map { environment.getNewGenetotype(it) }
+        val population = environment.getFirstGeneration()
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATED, population))
 
         val (generation, finalPopulation) = processGeneration(1, population)
 
-        if (generation <= environment.maxGenerations) {
-            notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_FITNESS, finalPopulation))
+        val cause = if (!continueProcessing) {
+            ProcessorEventEnum.ENDED_BY_INTERRUPTION
+        } else if (generation <= environment.maxGenerations) {
+            ProcessorEventEnum.ENDED_BY_FITNESS
         } else {
-            notifyEvent(ProcessorEvent(ProcessorEventEnum.ENDED_BY_GENERATIONS, finalPopulation))
+            ProcessorEventEnum.ENDED_BY_GENERATIONS
         }
+        notifyEvent(ProcessorEvent(cause, finalPopulation))
 
         return finalPopulation
+    }
+
+    public fun stop() {
+        continueProcessing = false
     }
 
     public fun addListener(listener: ProcessorListener): Boolean = listeners.add(listener)
