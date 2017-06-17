@@ -14,16 +14,16 @@ const val HELPER_PARAMETER = "h"
 const val LOG_LEVEL_PARAMETER = "l"
 const val NO_STOP_PROCESSING_PARAMETER = "s"
 
-val mainLogger = LogManager.getLogger("Main");
+val mainLogger = LogManager.getLogger("Main")!!
 
 fun getOptions(additionalOptions: (Options) -> Unit): Options {
     val options = Options()
 
     options.addOption(HELPER_PARAMETER, false, "Prints Usage")
-    options.addOption(GENERATIONS_PARAMETER, true, "Max number of generations (Default = 100)");
-    options.addOption(CHILDREN_TO_SURVIVE_PARAMETER, true, "Quantity of Children to survive to next generation");
-    options.addOption(LOG_LEVEL_PARAMETER, true, "Log Level: 1 = DEBUG, 2 = TRACE, 3 = TRACEST (Default INFO)");
-    options.addOption(NO_STOP_PROCESSING_PARAMETER, false, "Process with no console iteraction");
+    options.addOption(GENERATIONS_PARAMETER, true, "Max number of generations (Default = 100)")
+    options.addOption(CHILDREN_TO_SURVIVE_PARAMETER, true, "Quantity of Children to survive to next generation")
+    options.addOption(LOG_LEVEL_PARAMETER, true, "Log Level: 1 = DEBUG, 2 = TRACE, 3 = TRACER (Default INFO)")
+    options.addOption(NO_STOP_PROCESSING_PARAMETER, false, "Process with no console interaction")
 
     additionalOptions(options)
 
@@ -49,9 +49,9 @@ fun configureLogLevel(line: org.apache.commons.cli.CommandLine) {
             "1" -> loggerConfig.level = Level.DEBUG
             "2" -> loggerConfig.level = Level.TRACE
             "3" -> loggerConfig.level = TRACER
-            else -> mainLogger.warn("Log level unrecognised: {}.", logLevel)
+            else -> mainLogger.warn("Log level unrecognised: $logLevel")
         }
-        ctx.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
+        ctx.updateLoggers()  // This causes all Loggers to refetch information from their LoggerConfig.
     }
 }
 
@@ -66,11 +66,11 @@ fun <G, C : Chromosome<G>> executeMain(
 
     try {
         val parser: CommandLineParser = DefaultParser()
-        val line = parser.parse(options, args);
+        val line = parser.parse(options, args)
 
         if (line.hasOption(HELPER_PARAMETER)) {
-            showOptions(options);
-            return;
+            showOptions(options)
+            return
         }
         validateParameters(line)
         configureLogLevel(line)
@@ -93,12 +93,12 @@ fun <G, C : Chromosome<G>> executeMain(
             mainLogger.info("Result: {}", result)
         }
         mainLogger.info("Finished. Time: $executionTime ms")
-    } catch (e: org.apache.commons.cli.ParseException) {
+    } catch (e: ParseException) {
         mainLogger.error("Invalid Command Line: " + e.message, e)
-        showOptions(options);
+        showOptions(options)
     } catch (e: IllegalArgumentException) {
         mainLogger.error(e.message)
-        showOptions(options);
+        showOptions(options)
     } catch (e: Exception) {
         mainLogger.error(e.message, e)
     }

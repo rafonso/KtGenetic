@@ -11,9 +11,9 @@ private const val ROWS_PARAMETER = "rows"
 private const val COLS_PARAMETER = "cols"
 
 private fun addOptions(options: Options) {
-    options.addOption(WEIGHT_PARAMETER, true, "Weights, rounded by quotation marks and separated by spaces");
-    options.addOption(ROWS_PARAMETER, true, "Number of rows in the pallete");
-    options.addOption(COLS_PARAMETER, true, "Number of columns in the pallete");
+    options.addOption(WEIGHT_PARAMETER, true, "Weights, rounded by quotation marks and separated by spaces")
+    options.addOption(ROWS_PARAMETER, true, "Number of rows in the pallete")
+    options.addOption(COLS_PARAMETER, true, "Number of columns in the pallete")
 }
 
 private fun validateParameters(line: CommandLine) {

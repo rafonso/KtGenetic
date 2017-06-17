@@ -12,7 +12,7 @@ interface Environment<G, C : Chromosome<G>> {
 
     val maxGenerations: Int
 
-    val generationSize: Int;
+    val generationSize: Int
 
     fun getFirstGeneration(): List<C>
 

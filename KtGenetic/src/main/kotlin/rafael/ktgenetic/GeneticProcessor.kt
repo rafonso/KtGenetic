@@ -15,23 +15,13 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
-    open protected fun <G, C : Chromosome<G>> executeCrossing(
-            pieces1: Triple<List<G>, List<G>, List<G>>,
-            pieces2: Triple<List<G>, List<G>, List<G>>):
-            Pair<List<G>, List<G>> =
-            Pair(
-                    pieces2.first + pieces1.second + pieces2.third,
-                    pieces1.first + pieces2.second + pieces1.third
-            )
+    open protected fun <G> executeCrossing(pieces1: Triple<List<G>, List<G>, List<G>>, pieces2: Triple<List<G>, List<G>, List<G>>): Pair<List<G>, List<G>> = Pair(pieces2.first + pieces1.second + pieces2.third, pieces1.first + pieces2.second + pieces1.third)
 
-    fun executeMutation(chromosome: C): C =
-            if (Math.random() < environment.mutationFactor)
-                environment.getNewGenotype(environment.executeMutation(chromosome.content))
-            else chromosome
+    fun executeMutation(chromosome: C): C = if (Math.random() < environment.mutationFactor) environment.getNewGenotype(environment.executeMutation(chromosome.content))
+    else chromosome
 
 
-    private fun cross(parent1: List<G>, parent2: List<G>):
-            List<List<G>> {
+    private fun cross(parent1: List<G>, parent2: List<G>): List<List<G>> {
         notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSING, Pair(parent1, parent2)))
 
         val cutPositions = environment.getCutPositions()
@@ -47,10 +37,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
     }
 
     open protected fun select(children: List<C>): List<C> {
-        return children
-                .sortedWith(genotypeComparator)
-                .reversed()
-                .subList(0, environment.generationSize)
+        return children.sortedWith(genotypeComparator).reversed().subList(0, environment.generationSize)
     }
 
     private tailrec fun processGeneration(generation: Int, parents: List<C>): Pair<Int, List<C>> {
@@ -89,7 +76,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
     }
 
 
-    public fun process(): List<C> {
+    fun process(): List<C> {
         notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, environment.maxGenerations))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATING))
@@ -110,12 +97,12 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         return finalPopulation
     }
 
-    public fun stop() {
+    fun stop() {
         continueProcessing = false
     }
 
-    public fun addListener(listener: ProcessorListener): Boolean = listeners.add(listener)
+    fun addListener(listener: ProcessorListener): Boolean = listeners.add(listener)
 
-    public fun removeListener(listener: ProcessorListener): Boolean = listeners.remove(listener)
+    fun removeListener(listener: ProcessorListener): Boolean = listeners.remove(listener)
 
 }

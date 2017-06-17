@@ -1,13 +1,8 @@
 package rafael.ktgenetic
 
-class OrderedGeneticProcessor<G, C : Chromosome<G>> : GeneticProcessor<G, C> {
+class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Environment<G, C>) : GeneticProcessor<G, C>(environment) {
 
-    constructor(environment: Environment<G, C>) : super(environment)
-
-    private fun <G, C : Chromosome<G>> executeCross(
-            pieces1: Triple<List<G>, List<G>, List<G>>,
-            pieces2: Triple<List<G>, List<G>, List<G>>):
-            Pair<List<G>, List<G>> {
+    private fun <G> executeCross(pieces1: Triple<List<G>, List<G>, List<G>>, pieces2: Triple<List<G>, List<G>, List<G>>): Pair<List<G>, List<G>> {
 
         fun cross(core: List<G>, parent: List<G>, firstCutPoint: Int): List<G> {
             val diff = parent - core
@@ -22,13 +17,11 @@ class OrderedGeneticProcessor<G, C : Chromosome<G>> : GeneticProcessor<G, C> {
         return Pair(child1, child2)
     }
 
-    override fun <G, C : Chromosome<G>> executeCrossing(
-            pieces1: Triple<List<G>, List<G>, List<G>>,
-            pieces2: Triple<List<G>, List<G>, List<G>>):
-            Pair<List<G>, List<G>> =
-            if (!pieces1.second.intersect(pieces2.first + pieces2.third).isEmpty() ||
-                    !pieces2.second.intersect(pieces1.first + pieces1.third).isEmpty())
-                executeCross(pieces1, pieces2)
-            else super.executeCrossing(pieces1, pieces2)
+    override fun <G> executeCrossing(pieces1: Triple<List<G>, List<G>, List<G>>, pieces2: Triple<List<G>, List<G>, List<G>>): Pair<List<G>, List<G>> {
+        if (!pieces1.second.intersect(pieces2.first + pieces2.third).isEmpty() || !pieces2.second.intersect(pieces1.first + pieces1.third).isEmpty()) {
+            return executeCross(pieces1, pieces2)
+        }
+        return super.executeCrossing(pieces1, pieces2)
+    }
 
 }

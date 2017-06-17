@@ -15,7 +15,7 @@ data class Balance(override val content: Boxes) : Chromosome<Box>() {
         get() = content.map { it.value }.sum()
 
     val centerOfMass: Double by lazy {
-        content.mapIndexed({ index, (value) -> distance(index, 0.0) * value }).sum().toDouble() /
+        content.mapIndexed({ index, (value) -> distance(index, 0.0) * value }).sum() /
                 totalMass
     }
 

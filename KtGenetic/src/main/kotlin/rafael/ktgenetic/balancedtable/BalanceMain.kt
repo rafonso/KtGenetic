@@ -9,7 +9,7 @@ import rafael.ktgenetic.executeMain
 private const val WEIGHT_PARAMETER = "w"
 
 private fun addOptions(options: Options) {
-    options.addOption(WEIGHT_PARAMETER, true, "Weights, rounded by quotation marks and separated by spaces");
+    options.addOption(WEIGHT_PARAMETER, true, "Weights, rounded by quotation marks and separated by spaces")
 }
 
 private fun validateParameters(line: CommandLine) {

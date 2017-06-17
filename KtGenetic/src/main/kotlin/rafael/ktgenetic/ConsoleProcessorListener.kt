@@ -8,11 +8,11 @@ class ConsoleProcessorListener<G, C : Chromosome<G>>(val processor: GeneticProce
 
     var generationsToWait: Int = 0
 
-    var currentGeneration: Int = 0;
+    var currentGeneration: Int = 0
 
     override fun onEvent(event: ProcessorEvent) {
         if (event.event == ProcessorEventEnum.GENERATION_EVALUATED) {
-            currentGeneration++;
+            currentGeneration++
             if (currentGeneration >= generationsToWait) {
                 println("Type <Enter> to process the next generation. " +
                         "Type n to process 'n' generations. " +
@@ -27,7 +27,7 @@ class ConsoleProcessorListener<G, C : Chromosome<G>>(val processor: GeneticProce
                         generationsToWait = x
                         currentGeneration = 0
                     }
-                } else if(input.equals("x")) {
+                } else if(input == "x") {
                     processor.stop()
                 }
             }

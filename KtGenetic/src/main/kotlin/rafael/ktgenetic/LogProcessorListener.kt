@@ -1,9 +1,7 @@
 package rafael.ktgenetic
 
-import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-
 
 /**
  * Emits log messages according the [ProcessorEvent].
@@ -12,7 +10,7 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
 
     private val CONSOLE_SIZE = 120
 
-    private val log: Logger = LogManager.getLogger("LOG");
+    private val log: Logger = LogManager.getLogger("LOG")
 
     private var currentGeneration: Int = 0
     private var maxGenerations: Int = 0
@@ -30,7 +28,7 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
                 else 1
 
         return population.mapIndexed({ index, genotype ->
-            if (index % genotypesByLine == 0) ("\n${toString(genotype)}") else ("${toString(genotype)}")
+            if (index % genotypesByLine == 0) ("\n${toString(genotype)}") else (toString(genotype))
         }
         ).joinToString(separator = " ") // { separator = " " }
     }
@@ -54,10 +52,10 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
                 })
             }
             ProcessorEventEnum.FIRST_GENERATION_CREATED -> {
-                log(log.isTraceEnabled, {
+                log(log.isTraceEnabled) {
                     val population = event.value as List<Chromosome<C>>
                     log.trace("First Generation: {}", populationToConsole(population, this::chromosomeToValueString))
-                })
+                }
             }
             ProcessorEventEnum.GENERATION_EVALUATING -> {
                 currentGeneration = event.value as Int

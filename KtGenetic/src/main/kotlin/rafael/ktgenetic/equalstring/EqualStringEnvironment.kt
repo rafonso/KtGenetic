@@ -37,7 +37,7 @@ class EqualStringEnvironment(val target: String,
             fitness.calculate(String(sequence.toCharArray()), target)
 
     override fun resultFound(genotypes: List<Word>) =
-            String(genotypes[0].content.toCharArray()).equals(target)
+            String(genotypes[0].content.toCharArray()) == target
 
     override fun getNewGenotype(sequence: List<Char>): Word = Word(sequence)
 
