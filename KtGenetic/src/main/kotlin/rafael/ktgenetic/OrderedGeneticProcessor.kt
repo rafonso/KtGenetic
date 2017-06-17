@@ -11,7 +11,9 @@ class OrderedGeneticProcessor<G, C : Chromosome<G>> : GeneticProcessor<G, C> {
 
         fun cross(core: List<G>, parent: List<G>, firstCutPoint: Int): List<G> {
             val diff = parent - core
-            return diff.subList(0, firstCutPoint) + core + diff.subList(firstCutPoint, diff.size)
+            val part1 = diff.subList(0, firstCutPoint)
+            val part2 = diff.subList(firstCutPoint, diff.size)
+            return part1 + core + part2
         }
 
         val child1 = cross(pieces1.second, pieces2.first + pieces2.second + pieces2.third, pieces2.first.size)

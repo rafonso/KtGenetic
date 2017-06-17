@@ -65,11 +65,11 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
             (i until parents.size).flatMap { j ->
                 cross(parents[i].content, parents[j].content)
             }
-        }.map { environment.getNewGenetotype(it) }
+        }.pmap { environment.getNewGenetotype(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTING, children))
-        children = children.map { executeMutation(it) }
+        children = children.pmap { executeMutation(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, children))

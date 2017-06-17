@@ -1,9 +1,11 @@
 package rafael.ktgenetic
 
+import java.util.*
+
 /**
  * Indicates the parameters to be used during the processing in [GeneticProcessor].
  */
-interface Environment<G, C :  Chromosome<G>> {
+interface Environment<G, C : Chromosome<G>> {
 
     /**
      *
