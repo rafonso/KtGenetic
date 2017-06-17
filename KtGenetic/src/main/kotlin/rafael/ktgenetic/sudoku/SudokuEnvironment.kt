@@ -1,21 +1,19 @@
 package rafael.ktgenetic.sudoku
 
-import rafael.ktgenetic.*
+import rafael.ktgenetic.Environment
+import rafael.ktgenetic.createCutPositions
+import rafael.ktgenetic.randomSwap
+import rafael.ktgenetic.shuffle
 
 class SudokuEnvironment(override val mutationFactor: Double = 0.01,
                         override val maxGenerations: Int = Int.MAX_VALUE,
                         override val generationSize: Int = 10
 ) : Environment<Cell, Puzzle> {
 
-    override fun getFirstGeneration(): List<Puzzle> = (0 until generationSize)
-            .map { cells.shuffle() }
-            .map { Puzzle(it) }
+    override fun getFirstGeneration(): List<Puzzle> =
+            (0 until generationSize).map { cells.shuffle() }.map { Puzzle(it) }
 
     override fun getCutPositions(): Pair<Int, Int> = createCutPositions(Puzzle.maxPos)
-
-    override fun cutIntoPieces(sequence: List<Cell>, cutPositions: Pair<Int, Int>):
-            Triple<List<Cell>, List<Cell>, List<Cell>> =
-            makeCuttingIntoPieces(sequence, cutPositions)
 
     override fun executeMutation(sequence: List<Cell>): List<Cell> = sequence.randomSwap()
 

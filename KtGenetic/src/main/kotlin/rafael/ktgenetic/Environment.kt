@@ -18,7 +18,8 @@ interface Environment<G, C : Chromosome<G>> {
 
     fun getCutPositions(): Pair<Int, Int>
 
-    fun cutIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>): Triple<List<G>, List<G>, List<G>>
+    fun cutIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>): Triple<List<G>, List<G>, List<G>> =
+            makeCuttingIntoPieces(sequence, cutPositions)
 
     fun executeMutation(sequence: List<G>): List<G>
 

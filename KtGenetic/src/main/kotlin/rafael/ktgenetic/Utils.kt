@@ -32,6 +32,10 @@ fun <T> List<T>.swap(index1: Int, index2: Int): List<T> {
 }
 
 fun <T> List<T>.randomSwap(): List<T> {
+    if (this.isEmpty()) return listOf()
+    if (this.size == 1) return listOf(this.get(0))
+    if (this.size == 2) return listOf(this.get(1), this.get(0))
+
     val positions = createCutPositions(this.size)
     return this.swap(positions.first, positions.second)
 }
