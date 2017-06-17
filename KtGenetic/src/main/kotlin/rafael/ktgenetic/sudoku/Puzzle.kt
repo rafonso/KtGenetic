@@ -1,14 +1,9 @@
 package rafael.ktgenetic.sudoku
 
 import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.OrderedGene
 
-data class Cell(val id: Int, val value: Int) {
-
-    override fun hashCode(): Int = id.hashCode()
-
-    override fun equals(other: Any?): Boolean = if (other is Cell) (other.id == this.id) else false
-
-}
+typealias Cell = OrderedGene<Int>
 
 val cells: List<Cell> = Puzzle.values.flatMap { id -> Puzzle.values.map { value -> Cell(id * 10 + value, value) } }
 

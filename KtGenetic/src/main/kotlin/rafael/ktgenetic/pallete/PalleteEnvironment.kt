@@ -23,7 +23,7 @@ class PalleteEnvironment
 
     private val random = Random()
 
-    private val originalBalance = Pallete(originalBoxes.mapIndexed { index, weight -> Box(weight, index) }, palleteDimension)
+    private val originalBalance = Pallete(originalBoxes.mapIndexed { index, weight -> Box(index, weight) }, palleteDimension)
 
     private var greatestMomentOfInertia: Double = 0.0
 
@@ -74,7 +74,7 @@ class PalleteEnvironment
 
     override fun executeMutation(sequence: Boxes): Boxes = scramble(sequence)
 
-    override fun getNewGenetotype(sequence: Boxes): Pallete = Pallete(sequence, palleteDimension)
+    override fun getNewGenotype(sequence: Boxes): Pallete = Pallete(sequence, palleteDimension)
 
     override fun calculateFitness(sequence: Boxes): Double {
         val bal = Pallete(sequence, palleteDimension)

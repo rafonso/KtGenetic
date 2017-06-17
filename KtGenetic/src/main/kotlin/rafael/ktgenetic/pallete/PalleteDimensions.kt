@@ -11,6 +11,8 @@ data class Point(val row: Double, val col: Double) {
         return Math.sqrt(deltaHorizontal * deltaHorizontal + deltaVertical * deltaVertical)
     }
 
+    override fun toString(): String = "(%2.2f, %2.2f)".format(row, col)
+
 }
 
 data class PalleteDimensions(val rows: Int, val cols: Int) {

@@ -26,7 +26,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
 
     fun executeMutation(chromosome: C): C =
             if (Math.random() < environment.mutationFactor)
-                environment.getNewGenetotype(environment.executeMutation(chromosome.content))
+                environment.getNewGenotype(environment.executeMutation(chromosome.content))
             else chromosome
 
 
@@ -65,7 +65,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
             (i until parents.size).flatMap { j ->
                 cross(parents[i].content, parents[j].content)
             }
-        }.pmap { environment.getNewGenetotype(it) }
+        }.pmap { environment.getNewGenotype(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTING, children))

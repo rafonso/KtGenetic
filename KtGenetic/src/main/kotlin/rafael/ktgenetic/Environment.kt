@@ -1,7 +1,5 @@
 package rafael.ktgenetic
 
-import java.util.*
-
 /**
  * Indicates the parameters to be used during the processing in [GeneticProcessor].
  */
@@ -24,7 +22,7 @@ interface Environment<G, C : Chromosome<G>> {
 
     fun executeMutation(sequence: List<G>): List<G>
 
-    fun getNewGenetotype(sequence: List<G>): C
+    fun getNewGenotype(sequence: List<G>): C
 
     fun calculateFitness(sequence: List<G>): Double
 

@@ -19,7 +19,7 @@ class SudokuEnvironment(override val mutationFactor: Double = 0.01,
 
     override fun executeMutation(sequence: List<Cell>): List<Cell> = sequence.randomSwap()
 
-    override fun getNewGenetotype(sequence: List<Cell>): Puzzle = Puzzle(sequence)
+    override fun getNewGenotype(sequence: List<Cell>): Puzzle = Puzzle(sequence)
 
     override fun calculateFitness(sequence: List<Cell>): Double {
 
