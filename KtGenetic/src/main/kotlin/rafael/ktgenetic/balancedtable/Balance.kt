@@ -19,6 +19,8 @@ data class Balance(override val content: Boxes) : Chromosome<Box>() {
                 totalMass
     }
 
+    val center: Double = content.size.toDouble() / 2
+
     val momentOfInertia: Double by lazy {
 
         fun individualInertia(i: Int): Double {

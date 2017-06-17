@@ -40,7 +40,7 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
 
     override fun calculateFitness(sequence: Boxes): Double {
         val bal = Balance(sequence)
-        val centerOfMassFitness = 1 - 2 / sequence.size * Math.abs(bal.centerOfMass - sequence.size.toDouble() / 2)
+        val centerOfMassFitness = 1 - Math.abs(bal.centerOfMass - bal.center) / bal.center
         val momentOfInertiaFitness = 1 - bal.momentOfInertia / greatestMomentOfInertia
 
         return (centerOfMassFitness + momentOfInertiaFitness) / 2
