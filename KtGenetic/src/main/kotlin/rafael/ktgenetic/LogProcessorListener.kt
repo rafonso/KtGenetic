@@ -5,8 +5,6 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
 
-val TRACER: Level = Level.forName("TRACER", 700)
-
 /**
  * Emits log messages according the [ProcessorEvent].
  */
