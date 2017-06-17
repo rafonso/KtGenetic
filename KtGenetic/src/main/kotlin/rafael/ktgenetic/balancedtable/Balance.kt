@@ -7,31 +7,25 @@ typealias Box = OrderedGene<Int>
 
 typealias Boxes = List<Box>
 
-data class Balance(override val content: Boxes) : Chromosome<Box>() {
+data class Balance(override val content: Boxes, private val dimensions: BalanceDimensions) : Chromosome<Box>() {
 
-    private fun distance(i: Int, pos: Double): Double = Math.abs(i + 0.5 - pos)
-
-    val totalMass: Int
+    private val totalMass: Int
         get() = content.map { it.value }.sum()
 
     val centerOfMass: Double by lazy {
-        content.mapIndexed({ index, (value) -> distance(index, 0.0) * value }).sum() /
+        (0 until content.size).map { dimensions.positions[it] * content[it].value }.sum() /
                 totalMass
     }
 
-    val center: Double = content.size.toDouble() / 2
-
     val momentOfInertia: Double by lazy {
-
-        fun individualInertia(i: Int): Double {
-            val distanceFromCM = distance(i, centerOfMass)
-            return content[i].value * distanceFromCM * distanceFromCM
-        }
-
-        content.mapIndexed { index, _ -> individualInertia(index) }.sum()
+        (0 until content.size).
+                map { dimensions.distanceFromCenter[it] * dimensions.distanceFromCenter[it] * content[it].value }.
+                sum()
     }
 
-    override fun toString(): String = "[CM = %.3f, MI = %2.3f - %s]".
+    override fun valueToString(): String = "[CM = %.3f, MI = %2.3f - %s]".
             format(centerOfMass, momentOfInertia, content.map { it.value })
+
+    override fun toString() = super.toString()
 
 }

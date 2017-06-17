@@ -1,7 +1,5 @@
 package rafael.ktgenetic.pallete
 
-data class Position(val row: Int, val col: Int)
-
 data class Point(val row: Double, val col: Double) {
 
     fun distance(p: Point): Double {

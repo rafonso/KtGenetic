@@ -16,7 +16,9 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
         }
     }
 
-    private val originalBalance = Balance(originalBoxes.mapIndexed { index, weight -> Box(weight, index) })
+    private val dimensions = BalanceDimensions(originalBoxes.size)
+
+    private val originalBalance = Balance(originalBoxes.mapIndexed { index, weight -> Box(weight, index) }, dimensions)
 
     private var greatestMomentOfInertia: Double = 0.0
 
@@ -26,7 +28,7 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
         while (firstGeneration.size < generationSize) {
             val temp = originalBalance.content.toMutableList()
             Collections.shuffle(temp, geneticRandom)
-            firstGeneration.add(Balance(temp.toList()))
+            firstGeneration.add(Balance(temp.toList(), dimensions))
         }
 
         return firstGeneration.toList()
@@ -36,11 +38,11 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
 
     override fun executeMutation(sequence: Boxes): Boxes = sequence.randomSwap()
 
-    override fun getNewGenotype(sequence: Boxes): Balance = Balance(sequence)
+    override fun getNewGenotype(sequence: Boxes): Balance = Balance(sequence, dimensions)
 
     override fun calculateFitness(sequence: Boxes): Double {
-        val bal = Balance(sequence)
-        val centerOfMassFitness = 1 - Math.abs(bal.centerOfMass - bal.center) / bal.center
+        val bal = Balance(sequence, dimensions)
+        val centerOfMassFitness = 1 - Math.abs(bal.centerOfMass - dimensions.center) / dimensions.center
         val momentOfInertiaFitness = 1 - bal.momentOfInertia / greatestMomentOfInertia
 
         return (centerOfMassFitness + momentOfInertiaFitness) / 2
