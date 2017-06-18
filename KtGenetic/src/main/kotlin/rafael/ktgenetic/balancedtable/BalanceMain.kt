@@ -22,7 +22,7 @@ private fun validateParameters(line: CommandLine) {
 
 private fun getEnvironment(line: CommandLine): BalanceEnvironment {
     val weights = line.getOptionValue(WEIGHT_PARAMETER).trim().split(Regex(" +")).map { Integer.parseInt(it) }
-    mainLogger.info("Boxes: $weights")
+    mainLogger.info("Blocks: $weights")
     return BalanceEnvironment(
             weights, //
             maxGenerations = line.getOptionValue(GENERATIONS_PARAMETER, "1000000").toInt(),

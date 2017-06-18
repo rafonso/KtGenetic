@@ -13,9 +13,9 @@ class PalleteDimensionsTest {
         assertEquals(0.0, dimensions0.center.row)
         assertEquals(0, dimensions0.points.size)
         assertEquals(0, dimensions0.distanceFromCenter.size)
-        assertEquals(0, dimensions0.positionsByRow.size)
-        assertEquals(0, dimensions0.positionsByColumn.size)
-        //assertEquals(0, dimensions0.positionToIndex(0, 0))
+        assertEquals(0, dimensions0.blocksByRow.size)
+        assertEquals(0, dimensions0.blocksByColumn.size)
+        //assertEquals(0, dimensions0.blockToIndex(0, 0))
     }
 
     @Test
@@ -27,9 +27,9 @@ class PalleteDimensionsTest {
         assertEquals(1, dimensions.points.size)
         assertEquals(1, dimensions.distanceFromCenter.size)
         assertEquals(0.0, dimensions.distanceFromCenter[0])
-        assertEquals(1, dimensions.positionsByRow.size)
-        assertEquals(1, dimensions.positionsByColumn.size)
-        assertEquals(0, dimensions.positionToIndex(0, 0))
+        assertEquals(1, dimensions.blocksByRow.size)
+        assertEquals(1, dimensions.blocksByColumn.size)
+        assertEquals(0, dimensions.blockToIndex(0, 0))
     }
 
     @Test
@@ -45,9 +45,9 @@ class PalleteDimensionsTest {
         assertEquals(Point(1.5, 1.5), dimensions.points[3])
         assertEquals(4, dimensions.distanceFromCenter.size)
         assertEquals(Math.sqrt(2.0) / 2, dimensions.distanceFromCenter[0])
-        assertEquals(dimensions.rows, dimensions.positionsByRow.size)
-        assertEquals(dimensions.cols, dimensions.positionsByColumn.size)
-        assertEquals(3, dimensions.positionToIndex(1, 1))
+        assertEquals(dimensions.rows, dimensions.blocksByRow.size)
+        assertEquals(dimensions.cols, dimensions.blocksByColumn.size)
+        assertEquals(3, dimensions.blockToIndex(1, 1))
     }
 
     @Test
@@ -63,8 +63,8 @@ class PalleteDimensionsTest {
         assertEquals(Point(1.5, 1.5), dimensions.points[3])
         assertEquals(6, dimensions.distanceFromCenter.size)
         assertEquals(Math.sqrt(5.0) / 2, dimensions.distanceFromCenter[0])
-        assertEquals(dimensions.rows, dimensions.positionsByRow.size)
-        assertEquals(dimensions.cols, dimensions.positionsByColumn.size)
+        assertEquals(dimensions.rows, dimensions.blocksByRow.size)
+        assertEquals(dimensions.cols, dimensions.blocksByColumn.size)
     }
 
 

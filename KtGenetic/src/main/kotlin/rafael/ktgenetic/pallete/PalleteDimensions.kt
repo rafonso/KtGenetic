@@ -23,19 +23,19 @@ data class PalleteDimensions(val rows: Int, val cols: Int) {
 
     val greatestDistanceFromCenter: Double = distanceFromCenter.max() ?: 0.0
 
-    val positionsByRow: Map<Int, List<Int>> =
+    val blocksByRow: Map<Int, List<Int>> =
             (0..rows - 1).map {
                 r ->
                 Pair<Int, List<Int>>(r, ((r * cols) until ((r + 1) * cols)).toList()) // + (if (row > 0) 1 else 0) })
             }.toMap()
 
-    val positionsByColumn: Map<Int, List<Int>> =
+    val blocksByColumn: Map<Int, List<Int>> =
             (0 until cols).map {
                 c ->
                 Pair<Int, List<Int>>(c, (c until rows * cols step cols).toList())
             }.toMap()
 
-    fun positionToIndex(row: Int, col: Int): Int {
+    fun blockToIndex(row: Int, col: Int): Int {
         assert((row >= 0) && (row < rows) && (col >= 0) && (col < cols),
                 { "Position row = $row, col = $col irregular" })
 

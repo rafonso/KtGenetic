@@ -5,20 +5,20 @@ import rafael.ktgenetic.OrderedGene
 
 
 private fun getCenterOfMassOfRow(boxes: Boxes, row: Int, dimensions: PalleteDimensions): Double {
-    val rowMass = (0 until dimensions.cols).map { c -> boxes[dimensions.positionToIndex(row, c)].value }.sum()
+    val rowMass = (0 until dimensions.cols).map { c -> boxes[dimensions.blockToIndex(row, c)].value }.sum()
     if (rowMass == 0) {
         return dimensions.cols.toDouble() / 2
     }
-    val weightedMass = (0 until dimensions.cols).map { c -> (c + 0.5) * boxes[dimensions.positionToIndex(row, c)].value }.sum()
+    val weightedMass = (0 until dimensions.cols).map { c -> (c + 0.5) * boxes[dimensions.blockToIndex(row, c)].value }.sum()
     return weightedMass / rowMass
 }
 
 private fun getCenterOfMassOfColumn(boxes: Boxes, column: Int, dimensions: PalleteDimensions): Double {
-    val colMass = (0 until dimensions.rows).map { r -> boxes[dimensions.positionToIndex(r, column)].value }.sum()
+    val colMass = (0 until dimensions.rows).map { r -> boxes[dimensions.blockToIndex(r, column)].value }.sum()
     if (colMass == 0) {
         return dimensions.rows.toDouble() / 2
     }
-    val weightedMass = (0 until dimensions.rows).map { r -> (r + 0.5) * boxes[dimensions.positionToIndex(r, column)].value }.sum()
+    val weightedMass = (0 until dimensions.rows).map { r -> (r + 0.5) * boxes[dimensions.blockToIndex(r, column)].value }.sum()
     return weightedMass / colMass
 }
 

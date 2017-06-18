@@ -13,7 +13,7 @@ data class Balance(override val content: Boxes, private val dimensions: BalanceD
         get() = content.map { it.value }.sum()
 
     val centerOfMass: Double by lazy {
-        (0 until content.size).map { dimensions.positions[it] * content[it].value }.sum() /
+        (0 until content.size).map { dimensions.blocks[it] * content[it].value }.sum() /
                 totalMass
     }
 
