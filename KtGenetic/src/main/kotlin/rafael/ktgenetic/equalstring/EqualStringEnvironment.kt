@@ -5,14 +5,13 @@ import rafael.ktgenetic.createCutPositions
 import rafael.ktgenetic.geneticRandom
 
 class EqualStringEnvironment(val target: String,
+                             val fitnessFunction: StringFitness,
                              override val maxGenerations: Int,
                              override val generationSize: Int,
                              override var mutationFactor: Double = 0.01
 ) : Environment<Char, Word> {
 
     private val range = ' '.rangeTo('~') + 192.toChar().rangeTo(255.toChar())
-
-    private val fitness: StringFitness = EqualCharsFitness()
 
     private fun randomChar(): Char = range[geneticRandom.nextInt(range.size)]
 
@@ -34,7 +33,7 @@ class EqualStringEnvironment(val target: String,
     override fun getCutPositions(): Pair<Int, Int> = createCutPositions(target.length)
 
     override fun calculateFitness(sequence: List<Char>): Double =
-            fitness.calculate(String(sequence.toCharArray()), target)
+            fitnessFunction.calculate(String(sequence.toCharArray()), target)
 
     override fun resultFound(genotypes: List<Word>) =
             String(genotypes[0].content.toCharArray()) == target
