@@ -3,11 +3,12 @@ package rafael.ktgenetic
 /**
  * Executes the evolutionary process.
  */
-open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G, C>) {
+open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G, C>,
+                                                  val selectionStrategy: SelectionStrategy<C>) {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 
-    val genotypeComparator = ChromosomeFitnessComparator<G, C>()
+    val genotypeComparator = ChromosomeFitnessComparator<C>()
 
     var continueProcessing = true
 
@@ -40,10 +41,6 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         return children.toList()
     }
 
-    open protected fun select(children: List<C>): List<C> {
-        return children.sortedWith(genotypeComparator).reversed().subList(0, environment.generationSize)
-    }
-
     private tailrec fun processGeneration(generation: Int, parents: List<C>): Pair<Int, List<C>> {
         if (!continueProcessing || environment.resultFound(parents) || (generation > environment.maxGenerations)) {
             return Pair(generation, parents)
@@ -71,7 +68,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTING, children))
-        val selected = select(children)
+        val selected = selectionStrategy.select(children)
         notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTED, selected))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATED, selected))
@@ -89,6 +86,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
 
         val (generation, finalPopulation) = processGeneration(1, population)
 
+        val result = finalPopulation.sortedBy { it.fitness }.reversed()
         val cause = if (!continueProcessing) {
             ProcessorEventEnum.ENDED_BY_INTERRUPTION
         } else if (generation <= environment.maxGenerations) {
@@ -96,9 +94,9 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         } else {
             ProcessorEventEnum.ENDED_BY_GENERATIONS
         }
-        notifyEvent(ProcessorEvent(cause, finalPopulation))
+        notifyEvent(ProcessorEvent(cause, result))
 
-        return finalPopulation
+        return result
     }
 
     fun stop() {

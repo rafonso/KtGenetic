@@ -1,6 +1,8 @@
 package rafael.ktgenetic
 
-class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Environment<G, C>) : GeneticProcessor<G, C>(environment) {
+class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Environment<G, C>,
+                                                    selectionStrategy: SelectionStrategy<C>) :
+        GeneticProcessor<G, C>(environment, selectionStrategy) {
 
     private fun <G> executeCross(pieces1: ChromosomePieces<G>, pieces2: ChromosomePieces<G>): Pair<List<G>, List<G>> {
 
