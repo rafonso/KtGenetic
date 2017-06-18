@@ -21,7 +21,7 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
     private fun chromosomeToValueString(c: Chromosome<C>) = c.valueToString()
 
 
-    private fun populationToConsole(population: List<Chromosome<C>>, toString: (Chromosome<C>) -> String ): String {
+    private fun populationToConsole(population: List<Chromosome<C>>, toString: (Chromosome<C>) -> String): String {
 
         val genotypesByLine =
                 if (toString(population[0]).length < CONSOLE_SIZE) CONSOLE_SIZE / (toString(population[0]).length + 1)
@@ -126,8 +126,14 @@ class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
                 log(log.isDebugEnabled, {
                     val selected = event.value as List<Chromosome<C>>
                     val averageFitness = selected.map { it.fitness }.sum() / selected.size
+                    val averageFitnessDeviation = Math.sqrt(
+                            selected.map { Math.pow(it.fitness - averageFitness, 2.0) }.sum() /
+                                    (selected.size * (selected.size - 1))
+                    )
+                    val bestOption = selected.maxBy { it.fitness }
 
-                    log.debug("Generation %d - Best Option: %s. General Fitness %.3f".format(currentGeneration, selected[0], averageFitness))
+                    log.debug(("Generation %3d - General Fitness %.3f (%.3f). " +
+                            "Best Option: %s").format(currentGeneration, averageFitness, averageFitnessDeviation, bestOption))
                 })
             }
             ProcessorEventEnum.ENDED_BY_GENERATIONS -> {
