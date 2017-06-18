@@ -9,7 +9,7 @@ typealias Boxes = List<Box>
 
 data class Balance(override val content: Boxes, private val dimensions: BalanceDimensions) : Chromosome<Box>() {
 
-    private val totalMass: Int
+    val totalMass: Int
         get() = content.map { it.value }.sum()
 
     val centerOfMass: Double by lazy {

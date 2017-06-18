@@ -28,6 +28,10 @@ typealias Boxes = List<Box>
 
 data class Pallete(override val content: Boxes, private val dimensions: PalleteDimensions) : Chromosome<Box>() {
 
+    val totalMass: Int by lazy {
+        content.map { it.value }.sum()
+    }
+
     val centerOfMass: Point by lazy {
         val cmRow = (0 until dimensions.rows).map {
             r ->

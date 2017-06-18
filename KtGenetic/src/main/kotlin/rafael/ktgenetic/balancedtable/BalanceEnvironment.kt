@@ -7,20 +7,13 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
                          override val mutationFactor: Double = 0.01,
                          override val maxGenerations: Int = Int.MAX_VALUE,
                          override val generationSize: Int = 10
-) : Environment<Box, Balance>, ProcessorListener {
-
-    override fun onEvent(event: ProcessorEvent) {
-        if (event.event == ProcessorEventEnum.FITNESS_CALCULATING) {
-            val chromosomes = event.value as List<Balance>
-            greatestMomentOfInertia = chromosomes.map { it.momentOfInertia }.max() as Double
-        }
-    }
+) : Environment<Box, Balance> {
 
     private val dimensions = BalanceDimensions(originalBoxes.size)
 
     private val originalBalance = Balance(originalBoxes.mapIndexed { index, weight -> Box(weight, index) }, dimensions)
 
-    private var greatestMomentOfInertia: Double = 0.0
+    private val greatestMomentOfInertia: Double = originalBalance.totalMass * (dimensions.center * dimensions.center)
 
     override fun getFirstGeneration(): List<Balance> {
         val firstGeneration = mutableSetOf(originalBalance)

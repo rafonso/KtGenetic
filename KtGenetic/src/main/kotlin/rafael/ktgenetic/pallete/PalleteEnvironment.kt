@@ -5,15 +5,21 @@ import java.util.*
 
 class PalleteEnvironment(val originalBoxes: List<Int>,
                          val palleteDimension: PalleteDimensions,
-                         override val mutationFactor: Double = 0.01,
+                         override val mutationFactor: Double = 0.02,
                          override val maxGenerations: Int = Int.MAX_VALUE,
                          override val generationSize: Int = 10
 ) : Environment<Box, Pallete>, ProcessorListener {
 
     override fun onEvent(event: ProcessorEvent) {
-        if (event.event == ProcessorEventEnum.FITNESS_CALCULATING) {
+        if (
+        event.event == ProcessorEventEnum.ENDED_BY_INTERRUPTION ||
+                event.event == ProcessorEventEnum.ENDED_BY_FITNESS ||
+                event.event == ProcessorEventEnum.ENDED_BY_GENERATIONS
+                ) {
             val chromosomes = event.value as List<Pallete>
-            greatestMomentOfInertia = chromosomes.map { it.momentOfInertia }.max() as Double
+            mainLogger.info("Best pallete:\n${chromosomes[0].palleteToString}\n" +
+                    "CM = ${chromosomes[0].centerOfMass}, " +
+                    "MI = ${chromosomes[0].momentOfInertia}")
         }
     }
 
@@ -22,7 +28,8 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
             palleteDimension
     )
 
-    private var greatestMomentOfInertia: Double = 0.0
+    private val greatestMomentOfInertia: Double = originalBalance.totalMass *
+            palleteDimension.greatestDistanceFromCenter * palleteDimension.greatestDistanceFromCenter
 
     override fun getFirstGeneration(): List<Pallete> {
         val firstGeneration = mutableSetOf(originalBalance)

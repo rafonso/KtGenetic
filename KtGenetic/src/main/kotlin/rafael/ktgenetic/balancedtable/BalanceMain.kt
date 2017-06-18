@@ -37,7 +37,6 @@ fun main(args: Array<String>) {
             ::addOptions,
             ::validateParameters,
             ::getEnvironment,
-            true,
-            { p, e -> p.addListener(e as BalanceEnvironment) })
+            true)
 }
 
