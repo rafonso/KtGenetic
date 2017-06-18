@@ -5,14 +5,13 @@ import java.util.*
 
 class PalleteEnvironment(val originalBoxes: List<Int>,
                          val palleteDimension: PalleteDimensions,
-                         override val mutationFactor: Double = 0.02,
                          override val maxGenerations: Int = Int.MAX_VALUE,
-                         override val generationSize: Int = 10
+                         override val generationSize: Int = 10,
+                         override var mutationFactor: Double = 0.02
 ) : Environment<Box, Pallete>, ProcessorListener {
 
     override fun onEvent(event: ProcessorEvent) {
-        if (
-        event.event == ProcessorEventEnum.ENDED_BY_INTERRUPTION ||
+        if (event.event == ProcessorEventEnum.ENDED_BY_INTERRUPTION ||
                 event.event == ProcessorEventEnum.ENDED_BY_FITNESS ||
                 event.event == ProcessorEventEnum.ENDED_BY_GENERATIONS
                 ) {

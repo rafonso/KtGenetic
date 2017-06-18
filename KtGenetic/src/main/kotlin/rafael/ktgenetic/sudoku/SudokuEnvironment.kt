@@ -5,9 +5,9 @@ import rafael.ktgenetic.createCutPositions
 import rafael.ktgenetic.randomSwap
 import rafael.ktgenetic.shuffle
 
-class SudokuEnvironment(override val mutationFactor: Double = 0.01,
-                        override val maxGenerations: Int = Int.MAX_VALUE,
-                        override val generationSize: Int = 10
+class SudokuEnvironment(override val maxGenerations: Int = Int.MAX_VALUE,
+                        override val generationSize: Int = 10,
+                        override var mutationFactor: Double = 0.01
 ) : Environment<Cell, Puzzle> {
 
     override fun getFirstGeneration(): List<Puzzle> =

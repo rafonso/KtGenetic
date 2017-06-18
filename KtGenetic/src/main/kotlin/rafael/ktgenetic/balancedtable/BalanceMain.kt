@@ -2,9 +2,7 @@ package rafael.ktgenetic.balancedtable
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.CHILDREN_TO_SURVIVE_PARAMETER
-import rafael.ktgenetic.GENERATIONS_PARAMETER
-import rafael.ktgenetic.executeMain
+import rafael.ktgenetic.*
 
 private const val WEIGHT_PARAMETER = "w"
 
@@ -24,7 +22,7 @@ private fun validateParameters(line: CommandLine) {
 
 private fun getEnvironment(line: CommandLine): BalanceEnvironment {
     val weights = line.getOptionValue(WEIGHT_PARAMETER).trim().split(Regex(" +")).map { Integer.parseInt(it) }
-    println(weights)
+    mainLogger.info("Boxes: $weights")
     return BalanceEnvironment(
             weights, //
             maxGenerations = line.getOptionValue(GENERATIONS_PARAMETER, "1000000").toInt(),

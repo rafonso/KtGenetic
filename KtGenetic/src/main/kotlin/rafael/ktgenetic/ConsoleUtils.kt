@@ -14,6 +14,7 @@ const val HELPER_PARAMETER = "h"
 const val LOG_LEVEL_PARAMETER = "l"
 const val NO_STOP_PROCESSING_PARAMETER = "p"
 const val SELECTION_STRATEGY_PARAMETER = "s"
+const val ADD_MUTATION_TUNER_PARAMETER = "m"
 
 const val ROULETTE_STRATEGY_PARAMETER = "r"
 const val GREATEST_FITNESS_STRATEGY_PARAMETER = "g"
@@ -30,6 +31,7 @@ fun getOptions(additionalOptions: (Options) -> Unit): Options {
     options.addOption(NO_STOP_PROCESSING_PARAMETER, false, "Process with no console interaction")
     options.addOption(SELECTION_STRATEGY_PARAMETER, true, "Selection strategy to be used. " +
             "Values: r = Roulette, g = Greatest. (Default: g)")
+    options.addOption(ADD_MUTATION_TUNER_PARAMETER, false, "Add Mutation tuner")
 
     additionalOptions(options)
 
@@ -104,6 +106,9 @@ fun <G, C : Chromosome<G>> executeMain(
             processor.addListener(LogProcessorListener<G, C>())
             if (!line.hasOption(NO_STOP_PROCESSING_PARAMETER)) {
                 processor.addListener(ConsoleProcessorListener<G, C>(processor))
+            }
+            if(line.hasOption(ADD_MUTATION_TUNER_PARAMETER)) {
+                processor.addListener(MutationTuner(environment))
             }
 
             prepareProcessing(processor, environment)

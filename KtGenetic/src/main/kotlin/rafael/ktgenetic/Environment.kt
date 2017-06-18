@@ -8,7 +8,7 @@ interface Environment<G, C : Chromosome<G>> {
     /**
      *
      */
-    val mutationFactor: Double
+    var mutationFactor: Double
 
     val maxGenerations: Int
 

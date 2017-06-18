@@ -4,11 +4,10 @@ import rafael.ktgenetic.*
 import java.util.*
 
 class BalanceEnvironment(val originalBoxes: List<Int>,
-                         override val mutationFactor: Double = 0.01,
                          override val maxGenerations: Int = Int.MAX_VALUE,
-                         override val generationSize: Int = 10
+                         override val generationSize: Int = 10,
+                         override var mutationFactor: Double = 0.01
 ) : Environment<Box, Balance> {
-
     private val dimensions = BalanceDimensions(originalBoxes.size)
 
     private val originalBalance = Balance(originalBoxes.mapIndexed { index, weight -> Box(weight, index) }, dimensions)

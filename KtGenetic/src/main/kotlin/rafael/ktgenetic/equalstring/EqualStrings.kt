@@ -21,8 +21,8 @@ private fun validateParameters(line: CommandLine) {
 private fun getEnvironment(line: CommandLine) =
         EqualStringEnvironment(
                 line.getOptionValue(WORD_PARAMETER), //
-                line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "10").toInt(),
-                line.getOptionValue(GENERATIONS_PARAMETER, "100").toInt())
+                line.getOptionValue(GENERATIONS_PARAMETER, "100").toInt(),
+                line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "10").toInt())
 
 fun main(args: Array<String>) {
     executeMain(

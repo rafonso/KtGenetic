@@ -5,10 +5,10 @@ import rafael.ktgenetic.createCutPositions
 import rafael.ktgenetic.geneticRandom
 
 class EqualStringEnvironment(val target: String,
-                             override val generationSize: Int,
                              override val maxGenerations: Int,
-                             override val mutationFactor: Double = 0.01) :
-        Environment<Char, Word> {
+                             override val generationSize: Int,
+                             override var mutationFactor: Double = 0.01
+) : Environment<Char, Word> {
 
     private val range = ' '.rangeTo('~') + 192.toChar().rangeTo(255.toChar())
 

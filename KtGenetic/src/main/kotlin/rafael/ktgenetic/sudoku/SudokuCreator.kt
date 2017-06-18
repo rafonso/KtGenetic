@@ -17,6 +17,7 @@ fun main(args: Array<String>) {
             args,
             {},
             {},
-            ::getEnvironment, true
+            ::getEnvironment,
+            true
     )
 }
