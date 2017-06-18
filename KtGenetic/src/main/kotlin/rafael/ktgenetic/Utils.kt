@@ -44,9 +44,9 @@ val geneticRandom = Random()
 
 fun createCutPositions(maxPos: Int): Pair<Int, Int> = createRandomPositions(maxPos, 1)
 
-fun <T> makeCuttingIntoPieces(sequence: List<T>, cutPositions: Pair<Int, Int>):
-        Triple<List<T>, List<T>, List<T>> =
-        Triple(
+fun <G> makeCuttingIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>):
+        ChromosomePieces<G> =
+        ChromosomePieces(
                 sequence.subList(0, cutPositions.first),
                 sequence.subList(cutPositions.first, cutPositions.second),
                 sequence.subList(cutPositions.second, sequence.size)
@@ -74,6 +74,3 @@ fun <T, R> Iterable<T>.pmap(
 
     return ArrayList<R>(destination)
 }
-
-
-

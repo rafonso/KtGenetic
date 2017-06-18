@@ -24,7 +24,7 @@ data class PalleteDimensions(val rows: Int, val cols: Int) {
     val greatestDistanceFromCenter: Double = distanceFromCenter.max() ?: 0.0
 
     val positionsByRow: Map<Int, List<Int>> =
-            (0 until rows).map {
+            (0..rows - 1).map {
                 r ->
                 Pair<Int, List<Int>>(r, ((r * cols) until ((r + 1) * cols)).toList()) // + (if (row > 0) 1 else 0) })
             }.toMap()

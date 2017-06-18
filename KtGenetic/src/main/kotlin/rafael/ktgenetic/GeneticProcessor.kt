@@ -15,7 +15,11 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
-    open protected fun <G> executeCrossing(pieces1: Triple<List<G>, List<G>, List<G>>, pieces2: Triple<List<G>, List<G>, List<G>>): Pair<List<G>, List<G>> = Pair(pieces2.first + pieces1.second + pieces2.third, pieces1.first + pieces2.second + pieces1.third)
+    open protected fun <G> executeCrossing(pieces1: ChromosomePieces<G>, pieces2: ChromosomePieces<G>): Pair<List<G>, List<G>> =
+            Pair(
+                    pieces2.left + pieces1.core + pieces2.right,
+                    pieces1.left + pieces2.core + pieces1.right
+            )
 
     fun executeMutation(chromosome: C): C = if (Math.random() < environment.mutationFactor) environment.getNewGenotype(environment.executeMutation(chromosome.content))
     else chromosome
