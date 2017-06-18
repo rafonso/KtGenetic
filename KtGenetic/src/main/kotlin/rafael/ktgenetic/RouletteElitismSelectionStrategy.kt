@@ -1,6 +1,6 @@
 package rafael.ktgenetic
 
-class RouletteSelectionStrategy<C : Chromosome<*>>(override val generationSize: Int) : SelectionStrategy<C> {
+class RouletteElitismSelectionStrategy<C : Chromosome<*>>(override val generationSize: Int) : SelectionStrategy<C> {
 
     val fittestSelectionFactor = 0.1
     val fittestChildrenToBeSaved = (fittestSelectionFactor * generationSize).toInt()

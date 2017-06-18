@@ -20,7 +20,8 @@ class MutationTuner<C: Chromosome<*>>(val environment: Environment<*, C>): Proce
         if (proportion < minimunVariation && (environment.mutationFactor <= 0.99)) {
             environment.mutationFactor += 0.01
         } else if ((proportion > maximumVariation) && (environment.mutationFactor >= 0.01)) {
-            environment.mutationFactor -= 0.01
+            environment.mutationFactor = Math.max(environment.mutationFactor - 0.01, 0.01)
+
         }
     }
 
@@ -31,7 +32,7 @@ class MutationTuner<C: Chromosome<*>>(val environment: Environment<*, C>): Proce
             val proportion = calculateVariationProportion(chromosomes)
 
             adjustMutationFactor(proportion)
-            mainLogger.debug("Mutation Factor = ${environment.mutationFactor}")
+            mainLogger.trace("Mutation Factor ${environment.mutationFactor}")
         }
     }
 

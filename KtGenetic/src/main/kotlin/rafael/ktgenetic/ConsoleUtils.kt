@@ -69,7 +69,7 @@ fun <C : Chromosome<*>> configureSelectionStrategy(line: CommandLine, environmen
     val strategy: SelectionStrategy<C>
     when (strategyParameter) {
         GREATEST_FITNESS_STRATEGY_PARAMETER -> strategy = GreatestFitnessSelectionStrategy<C>(environment.generationSize)
-        ROULETTE_STRATEGY_PARAMETER -> strategy = RouletteSelectionStrategy<C>(environment.generationSize)
+        ROULETTE_STRATEGY_PARAMETER -> strategy = RouletteElitismSelectionStrategy<C>(environment.generationSize)
         else -> throw IllegalArgumentException("Invalid selection strategy parameter '$strategyParameter'")
     }
 
