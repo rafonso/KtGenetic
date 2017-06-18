@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger
 /**
  * Emits log messages according the [ProcessorEvent].
  */
-class LogProcessorListener<G, C : Chromosome<G>> : ProcessorListener {
+class LogProcessorListener<out G, C : Chromosome<G>> : ProcessorListener {
 
     private val CONSOLE_SIZE = 120
 

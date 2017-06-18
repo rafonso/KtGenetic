@@ -98,14 +98,14 @@ fun <G, C : Chromosome<G>> executeMain(
 
         val executionTime = measureTimeMillis {
             val environment = getEnvironment(line)
-            val selectionStrategy = configureSelectionStrategy<C>(line, environment)
+            val selectionStrategy = configureSelectionStrategy(line, environment)
 
             val processor =
-                    if (useOrdered) OrderedGeneticProcessor<G, C>(environment, selectionStrategy)
-                    else GeneticProcessor<G, C>(environment, selectionStrategy)
+                    if (useOrdered) OrderedGeneticProcessor(environment, selectionStrategy)
+                    else GeneticProcessor(environment, selectionStrategy)
             processor.addListener(LogProcessorListener<G, C>())
             if (!line.hasOption(NO_STOP_PROCESSING_PARAMETER)) {
-                processor.addListener(ConsoleProcessorListener<G, C>(processor))
+                processor.addListener(ConsoleProcessorListener(processor))
             }
             if(line.hasOption(ADD_MUTATION_TUNER_PARAMETER)) {
                 processor.addListener(MutationTuner(environment))

@@ -18,7 +18,7 @@ class RouletteSelectionStrategy<C : Chromosome<*>>(override val generationSize: 
 
     private tailrec fun selectElements(candidates: List<C>, remainingQuantity: Int, selected: List<C> = listOf()): List<C> {
         if (remainingQuantity == 0) {
-            return selected;
+            return selected
         }
 
         val totalFitness = candidates.pmap { it.fitness }.sum()

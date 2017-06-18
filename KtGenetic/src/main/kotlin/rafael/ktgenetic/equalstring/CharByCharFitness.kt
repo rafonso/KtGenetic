@@ -9,10 +9,7 @@ abstract class CharByCharFitness : StringFitness {
             error("Different sizes: '$str1' x '$str2'")
         }
 
-        var diff = 0
-        for (i in 0 until str1.length) {
-            diff += calculateDiff(str1[i], str2[i])
-        }
+        val diff = (0 until str1.length).sumBy { calculateDiff(str1[it], str2[it]) }
 
         return Math.abs(1.0 / (1.0 + diff))
     }

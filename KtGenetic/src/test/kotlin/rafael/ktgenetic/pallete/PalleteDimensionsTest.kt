@@ -5,8 +5,7 @@ import kotlin.test.assertEquals
 
 class PalleteDimensionsTest {
 
-    @Test
-    public fun dimension0() {
+    @Test fun dimension0() {
         val dimensions0 = PalleteDimensions(0, 0)
 
         assertEquals(0.0, dimensions0.center.col)
@@ -18,8 +17,7 @@ class PalleteDimensionsTest {
         //assertEquals(0, dimensions0.blockToIndex(0, 0))
     }
 
-    @Test
-    public fun dimension1_1() {
+    @Test fun dimension1_1() {
         val dimensions = PalleteDimensions(1, 1)
 
         assertEquals(0.5, dimensions.center.col)
@@ -32,8 +30,7 @@ class PalleteDimensionsTest {
         assertEquals(0, dimensions.blockToIndex(0, 0))
     }
 
-    @Test
-    public fun dimension2_2() {
+    @Test fun dimension2_2() {
         val dimensions = PalleteDimensions(2, 2)
 
         assertEquals(1.0, dimensions.center.col)
@@ -50,8 +47,7 @@ class PalleteDimensionsTest {
         assertEquals(3, dimensions.blockToIndex(1, 1))
     }
 
-    @Test
-    public fun dimension3_2() {
+    @Test fun dimension3_2() {
         val dimensions = PalleteDimensions(3, 2)
 
         assertEquals(1.0, dimensions.center.col)
