@@ -4,7 +4,7 @@ class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Environment<G, 
                                                     selectionStrategy: SelectionStrategy<C>) :
         GeneticProcessor<G, C>(environment, selectionStrategy) {
 
-    private fun <G> executeCross(pieces1: ChromosomePieces<G>, pieces2: ChromosomePieces<G>): Pair<List<G>, List<G>> {
+    private fun <G> executeCross(pieces1: ListPieces<G>, pieces2: ListPieces<G>): Pair<List<G>, List<G>> {
 
         fun cross(core: List<G>, parent: List<G>, firstCutPoint: Int): List<G> {
             val diff = parent - core
@@ -19,7 +19,7 @@ class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Environment<G, 
         return Pair(child1, child2)
     }
 
-    override fun <G> executeCrossing(pieces1: ChromosomePieces<G>, pieces2: ChromosomePieces<G>): Pair<List<G>, List<G>> {
+    override fun <G> executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): Pair<List<G>, List<G>> {
         if (!pieces1.core.intersect(pieces2.left + pieces2.right).isEmpty() || !pieces2.core.intersect(pieces1.left + pieces1.right).isEmpty()) {
             return executeCross(pieces1, pieces2)
         }

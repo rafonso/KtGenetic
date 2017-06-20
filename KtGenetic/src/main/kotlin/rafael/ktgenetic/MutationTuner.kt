@@ -1,7 +1,5 @@
 package rafael.ktgenetic
 
-import rafael.ktgenetic.console.mainLogger
-
 class MutationTuner<C: Chromosome<*>>(val environment: Environment<*, C>): ProcessorListener {
 
     val minimunVariation = 0.01
@@ -34,7 +32,6 @@ class MutationTuner<C: Chromosome<*>>(val environment: Environment<*, C>): Proce
             val proportion = calculateVariationProportion(chromosomes)
 
             adjustMutationFactor(proportion)
-            mainLogger.trace("Mutation Factor ${environment.mutationFactor}")
         }
     }
 

@@ -16,7 +16,7 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
-    open protected fun <G> executeCrossing(pieces1: ChromosomePieces<G>, pieces2: ChromosomePieces<G>): Pair<List<G>, List<G>> =
+    open protected fun <G> executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): Pair<List<G>, List<G>> =
             Pair(
                     pieces2.left + pieces1.core + pieces2.right,
                     pieces1.left + pieces2.core + pieces1.right
@@ -53,11 +53,11 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
             (i until parents.size).flatMap { j ->
                 cross(parents[i].content, parents[j].content)
             }
-        }.pmap { environment.getNewGenotype(it) }
+        }.pMap { environment.getNewGenotype(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTING, children))
-        children = children.pmap { executeMutation(it) }
+        children = children.pMap { executeMutation(it) }
         notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, children))

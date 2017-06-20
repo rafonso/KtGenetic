@@ -21,7 +21,7 @@ class RouletteElitismSelectionStrategy<C : Chromosome<*>>(override val generatio
             return selected
         }
 
-        val totalFitness = candidates.pmap { it.fitness }.sum()
+        val totalFitness = candidates.pMap { it.fitness }.sum()
         val sortedValue = geneticRandom.nextDouble() * totalFitness
         val selectedPosition = selectPosition(candidates, sortedValue)
         val selectedElement = candidates[selectedPosition]
