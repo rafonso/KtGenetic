@@ -1,6 +1,9 @@
-package rafael.ktgenetic
+package rafael.ktgenetic.selection
 
-class RouletteElitismSelectionStrategy<C : Chromosome<*>>(override val generationSize: Int) : SelectionStrategy<C> {
+import rafael.ktgenetic.pMap
+
+internal class RouletteElitismSelectionStrategy<C : rafael.ktgenetic.Chromosome<*>>(override val generationSize: Int) :
+        SelectionStrategy<C> {
 
     val fittestSelectionFactor = 0.1
     val fittestChildrenToBeSaved = (fittestSelectionFactor * generationSize).toInt()
@@ -22,7 +25,7 @@ class RouletteElitismSelectionStrategy<C : Chromosome<*>>(override val generatio
         }
 
         val totalFitness = candidates.pMap { it.fitness }.sum()
-        val sortedValue = geneticRandom.nextDouble() * totalFitness
+        val sortedValue = rafael.ktgenetic.geneticRandom.nextDouble() * totalFitness
         val selectedPosition = selectPosition(candidates, sortedValue)
         val selectedElement = candidates[selectedPosition]
 

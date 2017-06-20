@@ -2,6 +2,8 @@ package rafael.ktgenetic.console
 
 import org.apache.commons.cli.*
 import rafael.ktgenetic.*
+import rafael.ktgenetic.selection.SelectionStrategyChoice
+import rafael.ktgenetic.selection.chooseStrategy
 import kotlin.system.measureTimeMillis
 
 fun <G, C : Chromosome<G>> executeMain(
@@ -26,7 +28,9 @@ fun <G, C : Chromosome<G>> executeMain(
 
         val executionTime = measureTimeMillis {
             val environment = getEnvironment(line)
-            val selectionStrategy = configureSelectionStrategy(line, environment)
+            val selectionStrategy = chooseStrategy<C>(
+                    line.getOptionValue(SELECTION_STRATEGY_PARAMETER, SelectionStrategyChoice.TRUNCATE.code),
+                    environment.generationSize)
 
             val processor =
                     if (useOrdered) OrderedGeneticProcessor(environment, selectionStrategy)

@@ -1,5 +1,7 @@
 package rafael.ktgenetic
 
+import rafael.ktgenetic.selection.SelectionStrategy
+
 /**
  * Executes the evolutionary process.
  */

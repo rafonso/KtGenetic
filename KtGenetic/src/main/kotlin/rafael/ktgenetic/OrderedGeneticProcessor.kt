@@ -1,5 +1,7 @@
 package rafael.ktgenetic
 
+import rafael.ktgenetic.selection.SelectionStrategy
+
 class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Environment<G, C>,
                                                     selectionStrategy: SelectionStrategy<C>) :
         GeneticProcessor<G, C>(environment, selectionStrategy) {

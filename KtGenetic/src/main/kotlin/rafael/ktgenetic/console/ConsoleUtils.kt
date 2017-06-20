@@ -1,10 +1,12 @@
 package rafael.ktgenetic.console
 
-import org.apache.commons.cli.*
+import org.apache.commons.cli.CommandLine
+import org.apache.commons.cli.HelpFormatter
+import org.apache.commons.cli.Options
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.LoggerContext
-import rafael.ktgenetic.*
+import rafael.ktgenetic.selection.SelectionStrategyChoice
 
 val TRACER: Level = Level.forName("TRACER", 700)
 
@@ -15,9 +17,6 @@ const val LOG_LEVEL_PARAMETER = "l"
 const val NO_STOP_PROCESSING_PARAMETER = "p"
 const val SELECTION_STRATEGY_PARAMETER = "s"
 const val ADD_MUTATION_TUNER_PARAMETER = "m"
-
-const val ROULETTE_STRATEGY_PARAMETER = "r"
-const val GREATEST_FITNESS_STRATEGY_PARAMETER = "g"
 
 val mainLogger = LogManager.getLogger("Main")!!
 
@@ -30,7 +29,8 @@ fun getOptions(additionalOptions: (Options) -> Unit): Options {
     options.addOption(LOG_LEVEL_PARAMETER, true, "Log Level: 1 = DEBUG, 2 = TRACE, 3 = TRACER (Default INFO)")
     options.addOption(NO_STOP_PROCESSING_PARAMETER, false, "Process with no console interaction")
     options.addOption(SELECTION_STRATEGY_PARAMETER, true, "Selection strategy to be used. " +
-            "Values: r = Roulette, g = Greatest. (Default: g)")
+            "Values: ${SelectionStrategyChoice.values().joinToString { it.code  + " = " + it.description}} " +
+            "(Default: ${SelectionStrategyChoice.TRUNCATE.code})")
     options.addOption(ADD_MUTATION_TUNER_PARAMETER, false, "Add Mutation tuner")
 
     additionalOptions(options)
@@ -62,17 +62,3 @@ fun configureLogLevel(line: CommandLine) {
         ctx.updateLoggers()  // This causes all Loggers to refetch information from their LoggerConfig.
     }
 }
-
-fun <C : Chromosome<*>> configureSelectionStrategy(line: CommandLine, environment: Environment<*, C>): SelectionStrategy<C> {
-    val strategyParameter = line.getOptionValue(SELECTION_STRATEGY_PARAMETER, GREATEST_FITNESS_STRATEGY_PARAMETER)
-
-    val strategy: SelectionStrategy<C>
-    when (strategyParameter) {
-        GREATEST_FITNESS_STRATEGY_PARAMETER -> strategy = GreatestFitnessSelectionStrategy<C>(environment.generationSize)
-        ROULETTE_STRATEGY_PARAMETER -> strategy = RouletteElitismSelectionStrategy<C>(environment.generationSize)
-        else -> throw IllegalArgumentException("Invalid selection strategy parameter '$strategyParameter'")
-    }
-
-    return strategy
-}
-
