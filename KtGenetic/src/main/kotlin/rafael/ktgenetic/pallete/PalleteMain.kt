@@ -2,6 +2,7 @@ package rafael.ktgenetic.pallete
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
+import rafael.ktgenetic.GeneticProcessorChoice
 import rafael.ktgenetic.console.CHILDREN_TO_SURVIVE_PARAMETER
 import rafael.ktgenetic.console.GENERATIONS_PARAMETER
 import rafael.ktgenetic.console.executeMain
@@ -83,7 +84,7 @@ fun main(args: Array<String>) {
             ::addOptions,
             ::validateParameters,
             ::getEnvironment,
-            true,
+            GeneticProcessorChoice.ORDERED,
             { p, e -> p.addListener(e as PalleteEnvironment) }
     )
 }

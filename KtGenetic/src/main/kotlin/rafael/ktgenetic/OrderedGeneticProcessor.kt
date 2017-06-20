@@ -2,7 +2,7 @@ package rafael.ktgenetic
 
 import rafael.ktgenetic.selection.SelectionStrategy
 
-class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Environment<G, C>,
+internal class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Environment<G, C>,
                                                     selectionStrategy: SelectionStrategy<C>) :
         GeneticProcessor<G, C>(environment, selectionStrategy) {
 
@@ -25,7 +25,7 @@ class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Environment<G, 
         if (!pieces1.core.intersect(pieces2.left + pieces2.right).isEmpty() || !pieces2.core.intersect(pieces1.left + pieces1.right).isEmpty()) {
             return executeCross(pieces1, pieces2)
         }
-        return super.executeCrossing(pieces1, pieces2)
+        return super.basicCrossing(pieces1, pieces2)
     }
 
 }

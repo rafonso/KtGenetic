@@ -1,6 +1,7 @@
 package rafael.ktgenetic.sudoku
 
 import org.apache.commons.cli.CommandLine
+import rafael.ktgenetic.GeneticProcessorChoice
 import rafael.ktgenetic.console.CHILDREN_TO_SURVIVE_PARAMETER
 import rafael.ktgenetic.console.GENERATIONS_PARAMETER
 import rafael.ktgenetic.console.executeMain
@@ -18,6 +19,6 @@ fun main(args: Array<String>) {
             {},
             {},
             ::getEnvironment,
-            true
+            GeneticProcessorChoice.ORDERED
     )
 }

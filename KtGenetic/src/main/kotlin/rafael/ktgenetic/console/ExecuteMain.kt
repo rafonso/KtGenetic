@@ -11,7 +11,7 @@ fun <G, C : Chromosome<G>> executeMain(
         additionalOptions: (Options) -> Unit,
         validateParameters: (CommandLine) -> Unit,
         getEnvironment: (CommandLine) -> Environment<G, C>,
-        useOrdered: Boolean = false,
+        processorChoice: GeneticProcessorChoice,
         prepareProcessing: (GeneticProcessor<G, C>, Environment<G, C>) -> Unit = { _, _ -> }) {
     val options = getOptions(additionalOptions)
 
@@ -32,9 +32,7 @@ fun <G, C : Chromosome<G>> executeMain(
                     line.getOptionValue(SELECTION_STRATEGY_PARAMETER, SelectionStrategyChoice.TRUNCATE.code),
                     environment.generationSize)
 
-            val processor =
-                    if (useOrdered) OrderedGeneticProcessor(environment, selectionStrategy)
-                    else GeneticProcessor(environment, selectionStrategy)
+            val processor = processorChoice.newInstance(environment, selectionStrategy)
             processor.addListener(LogProcessorListener<G, C>())
             if (!line.hasOption(NO_STOP_PROCESSING_PARAMETER)) {
                 processor.addListener(ConsoleProcessorListener(processor))

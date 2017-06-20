@@ -5,7 +5,7 @@ import rafael.ktgenetic.selection.SelectionStrategy
 /**
  * Executes the evolutionary process.
  */
-open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G, C>,
+abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G, C>,
                                                   val selectionStrategy: SelectionStrategy<C>) {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
@@ -18,11 +18,12 @@ open class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
-    open protected fun <G> executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): Pair<List<G>, List<G>> =
-            Pair(
-                    pieces2.left + pieces1.core + pieces2.right,
-                    pieces1.left + pieces2.core + pieces1.right
-            )
+    protected fun <G> basicCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): Pair<List<G>, List<G>> = Pair(
+            pieces2.left + pieces1.core + pieces2.right,
+            pieces1.left + pieces2.core + pieces1.right
+    )
+
+    abstract protected fun <G> executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): Pair<List<G>, List<G>>
 
     fun executeMutation(chromosome: C): C = if (Math.random() < environment.mutationFactor) environment.getNewGenotype(environment.executeMutation(chromosome.content))
     else chromosome
