@@ -1,10 +1,10 @@
-package rafael.ktgenetic
+package rafael.ktgenetic.console
 
 import org.apache.commons.cli.*
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.LoggerContext
-import kotlin.system.measureTimeMillis
+import rafael.ktgenetic.*
 
 val TRACER: Level = Level.forName("TRACER", 700)
 
@@ -43,7 +43,7 @@ fun showOptions(options: Options) {
     formatter.printHelp("Main", options)
 }
 
-fun configureLogLevel(line: org.apache.commons.cli.CommandLine) {
+fun configureLogLevel(line: CommandLine) {
     if (line.hasOption(LOG_LEVEL_PARAMETER)) {
         /**
          * Code extracted from https://stackoverflow.com/questions/23434252/programmatically-change-log-level-in-log4j2
@@ -76,58 +76,3 @@ fun <C : Chromosome<*>> configureSelectionStrategy(line: CommandLine, environmen
     return strategy
 }
 
-fun <G, C : Chromosome<G>> executeMain(
-        args: Array<String>,
-        additionalOptions: (Options) -> Unit,
-        validateParameters: (CommandLine) -> Unit,
-        getEnvironment: (CommandLine) -> Environment<G, C>,
-        useOrdered: Boolean = false,
-        prepareProcessing: (GeneticProcessor<G, C>, Environment<G, C>) -> Unit = { _, _ -> }) {
-    val options = getOptions(additionalOptions)
-
-    try {
-        val parser: CommandLineParser = DefaultParser()
-        val line = parser.parse(options, args)
-
-        if (line.hasOption(HELPER_PARAMETER)) {
-            showOptions(options)
-            return
-        }
-        validateParameters(line)
-        configureLogLevel(line)
-
-        val executionTime = measureTimeMillis {
-            val environment = getEnvironment(line)
-            val selectionStrategy = configureSelectionStrategy(line, environment)
-
-            val processor =
-                    if (useOrdered) OrderedGeneticProcessor(environment, selectionStrategy)
-                    else GeneticProcessor(environment, selectionStrategy)
-            processor.addListener(LogProcessorListener<G, C>())
-            if (!line.hasOption(NO_STOP_PROCESSING_PARAMETER)) {
-                processor.addListener(ConsoleProcessorListener(processor))
-            }
-            if(line.hasOption(ADD_MUTATION_TUNER_PARAMETER)) {
-                processor.addListener(MutationTuner(environment))
-            }
-
-            prepareProcessing(processor, environment)
-            mainLogger.info("Max Generations: ${environment.maxGenerations}, " +
-                    "Generation Size: ${environment.generationSize}, " +
-                    "Selection Strategy: ${selectionStrategy.javaClass.simpleName}")
-
-            val result = processor.process()
-
-            mainLogger.info("Result: $result")
-        }
-        mainLogger.info("Finished. Time: $executionTime ms")
-    } catch (e: ParseException) {
-        mainLogger.error(e.message)
-        showOptions(options)
-    } catch (e: IllegalArgumentException) {
-        mainLogger.error(e.message)
-        showOptions(options)
-    } catch (e: Exception) {
-        mainLogger.error(e.message, e)
-    }
-}

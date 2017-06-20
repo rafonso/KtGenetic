@@ -1,6 +1,7 @@
 package rafael.ktgenetic.pallete
 
 import rafael.ktgenetic.*
+import rafael.ktgenetic.console.mainLogger
 import java.util.*
 
 class PalleteEnvironment(val originalBoxes: List<Int>,

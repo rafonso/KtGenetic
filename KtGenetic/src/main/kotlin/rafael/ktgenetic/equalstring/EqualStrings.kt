@@ -2,9 +2,9 @@ package rafael.ktgenetic.equalstring
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.CHILDREN_TO_SURVIVE_PARAMETER
-import rafael.ktgenetic.GENERATIONS_PARAMETER
-import rafael.ktgenetic.executeMain
+import rafael.ktgenetic.console.CHILDREN_TO_SURVIVE_PARAMETER
+import rafael.ktgenetic.console.GENERATIONS_PARAMETER
+import rafael.ktgenetic.console.executeMain
 
 private const val WORD_PARAMETER = "w"
 private const val FITNESS_PARAMETER = "f"

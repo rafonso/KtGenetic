@@ -2,7 +2,10 @@ package rafael.ktgenetic.balancedtable
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.*
+import rafael.ktgenetic.console.CHILDREN_TO_SURVIVE_PARAMETER
+import rafael.ktgenetic.console.GENERATIONS_PARAMETER
+import rafael.ktgenetic.console.executeMain
+import rafael.ktgenetic.console.mainLogger
 
 private const val WEIGHT_PARAMETER = "w"
 
