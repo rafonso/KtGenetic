@@ -1,6 +1,6 @@
 package rafael.ktgenetic.equalstring
 
-import rafael.ktgenetic.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticProcessorChoice
 
 private const val WORD_PARAMETER = "w"
 private const val FITNESS_PARAMETER = "f"

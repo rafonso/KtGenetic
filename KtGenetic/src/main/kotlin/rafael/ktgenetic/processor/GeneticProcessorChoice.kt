@@ -1,5 +1,7 @@
-package rafael.ktgenetic
+package rafael.ktgenetic.processor
 
+import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.Environment
 import rafael.ktgenetic.selection.SelectionStrategy
 
 enum class GeneticProcessorChoice {
@@ -18,6 +20,6 @@ enum class GeneticProcessorChoice {
     };
 
     internal abstract fun <G, C : Chromosome<G>> newInstance(environment: Environment<G, C>,
-                                                    selectionStrategy: SelectionStrategy<C>):
+                                                             selectionStrategy: SelectionStrategy<C>):
             GeneticProcessor<G, C>
 }

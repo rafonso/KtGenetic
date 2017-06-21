@@ -2,6 +2,8 @@ package rafael.ktgenetic.console
 
 import org.apache.commons.cli.*
 import rafael.ktgenetic.*
+import rafael.ktgenetic.processor.GeneticProcessor
+import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.selection.SelectionStrategyChoice
 import rafael.ktgenetic.selection.chooseStrategy
 import kotlin.system.measureTimeMillis

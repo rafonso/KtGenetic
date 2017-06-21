@@ -1,12 +1,13 @@
-package rafael.ktgenetic
+package rafael.ktgenetic.processor
 
+import rafael.ktgenetic.*
 import rafael.ktgenetic.selection.SelectionStrategy
 
 /**
  * Executes the evolutionary process.
  */
 abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G, C>,
-                                                  val selectionStrategy: SelectionStrategy<C>) {
+                                                      val selectionStrategy: SelectionStrategy<C>) {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 

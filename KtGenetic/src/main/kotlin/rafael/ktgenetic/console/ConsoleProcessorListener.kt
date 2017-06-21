@@ -1,6 +1,7 @@
 package rafael.ktgenetic.console
 
 import rafael.ktgenetic.*
+import rafael.ktgenetic.processor.GeneticProcessor
 import java.util.*
 
 class ConsoleProcessorListener<G, C : Chromosome<G>>(val processor: GeneticProcessor<G, C>) : ProcessorListener {
