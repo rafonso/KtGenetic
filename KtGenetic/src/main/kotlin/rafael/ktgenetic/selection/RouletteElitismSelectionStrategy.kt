@@ -19,25 +19,25 @@ internal class RouletteElitismSelectionStrategy<C : rafael.ktgenetic.Chromosome<
         return selectPosition(children, sortedValue - children[pos].fitness, pos + 1)
     }
 
-    private tailrec fun selectElements(candidates: List<C>, remainingQuantity: Int, selected: List<C> = listOf()): List<C> {
+    private tailrec fun selectElements(candidates: List<C>, remainingQuantity: Int, totalFitness: Double, selected: List<C> = listOf()): List<C> {
         if (remainingQuantity == 0) {
             return selected
         }
 
-        val totalFitness = candidates.pMap { it.fitness }.sum()
         val sortedValue = rafael.ktgenetic.geneticRandom.nextDouble() * totalFitness
         val selectedPosition = selectPosition(candidates, sortedValue)
         val selectedElement = candidates[selectedPosition]
 
-        return selectElements(candidates - selected, remainingQuantity - 1, selected + selectedElement)
+        return selectElements(candidates - selected, remainingQuantity - 1, totalFitness - selectedElement.fitness, selected + selectedElement)
     }
 
     override fun select(children: List<C>): List<C> {
         val sortedChildren = children.sortedBy { it.fitness }.reversed()
         val bestChildren = sortedChildren.subList(0, fittestChildrenToBeSaved)
         val remainingChildren = sortedChildren.subList(fittestChildrenToBeSaved, sortedChildren.size - 1)
+        val totalFitness = remainingChildren.pMap { it.fitness }.sum()
 
-        return bestChildren + selectElements(remainingChildren, generationSize - fittestChildrenToBeSaved)
+        return bestChildren + selectElements(remainingChildren, generationSize - fittestChildrenToBeSaved, totalFitness)
     }
 
 }
