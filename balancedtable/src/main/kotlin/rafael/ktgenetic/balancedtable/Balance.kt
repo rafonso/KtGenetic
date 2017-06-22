@@ -26,6 +26,13 @@ data class Balance(override val content: Boxes, private val dimensions: BalanceD
     override fun valueToString(): String = "[CM = %.3f, MI = %2.3f - %s]".
             format(centerOfMass, momentOfInertia, content.map { it.value })
 
+    val halfMasses: Pair<Int, Int> by lazy {
+        val leftMass = dimensions.half.first.map { content[it].value }.sum()
+        val rightMass = dimensions.half.second.map { content[it].value }.sum()
+
+        Pair(leftMass, rightMass)
+    }
+
     override fun toString() = super.toString()
 
 }

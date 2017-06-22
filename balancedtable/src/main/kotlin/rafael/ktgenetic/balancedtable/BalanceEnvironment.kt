@@ -39,8 +39,9 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
         val bal = Balance(sequence, dimensions)
         val centerOfMassFitness = 1 - Math.abs(bal.centerOfMass - dimensions.center) / dimensions.center
         val momentOfInertiaFitness = 1 - bal.momentOfInertia / greatestMomentOfInertia
+        val balanceFitness = 1 - Math.abs(bal.halfMasses.first - bal.halfMasses.second).toDouble() / bal.totalMass
 
-        return (centerOfMassFitness + momentOfInertiaFitness) / 2
+        return (centerOfMassFitness + momentOfInertiaFitness + balanceFitness) / 3
     }
 
 }
