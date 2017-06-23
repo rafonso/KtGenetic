@@ -50,11 +50,13 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
     override fun getNewGenotype(sequence: Boxes): Pallete = Pallete(sequence, palleteDimension)
 
     override fun calculateFitness(sequence: Boxes): Double {
-        val bal = Pallete(sequence, palleteDimension)
-        val centerOfMassFitness = 1 - bal.centerOfMass.distance(palleteDimension.center) / palleteDimension.greatestDistanceFromCenter
-        val momentOfInertiaFitness = 1 - bal.momentOfInertia / greatestMomentOfInertia
+        val pallete = Pallete(sequence, palleteDimension)
+        val centerOfMassFitness = 1 - pallete.centerOfMass.distance(palleteDimension.center) / palleteDimension.greatestDistanceFromCenter
+        val momentOfInertiaFitness = 1 - pallete.momentOfInertia / greatestMomentOfInertia
+        val frontBackBalanceFitness = 1 - Math.abs(pallete.frontBackHalfMasses.first - pallete.frontBackHalfMasses.second).toDouble() / pallete.totalMass
+        val rightLeftBalanceFitness = 1 - Math.abs(pallete.rightLeftHalfMasses.first - pallete.rightLeftHalfMasses.second).toDouble() / pallete.totalMass
 
-        return (centerOfMassFitness + momentOfInertiaFitness) / 2
+        return (centerOfMassFitness + momentOfInertiaFitness + frontBackBalanceFitness + rightLeftBalanceFitness) / 4
     }
 
 }

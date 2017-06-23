@@ -28,6 +28,13 @@ typealias Boxes = List<Box>
 
 data class Pallete(override val content: Boxes, private val dimensions: PalleteDimensions) : Chromosome<Box>() {
 
+    private fun calcHalfMasses(halves: Pair<List<Int>, List<Int>>): Pair<Int, Int> {
+        val mass1 = halves.first.map { content[it].value }.sum()
+        val mass2 = halves.second.map { content[it].value }.sum()
+
+        return Pair(mass1, mass2)
+    }
+
     val totalMass: Int by lazy {
         content.map { it.value }.sum()
     }
@@ -55,6 +62,10 @@ data class Pallete(override val content: Boxes, private val dimensions: PalleteD
         boxesToString("\n")
     }
 
+    val frontBackHalfMasses: Pair<Int, Int> = calcHalfMasses(dimensions.frontAndBackHalves)
+
+    val rightLeftHalfMasses: Pair<Int, Int> = calcHalfMasses(dimensions.leftAndRightHalves)
+
     private fun boxesToString(rowSeparator: String): String {
         return (0 until dimensions.rows).map {
             r ->
@@ -64,8 +75,8 @@ data class Pallete(override val content: Boxes, private val dimensions: PalleteD
         }.joinToString(separator = rowSeparator)
     }
 
-    override fun valueToString(): String = "[CM = %s, MI = %2.3f - %s]".
-            format(centerOfMass, momentOfInertia, boxesToString("|"))
+    override fun valueToString(): String = "[CM = %s, MI = %2.3f, FBHM = %s, RLHM = %s - %s]".
+            format(centerOfMass, momentOfInertia, frontBackHalfMasses, rightLeftHalfMasses, boxesToString("|"))
 
     override fun toString() = super.toString()
 
