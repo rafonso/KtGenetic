@@ -9,6 +9,13 @@ typealias Boxes = List<Box>
 
 data class Balance(override val content: Boxes, private val dimensions: BalanceDimensions) : Chromosome<Box>() {
 
+    private fun calcHalfMasses(): Pair<Int, Int> {
+        val leftMass = dimensions.halves.first.map { content[it].value }.sum()
+        val rightMass = dimensions.halves.second.map { content[it].value }.sum()
+
+        return Pair(leftMass, rightMass)
+    }
+
     val totalMass: Int
         get() = content.map { it.value }.sum()
 
@@ -23,15 +30,10 @@ data class Balance(override val content: Boxes, private val dimensions: BalanceD
                 sum()
     }
 
-    override fun valueToString(): String = "[CM = %.3f, MI = %2.3f - %s]".
-            format(centerOfMass, momentOfInertia, content.map { it.value })
+    val halfMasses: Pair<Int, Int> = calcHalfMasses()
 
-    val halfMasses: Pair<Int, Int> by lazy {
-        val leftMass = dimensions.half.first.map { content[it].value }.sum()
-        val rightMass = dimensions.half.second.map { content[it].value }.sum()
-
-        Pair(leftMass, rightMass)
-    }
+    override fun valueToString(): String = "[CM = %.3f, MI = %2.3f, HM = %s - %s]".
+            format(centerOfMass, momentOfInertia, halfMasses, content.map { it.value })
 
     override fun toString() = super.toString()
 
