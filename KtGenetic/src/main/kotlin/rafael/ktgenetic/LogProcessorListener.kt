@@ -133,8 +133,8 @@ class LogProcessorListener<out G, C : Chromosome<G>> : ProcessorListener {
                     )
                     val bestOption = selected.maxBy { it.fitness }
 
-                    log.debug(("Generation %3d - Average Fitness %.3f (%.3f). " +
-                            "Best Option: %s").format(currentGeneration, averageFitness, averageFitnessDeviation, bestOption))
+                    log.debug(("Gen %3d - AF %.3f (%.3f). " +
+                            "Best Opt: %s").format(currentGeneration, averageFitness, averageFitnessDeviation, bestOption))
                 })
             }
             ProcessorEventEnum.ENDED_BY_GENERATIONS -> {
