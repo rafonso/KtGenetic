@@ -2,11 +2,11 @@ package rafael.ktgenetic.balancedtable
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.Environment
 import rafael.ktgenetic.console.CHILDREN_TO_SURVIVE_PARAMETER
 import rafael.ktgenetic.console.GENERATIONS_PARAMETER
 import rafael.ktgenetic.console.executeMain
-import rafael.ktgenetic.console.mainLogger
+import rafael.ktgenetic.processor.GeneticProcessorChoice
 
 private const val WEIGHT_PARAMETER = "w"
 
@@ -26,19 +26,26 @@ private fun validateParameters(line: CommandLine) {
 
 private fun getEnvironment(line: CommandLine): BalanceEnvironment {
     val weights = line.getOptionValue(WEIGHT_PARAMETER).trim().split(Regex(" +")).map { Integer.parseInt(it) }
-    mainLogger.info("Blocks: $weights")
+
     return BalanceEnvironment(
             weights, //
             maxGenerations = line.getOptionValue(GENERATIONS_PARAMETER, "1000000").toInt(),
             generationSize = line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "100").toInt())
 }
 
-fun main(args: Array<String>) {
-    executeMain(
-            args,
-            ::addOptions,
-            ::validateParameters,
-            ::getEnvironment,
-            GeneticProcessorChoice.ORDERED)
+private fun showEnvironmentDetails(environment: Environment<Box, Balance>): String {
+    val esEnvironment = environment as BalanceEnvironment
+
+    return "Quantity Of Boxes: ${esEnvironment.originalBoxes.size}, Original Boxes: ${esEnvironment.originalBoxes}"
 }
+
+
+fun main(args: Array<String>) = executeMain(
+        args,
+        ::addOptions,
+        ::validateParameters,
+        ::getEnvironment,
+        GeneticProcessorChoice.ORDERED,
+        ::showEnvironmentDetails
+)
 

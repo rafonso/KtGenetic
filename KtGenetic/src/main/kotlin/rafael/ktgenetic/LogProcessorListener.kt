@@ -43,8 +43,10 @@ class LogProcessorListener<out G, C : Chromosome<G>> : ProcessorListener {
     override fun onEvent(event: ProcessorEvent) {
         when (event.event) {
             ProcessorEventEnum.STARTING -> {
-                maxGenerations = event.value as Int
-                log.info("Starting. Max generations: {}", maxGenerations)
+                log(log.isTraceEnabled, {
+                    maxGenerations = event.value as Int
+                    log.trace("Starting. Max generations: {}", maxGenerations)
+                })
             }
             ProcessorEventEnum.FIRST_GENERATION_CREATING -> {
                 log(log.isDebugEnabled, {

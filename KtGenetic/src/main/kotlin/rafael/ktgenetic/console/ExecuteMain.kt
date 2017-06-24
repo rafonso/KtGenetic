@@ -14,6 +14,7 @@ fun <G, C : Chromosome<G>> executeMain(
         validateParameters: (CommandLine) -> Unit,
         getEnvironment: (CommandLine) -> Environment<G, C>,
         processorChoice: GeneticProcessorChoice,
+        showEnvironmentDetails: (Environment<G, C>) -> String,
         prepareProcessing: (GeneticProcessor<G, C>, Environment<G, C>) -> Unit = { _, _ -> }) {
     val options = getOptions(additionalOptions)
 
@@ -47,6 +48,7 @@ fun <G, C : Chromosome<G>> executeMain(
             mainLogger.info("Max Generations: ${environment.maxGenerations}, " +
                     "Generation Size: ${environment.generationSize}, " +
                     "Selection Strategy: ${selectionStrategy.javaClass.simpleName}")
+            mainLogger.info(showEnvironmentDetails(environment))
 
             val result = processor.process()
 

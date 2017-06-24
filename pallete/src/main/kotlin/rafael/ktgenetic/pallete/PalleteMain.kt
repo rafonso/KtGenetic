@@ -2,6 +2,7 @@ package rafael.ktgenetic.pallete
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
+import rafael.ktgenetic.Environment
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.console.CHILDREN_TO_SURVIVE_PARAMETER
 import rafael.ktgenetic.console.GENERATIONS_PARAMETER
@@ -60,7 +61,7 @@ fun getPallete(weights: Collection<Int>, rows: Int, cols: Int): Pair<List<Int>, 
         return result.toList()
     }
 
-    val (c, r) = getPalleteDimensions()
+    val (r, c) = getPalleteDimensions()
     val normalizedPallet = getNormalizedPallete(r, c)
 
     return Pair(normalizedPallet, PalleteDimensions(r, c))
@@ -78,14 +79,19 @@ private fun getEnvironment(line: CommandLine): PalleteEnvironment {
 
 }
 
-fun main(args: Array<String>) {
-    executeMain(
-            args,
-            ::addOptions,
-            ::validateParameters,
-            ::getEnvironment,
-            GeneticProcessorChoice.ORDERED,
-            { p, e -> p.addListener(e as PalleteEnvironment) }
-    )
+private fun showEnvironmentDetails(environment: Environment<Box, Pallete>): String {
+    val esEnvironment = environment as PalleteEnvironment
+
+    return "Dimension: ${esEnvironment.palleteDimension}, Original Boxes: ${esEnvironment.originalBoxes}"
 }
+
+fun main(args: Array<String>) = executeMain(
+        args,
+        ::addOptions,
+        ::validateParameters,
+        ::getEnvironment,
+        GeneticProcessorChoice.ORDERED,
+        ::showEnvironmentDetails,
+        { p, e -> p.addListener(e as PalleteEnvironment) }
+)
 

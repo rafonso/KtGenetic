@@ -1,6 +1,7 @@
 package rafael.ktgenetic.sudoku
 
 import org.apache.commons.cli.CommandLine
+import rafael.ktgenetic.Environment
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.console.CHILDREN_TO_SURVIVE_PARAMETER
 import rafael.ktgenetic.console.GENERATIONS_PARAMETER
@@ -13,12 +14,13 @@ private fun getEnvironment(line: CommandLine): SudokuEnvironment {
             mutationFactor = 0.02)
 }
 
-fun main(args: Array<String>) {
-    executeMain(
-            args,
-            {},
-            {},
-            ::getEnvironment,
-            GeneticProcessorChoice.ORDERED
-    )
-}
+private fun showEnvironmentDetails(environment: Environment<Cell, Puzzle>): String = ""
+
+fun main(args: Array<String>) = executeMain(
+        args,
+        {},
+        {},
+        ::getEnvironment,
+        GeneticProcessorChoice.ORDERED,
+        ::showEnvironmentDetails
+)
