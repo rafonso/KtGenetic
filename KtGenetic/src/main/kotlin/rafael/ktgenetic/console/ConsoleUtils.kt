@@ -20,6 +20,13 @@ const val ADD_MUTATION_TUNER_PARAMETER = "m"
 
 val mainLogger = LogManager.getLogger("Main")!!
 
+fun CommandLine.getIntOptionValue(opt: String, defaultValue: Int): Int =
+        this.getOptionValue(opt, defaultValue.toString()).toInt()
+
+fun CommandLine.getMaxGenerations(value: Int = 100) = this.getIntOptionValue(GENERATIONS_PARAMETER, value)
+
+fun CommandLine.getPopulationByGeneration(value: Int = 100) = this.getIntOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, value)
+
 fun getOptions(additionalOptions: (Options) -> Unit): Options {
     val options = Options()
 
@@ -29,7 +36,7 @@ fun getOptions(additionalOptions: (Options) -> Unit): Options {
     options.addOption(LOG_LEVEL_PARAMETER, true, "Log Level: 1 = DEBUG, 2 = TRACE, 3 = TRACER (Default INFO)")
     options.addOption(NO_STOP_PROCESSING_PARAMETER, false, "Process with no console interaction")
     options.addOption(SELECTION_STRATEGY_PARAMETER, true, "Selection strategy to be used. " +
-            "Values: ${SelectionStrategyChoice.values().joinToString { it.code  + " = " + it.description}} " +
+            "Values: ${SelectionStrategyChoice.values().joinToString { it.code + " = " + it.description }} " +
             "(Default: ${SelectionStrategyChoice.TRUNCATE.code})")
     options.addOption(ADD_MUTATION_TUNER_PARAMETER, false, "Add Mutation tuner")
 

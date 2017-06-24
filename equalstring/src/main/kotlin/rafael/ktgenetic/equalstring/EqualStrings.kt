@@ -3,9 +3,7 @@ package rafael.ktgenetic.equalstring
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
 import rafael.ktgenetic.Environment
-import rafael.ktgenetic.console.CHILDREN_TO_SURVIVE_PARAMETER
-import rafael.ktgenetic.console.GENERATIONS_PARAMETER
-import rafael.ktgenetic.console.executeMain
+import rafael.ktgenetic.console.*
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 
 private const val WORD_PARAMETER = "w"
@@ -51,8 +49,8 @@ private fun getEnvironment(line: CommandLine) =
         EqualStringEnvironment(
                 line.getOptionValue(WORD_PARAMETER), //
                 getFitnessFunction(line),
-                line.getOptionValue(GENERATIONS_PARAMETER, "100").toInt(),
-                line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "10").toInt())
+                line.getMaxGenerations(),
+                line.getPopulationByGeneration())
 
 private fun showEnvironmentDetails(environment: Environment<Char, Word>): String {
     val esEnvironment = environment as EqualStringEnvironment

@@ -3,9 +3,7 @@ package rafael.ktgenetic.balancedtable
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
 import rafael.ktgenetic.Environment
-import rafael.ktgenetic.console.CHILDREN_TO_SURVIVE_PARAMETER
-import rafael.ktgenetic.console.GENERATIONS_PARAMETER
-import rafael.ktgenetic.console.executeMain
+import rafael.ktgenetic.console.*
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 
 private const val WEIGHT_PARAMETER = "w"
@@ -29,8 +27,8 @@ private fun getEnvironment(line: CommandLine): BalanceEnvironment {
 
     return BalanceEnvironment(
             weights, //
-            maxGenerations = line.getOptionValue(GENERATIONS_PARAMETER, "1000000").toInt(),
-            generationSize = line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "100").toInt())
+            line.getMaxGenerations(),
+            line.getPopulationByGeneration())
 }
 
 private fun showEnvironmentDetails(environment: Environment<Box, Balance>): String {
@@ -38,7 +36,6 @@ private fun showEnvironmentDetails(environment: Environment<Box, Balance>): Stri
 
     return "Quantity Of Boxes: ${esEnvironment.originalBoxes.size}, Original Boxes: ${esEnvironment.originalBoxes}"
 }
-
 
 fun main(args: Array<String>) = executeMain(
         args,

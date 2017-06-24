@@ -3,10 +3,11 @@ package rafael.ktgenetic.pallete
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
 import rafael.ktgenetic.Environment
-import rafael.ktgenetic.processor.GeneticProcessorChoice
-import rafael.ktgenetic.console.CHILDREN_TO_SURVIVE_PARAMETER
-import rafael.ktgenetic.console.GENERATIONS_PARAMETER
 import rafael.ktgenetic.console.executeMain
+import rafael.ktgenetic.console.getIntOptionValue
+import rafael.ktgenetic.console.getMaxGenerations
+import rafael.ktgenetic.console.getPopulationByGeneration
+import rafael.ktgenetic.processor.GeneticProcessorChoice
 
 private const val WEIGHT_PARAMETER = "w"
 private const val ROWS_PARAMETER = "rows"
@@ -70,12 +71,12 @@ fun getPallete(weights: Collection<Int>, rows: Int, cols: Int): Pair<List<Int>, 
 private fun getEnvironment(line: CommandLine): PalleteEnvironment {
     val (normalizedPallet, palleteDimensions) = getPallete(
             line.getOptionValue(WEIGHT_PARAMETER).trim().split(Regex(" +")).map { Integer.parseInt(it) },
-            line.getOptionValue(ROWS_PARAMETER, "0").toInt(),
-            line.getOptionValue(COLS_PARAMETER, "0").toInt())
+            line.getIntOptionValue(ROWS_PARAMETER, 0),
+            line.getIntOptionValue(COLS_PARAMETER, 0))
 
     return PalleteEnvironment(normalizedPallet, palleteDimensions, //
-            maxGenerations = line.getOptionValue(GENERATIONS_PARAMETER, "100").toInt(),
-            generationSize = line.getOptionValue(CHILDREN_TO_SURVIVE_PARAMETER, "100").toInt())
+            line.getMaxGenerations(),
+            line.getPopulationByGeneration())
 
 }
 
