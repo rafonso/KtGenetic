@@ -1,6 +1,6 @@
 package rafael.ktgenetic.equalstring
 
-abstract class CharByCharFitness : rafael.ktgenetic.equalstring.StringFitness {
+abstract class CharByCharFitness : StringFitness {
 
     abstract fun calculateDiff(ch1: Char, ch2: Char): Int
 
