@@ -3,7 +3,6 @@ package rafael.ktgenetic.pallete
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.OrderedGene
 
-
 private fun getCenterOfMassOfRow(boxes: Boxes, row: Int, dimensions: PalleteDimensions): Double {
     val rowMass = (0 until dimensions.cols).map { c -> boxes[dimensions.blockToIndex(row, c)].value }.sum()
     if (rowMass == 0) {

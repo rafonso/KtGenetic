@@ -126,9 +126,9 @@ class LogProcessorListener<out G, C : Chromosome<G>> : ProcessorListener {
             ProcessorEventEnum.GENERATION_EVALUATED -> {
                 log(log.isDebugEnabled, {
                     val selected = event.value as List<Chromosome<C>>
-                    val averageFitness = selected.map { it.fitness }.sum() / selected.size
+                    val averageFitness = selected.pMap { it.fitness }.sum() / selected.size
                     val averageFitnessDeviation = Math.sqrt(
-                            selected.map { Math.pow(it.fitness - averageFitness, 2.0) }.sum() /
+                            selected.pMap { Math.pow(it.fitness - averageFitness, 2.0) }.sum() /
                                     (selected.size * (selected.size - 1))
                     )
                     val bestOption = selected.maxBy { it.fitness }

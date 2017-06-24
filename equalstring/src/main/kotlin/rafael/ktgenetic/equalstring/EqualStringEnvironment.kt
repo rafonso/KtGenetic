@@ -1,5 +1,7 @@
 package rafael.ktgenetic.equalstring
 
+import rafael.ktgenetic.pMap
+
 class EqualStringEnvironment(val target: String,
                              val fitnessFunction: rafael.ktgenetic.equalstring.StringFitness,
                              override val maxGenerations: Int,
@@ -12,7 +14,7 @@ class EqualStringEnvironment(val target: String,
     private fun randomChar(): Char = range[rafael.ktgenetic.geneticRandom.nextInt(range.size)]
 
     private fun createRandomWord(): rafael.ktgenetic.equalstring.Word =
-            rafael.ktgenetic.equalstring.Word(1.rangeTo(target.length).map { _ -> randomChar() }.joinToString(""))
+            rafael.ktgenetic.equalstring.Word(1.rangeTo(target.length).pMap { _ -> randomChar() }.joinToString(""))
 
     override fun getFirstGeneration(): List<rafael.ktgenetic.equalstring.Word> =
             (1..generationSize).map { _ -> createRandomWord() }

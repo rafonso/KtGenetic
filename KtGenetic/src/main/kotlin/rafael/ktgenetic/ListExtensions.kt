@@ -4,9 +4,7 @@
 package rafael.ktgenetic
 
 import java.util.*
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import java.util.stream.Collectors
 
 fun <T> List<T>.shuffle(): List<T> {
     val temp = this.toMutableList()
@@ -33,48 +31,17 @@ fun <T> List<T>.randomSwap(): List<T> {
     return this.swap(positions.first, positions.second)
 }
 
-/**
- * https://stackoverflow.com/questions/34697828/parallel-operations-on-kotlin-collections
- *
- */
-fun <T, R> Iterable<T>.pMap(
-        numThreads: Int = Runtime.getRuntime().availableProcessors() - 2,
-        exec: ExecutorService = Executors.newFixedThreadPool(numThreads),
-        transform: (T) -> R): List<R> {
+fun <T, R> Iterable<T>.pMap(transform: (T) -> R): List<R> =
+        ArrayList(toMutableList()).
+                parallelStream().
+                map { transform(it) }.
+                collect(Collectors.toList()).
+                toList()
 
-    // default size is just an inlined version of kotlin.collections.collectionSizeOrDefault
-    val defaultSize = if (this is Collection<*>) this.size else 10
-    val destination = Collections.synchronizedList(ArrayList<R>(defaultSize))
 
-    for (item in this) {
-        exec.submit { destination.add(transform(item)) }
-    }
-
-    exec.shutdown()
-    exec.awaitTermination(1, TimeUnit.DAYS)
-
-    return destination.toList()
-}
-
-/**
- * https://stackoverflow.com/questions/34697828/parallel-operations-on-kotlin-collections
- *
- */
-fun <T, R> Iterable<T>.pFlatMap(
-        numThreads: Int = Runtime.getRuntime().availableProcessors() - 2,
-        exec: ExecutorService = Executors.newFixedThreadPool(numThreads),
-        transform: (T) -> List<R>): List<R> {
-
-    // default size is just an inlined version of kotlin.collections.collectionSizeOrDefault
-    val defaultSize = if (this is Collection<*>) this.size else 10
-    val destination = Collections.synchronizedList(ArrayList<R>(defaultSize))
-
-    for (item in this) {
-        exec.submit { destination.addAll(transform(item)) }
-    }
-
-    exec.shutdown()
-    exec.awaitTermination(1, TimeUnit.DAYS)
-
-    return destination.toList()
-}
+fun <T, R> Iterable<T>.pFlatMap(transform: (T) -> List<R>): List<R> =
+        ArrayList(toMutableList()).
+                parallelStream().
+                flatMap { ArrayList(transform(it)).stream() }.
+                collect(Collectors.toList()).
+                toList()

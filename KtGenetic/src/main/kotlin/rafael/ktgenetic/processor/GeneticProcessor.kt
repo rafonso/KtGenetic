@@ -53,8 +53,8 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environme
         notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATING, generation))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCING, parents))
-        var children: List<C> = (0 until parents.size).flatMap { i ->
-            (i until parents.size).flatMap { j ->
+        var children: List<C> = (0 until parents.size).pFlatMap { i ->
+            (i until parents.size).pFlatMap { j ->
                 cross(parents[i].content, parents[j].content)
             }
         }.pMap { environment.getNewGenotype(it) }
