@@ -6,9 +6,8 @@ import org.apache.commons.cli.Options
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.LoggerContext
+import rafael.ktgenetic.TRACER
 import rafael.ktgenetic.selection.SelectionStrategyChoice
-
-val TRACER: Level = Level.forName("TRACER", 700)
 
 const val GENERATIONS_PARAMETER = "g"
 const val CHILDREN_TO_SURVIVE_PARAMETER = "c"

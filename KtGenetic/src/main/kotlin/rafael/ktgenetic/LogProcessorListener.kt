@@ -2,7 +2,6 @@ package rafael.ktgenetic
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import rafael.ktgenetic.console.TRACER
 
 /**
  * Emits log messages according the [ProcessorEvent].

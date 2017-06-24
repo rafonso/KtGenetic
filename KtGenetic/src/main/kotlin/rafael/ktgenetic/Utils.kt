@@ -1,5 +1,6 @@
 package rafael.ktgenetic
 
+import org.apache.logging.log4j.Level
 import java.util.*
 
 private fun createRandomPositions(maxPos: Int, initialPos: Int): Pair<Int, Int> {
@@ -12,6 +13,8 @@ private fun createRandomPositions(maxPos: Int, initialPos: Int): Pair<Int, Int> 
     return Pair(pos1, pos2)
 }
 
+val TRACER: Level = Level.forName("TRACER", 700)
+
 val geneticRandom = Random()
 
 fun createCutPositions(maxPos: Int): Pair<Int, Int> = createRandomPositions(maxPos, 1)
@@ -23,4 +26,3 @@ fun <G> makeCuttingIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>):
                 sequence.subList(cutPositions.first, cutPositions.second),
                 sequence.subList(cutPositions.second, sequence.size)
         )
-

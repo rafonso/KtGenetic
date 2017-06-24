@@ -1,6 +1,9 @@
 package rafael.ktgenetic.console
 
-import rafael.ktgenetic.*
+import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.ProcessorEvent
+import rafael.ktgenetic.ProcessorEventEnum
+import rafael.ktgenetic.ProcessorListener
 import rafael.ktgenetic.processor.GeneticProcessor
 import java.util.*
 
