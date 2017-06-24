@@ -13,7 +13,7 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
 ) : Environment<Box, Balance> {
     private val dimensions = BalanceDimensions(originalBoxes.size)
 
-    private val originalBalance = Balance(originalBoxes.mapIndexed { index, weight -> Box(weight, index) }, dimensions)
+    private val originalBalance = Balance(originalBoxes.mapIndexed { index, weight -> Box(index, weight) }, dimensions)
 
     private val greatestMomentOfInertia: Double = originalBalance.totalMass * (dimensions.center * dimensions.center)
 
