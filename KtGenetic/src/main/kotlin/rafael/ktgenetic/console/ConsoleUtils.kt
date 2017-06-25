@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.LoggerContext
 import rafael.ktgenetic.TRACER
-import rafael.ktgenetic.selection.SelectionStrategyChoice
+import rafael.ktgenetic.selection.SelectionOperatorChoice
 
 const val GENERATIONS_PARAMETER = "g"
 const val CHILDREN_TO_SURVIVE_PARAMETER = "c"
@@ -34,9 +34,9 @@ fun getOptions(additionalOptions: (Options) -> Unit): Options {
     options.addOption(CHILDREN_TO_SURVIVE_PARAMETER, true, "Quantity of Children to survive to next generation")
     options.addOption(LOG_LEVEL_PARAMETER, true, "Log Level: 1 = DEBUG, 2 = TRACE, 3 = TRACER (Default INFO)")
     options.addOption(NO_STOP_PROCESSING_PARAMETER, false, "Process with no console interaction")
-    options.addOption(SELECTION_STRATEGY_PARAMETER, true, "Selection strategy to be used. " +
-            "Values: ${SelectionStrategyChoice.values().joinToString { it.code + " = " + it.description }} " +
-            "(Default: ${SelectionStrategyChoice.TRUNCATE.code})")
+    options.addOption(SELECTION_STRATEGY_PARAMETER, true, "Selection operator to be used. " +
+            "Values: ${SelectionOperatorChoice.values().joinToString { it.code + " = " + it.description }} " +
+            "(Default: ${SelectionOperatorChoice.TRUNCATE.code})")
     options.addOption(ADD_MUTATION_TUNER_PARAMETER, false, "Add Mutation tuner")
 
     additionalOptions(options)

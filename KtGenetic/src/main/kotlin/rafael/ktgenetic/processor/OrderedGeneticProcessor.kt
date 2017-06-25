@@ -3,11 +3,11 @@ package rafael.ktgenetic.processor
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.ListPieces
-import rafael.ktgenetic.selection.SelectionStrategy
+import rafael.ktgenetic.selection.SelectionOperator
 
 internal class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Environment<G, C>,
-                                                             selectionStrategy: SelectionStrategy<C>) :
-        GeneticProcessor<G, C>(environment, selectionStrategy) {
+                                                             selectionOperator: SelectionOperator<C>) :
+        GeneticProcessor<G, C>(environment, selectionOperator) {
 
     private fun <G> executeCross(pieces1: ListPieces<G>, pieces2: ListPieces<G>): Pair<List<G>, List<G>> {
 

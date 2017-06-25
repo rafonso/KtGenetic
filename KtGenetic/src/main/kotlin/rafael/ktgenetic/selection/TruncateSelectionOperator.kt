@@ -3,8 +3,8 @@ package rafael.ktgenetic.selection
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.ChromosomeFitnessComparator
 
-internal class TruncateFitnessSelectionStrategy<C : Chromosome<*>>(override val generationSize: Int) :
-        SelectionStrategy<C> {
+internal class TruncateSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :
+        SelectionOperator<C> {
 
     override fun select(children: List<C>): List<C> = children.
             sortedWith(ChromosomeFitnessComparator()).

@@ -1,13 +1,13 @@
 package rafael.ktgenetic.processor
 
 import rafael.ktgenetic.*
-import rafael.ktgenetic.selection.SelectionStrategy
+import rafael.ktgenetic.selection.SelectionOperator
 
 /**
  * Executes the evolutionary process.
  */
 abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G, C>,
-                                                      val selectionStrategy: SelectionStrategy<C>) {
+                                                      val selectionOperator: SelectionOperator<C>) {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 
@@ -72,7 +72,7 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environme
         notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTING, children))
-        val selected = selectionStrategy.select(children)
+        val selected = selectionOperator.select(children)
         notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTED, selected))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATED, selected))

@@ -3,8 +3,8 @@ package rafael.ktgenetic.selection
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.geneticRandom
 
-internal class RouletteElitismSelectionStrategy<C : Chromosome<*>>(override val generationSize: Int) :
-        SelectionStrategy<C> {
+internal class RouletteElitismSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :
+        SelectionOperator<C> {
 
     val fittestSelectionFactor = 0.1
     val fittestChildrenToBeSaved = (fittestSelectionFactor * generationSize).toInt()

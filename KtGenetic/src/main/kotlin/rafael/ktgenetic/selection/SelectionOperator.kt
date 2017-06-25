@@ -1,6 +1,8 @@
 package rafael.ktgenetic.selection
 
-interface SelectionStrategy<C: rafael.ktgenetic.Chromosome<*>> {
+import rafael.ktgenetic.Chromosome
+
+interface SelectionOperator<C: Chromosome<*>> {
 
     val generationSize: Int
 
