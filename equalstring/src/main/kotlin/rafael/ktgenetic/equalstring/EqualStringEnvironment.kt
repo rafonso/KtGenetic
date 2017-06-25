@@ -39,6 +39,6 @@ class EqualStringEnvironment(val target: String,
     override fun resultFound(genotypes: List<Word>) =
             String(genotypes[0].content.toCharArray()) == target
 
-    override fun getNewGenotype(sequence: List<Char>): Word = Word(sequence)
+    override fun createNewChromosome(sequence: List<Char>): Word = Word(sequence)
 
 }

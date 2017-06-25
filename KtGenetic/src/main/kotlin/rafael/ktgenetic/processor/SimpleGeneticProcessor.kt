@@ -9,7 +9,7 @@ internal class SimpleGeneticProcessor<G, C : Chromosome<G>>(environment: Environ
                                                             selectionOperator: SelectionOperator<C>) :
         GeneticProcessor<G, C>(environment, selectionOperator) {
 
-    override fun <G> executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): Pair<List<G>, List<G>> =
+    override fun executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): List<C> =
             super.basicCrossing(pieces1, pieces2)
 
 }

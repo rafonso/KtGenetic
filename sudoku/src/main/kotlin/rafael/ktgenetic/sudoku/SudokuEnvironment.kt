@@ -17,7 +17,7 @@ class SudokuEnvironment(override val maxGenerations: Int = Int.MAX_VALUE,
 
     override fun executeMutation(sequence: List<Cell>): List<Cell> = sequence.randomSwap()
 
-    override fun getNewGenotype(sequence: List<Cell>): Puzzle = Puzzle(sequence)
+    override fun createNewChromosome(sequence: List<Cell>): Puzzle = Puzzle(sequence)
 
     override fun calculateFitness(sequence: List<Cell>): Double {
 

@@ -8,10 +8,10 @@ package rafael.ktgenetic
 interface ProcessorListener {
 
     /**
-     * Process an event
+     * Process an eventType
      *
      * @param event Event fired from [GeneticProcessor].
      */
-    fun onEvent(event: ProcessorEvent)
+    fun onEvent(event: ProcessorEvent<*>)
 
 }

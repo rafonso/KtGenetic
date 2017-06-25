@@ -6,7 +6,7 @@ class MutationTuner<C: Chromosome<*>>(val environment: Environment<*, C>): Proce
 
     val maximumVariation = 0.05
 
-    private fun calculateVariationProportion(chromosomes: List<C>): Double {
+    private fun calculateVariationProportion(chromosomes: List<Chromosome<*>>): Double {
         val averageFitness = chromosomes.pMap { it.fitness }.sum() / chromosomes.size
         val averageFitnessDeviation = Math.sqrt(
                 chromosomes.pMap { Math.pow(it.fitness - averageFitness, 2.0) }.sum() /
@@ -25,11 +25,9 @@ class MutationTuner<C: Chromosome<*>>(val environment: Environment<*, C>): Proce
         }
     }
 
-    override fun onEvent(event: ProcessorEvent) {
-        if (event.event == ProcessorEventEnum.GENERATION_EVALUATED) {
-            @Suppress("UNCHECKED_CAST")
-            val chromosomes = event.value as List<C>
-            val proportion = calculateVariationProportion(chromosomes)
+    override fun onEvent(event: ProcessorEvent<*>) {
+        if (event.eventType == TypeProcessorEvent.GENERATION_EVALUATED) {
+            val proportion = calculateVariationProportion(event.population)
             adjustMutationFactor(proportion)
         }
     }

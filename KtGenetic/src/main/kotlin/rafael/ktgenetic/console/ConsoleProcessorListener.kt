@@ -2,12 +2,12 @@ package rafael.ktgenetic.console
 
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.ProcessorEvent
-import rafael.ktgenetic.ProcessorEventEnum
+import rafael.ktgenetic.TypeProcessorEvent
 import rafael.ktgenetic.ProcessorListener
 import rafael.ktgenetic.processor.GeneticProcessor
 import java.util.*
 
-class ConsoleProcessorListener<G, C : Chromosome<G>>(val processor: GeneticProcessor<G, C>) : ProcessorListener {
+class ConsoleProcessorListener<C: Chromosome<*>>(val processor: GeneticProcessor<*, C>) : ProcessorListener {
 
     val scanner = Scanner(System.`in`)
 
@@ -15,8 +15,8 @@ class ConsoleProcessorListener<G, C : Chromosome<G>>(val processor: GeneticProce
 
     var currentGeneration: Int = 0
 
-    override fun onEvent(event: ProcessorEvent) {
-        if (event.event == ProcessorEventEnum.GENERATION_EVALUATED) {
+    override fun onEvent(event: ProcessorEvent<*>) {
+        if (event.eventType == TypeProcessorEvent.GENERATION_EVALUATED) {
             currentGeneration++
             if (currentGeneration >= generationsToWait) {
                 println("Type <Enter> to process the next generation. " +

@@ -11,13 +11,12 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
                          override var mutationFactor: Double = 0.02
 ) : Environment<Box, Pallete>, ProcessorListener {
 
-    override fun onEvent(event: ProcessorEvent) {
-        if (event.event == ProcessorEventEnum.ENDED_BY_INTERRUPTION ||
-                event.event == ProcessorEventEnum.ENDED_BY_FITNESS ||
-                event.event == ProcessorEventEnum.ENDED_BY_GENERATIONS
+    override fun onEvent(event: ProcessorEvent<*>) {
+        if (event.eventType == TypeProcessorEvent.ENDED_BY_INTERRUPTION ||
+                event.eventType == TypeProcessorEvent.ENDED_BY_FITNESS ||
+                event.eventType == TypeProcessorEvent.ENDED_BY_GENERATIONS
                 ) {
-            @Suppress("UNCHECKED_CAST")
-            val chromosomes = event.value as List<Pallete>
+            val chromosomes = event.population.filterIsInstance<Pallete>()
             mainLogger.info("Best pallete:\n${chromosomes[0].palleteToString}\n" +
                     "CM = ${chromosomes[0].centerOfMass}, " +
                     "MI = ${chromosomes[0].momentOfInertia}")
@@ -48,7 +47,7 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
 
     override fun executeMutation(sequence: Boxes): Boxes = sequence.randomSwap()
 
-    override fun getNewGenotype(sequence: Boxes): Pallete = Pallete(sequence, palleteDimension)
+    override fun createNewChromosome(sequence: Boxes): Pallete = Pallete(sequence, palleteDimension)
 
     override fun calculateFitness(sequence: Boxes): Double {
         val pallete = Pallete(sequence, palleteDimension)

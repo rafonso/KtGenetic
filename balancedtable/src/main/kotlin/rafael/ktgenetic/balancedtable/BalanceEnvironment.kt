@@ -33,7 +33,7 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
 
     override fun executeMutation(sequence: Boxes): Boxes = sequence.randomSwap()
 
-    override fun getNewGenotype(sequence: Boxes): Balance = Balance(sequence, dimensions)
+    override fun createNewChromosome(sequence: Boxes): Balance = Balance(sequence, dimensions)
 
     override fun calculateFitness(sequence: Boxes): Double {
         val bal = Balance(sequence, dimensions)

@@ -23,7 +23,7 @@ interface Environment<G, C : Chromosome<G>> {
 
     fun executeMutation(sequence: List<G>): List<G>
 
-    fun getNewGenotype(sequence: List<G>): C
+    fun createNewChromosome(sequence: List<G>): C
 
     fun calculateFitness(sequence: List<G>): Double
 

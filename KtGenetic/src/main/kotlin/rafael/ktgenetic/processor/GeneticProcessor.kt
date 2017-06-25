@@ -15,90 +15,85 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environme
 
     var continueProcessing = true
 
-    private fun notifyEvent(event: ProcessorEvent) {
+    private fun notifyEvent(event: ProcessorEvent<*>) {
         listeners.parallelStream().forEach({ it.onEvent(event) })
     }
 
-    protected fun <G> basicCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): Pair<List<G>, List<G>> = Pair(
-            pieces2.left + pieces1.core + pieces2.right,
-            pieces1.left + pieces2.core + pieces1.right
+    protected fun basicCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): List<C> = listOf(
+            environment.createNewChromosome(pieces2.left + pieces1.core + pieces2.right),
+            environment.createNewChromosome(pieces1.left + pieces2.core + pieces1.right)
     )
 
-    abstract protected fun <G> executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): Pair<List<G>, List<G>>
+    abstract protected fun executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): List<C>
 
-    fun executeMutation(chromosome: C): C = if (Math.random() < environment.mutationFactor) environment.getNewGenotype(environment.executeMutation(chromosome.content))
+    fun executeMutation(chromosome: C): C = if (Math.random() < environment.mutationFactor) environment.createNewChromosome(environment.executeMutation(chromosome.content))
     else chromosome
 
 
-    private fun cross(parent1: List<G>, parent2: List<G>): List<List<G>> {
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSING, Pair(parent1, parent2)))
+    private fun cross(generation: Int, parent1: C, parent2: C): List<C> {
+        notifyEvent(ProcessorEvent(TypeProcessorEvent.CROSSING, generation, listOf(parent1, parent2)))
 
         val cutPositions = environment.getCutPositions()
 
-        val pieces1 = environment.cutIntoPieces(parent1, cutPositions)
-        val pieces2 = environment.cutIntoPieces(parent2, cutPositions)
+        val pieces1 = environment.cutIntoPieces(parent1.content, cutPositions)
+        val pieces2 = environment.cutIntoPieces(parent2.content, cutPositions)
 
         val children = executeCrossing(pieces1, pieces2)
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.CROSSED, children))
+        notifyEvent(ProcessorEvent(TypeProcessorEvent.CROSSED, generation, children.toList()))
 
         return children.toList()
     }
 
-    private tailrec fun processGeneration(generation: Int, parents: List<C>): Pair<Int, List<C>> {
+    private fun inferEndProcessingType(generation: Int): TypeProcessorEvent =
+            if (!continueProcessing) {
+                TypeProcessorEvent.ENDED_BY_INTERRUPTION
+            } else if (generation <= environment.maxGenerations) {
+                TypeProcessorEvent.ENDED_BY_FITNESS
+            } else {
+                TypeProcessorEvent.ENDED_BY_GENERATIONS
+            }
+
+    private tailrec fun processGeneration(generation: Int, parents: List<C>): ProcessorEvent<C> {
         if (!continueProcessing || environment.resultFound(parents) || (generation > environment.maxGenerations)) {
-            return Pair(generation, parents)
+            return ProcessorEvent(inferEndProcessingType(generation), generation - 1, parents)
         }
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATING, generation))
+        notifyEvent(ProcessorEvent(TypeProcessorEvent.GENERATION_EVALUATING, generation, parents))
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCING, parents))
-        val children: List<C> = (0 until parents.size).pFlatMap { i ->
+        notifyEvent(ProcessorEvent(TypeProcessorEvent.REPRODUCING, generation, parents))
+        val children = (0 until parents.size).pFlatMap { i ->
             ((i + 1) until parents.size).pFlatMap { j ->
-                cross(parents[i].content, parents[j].content)
+                cross(generation, parents[i], parents[j])
             }
-        }.pMap { environment.getNewGenotype(it) } + parents
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCED, children))
+        } + parents
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTING, children))
+        notifyEvent(ProcessorEvent(TypeProcessorEvent.MUTATION_EXECUTING, generation, children))
         val mutated = children.pMap { executeMutation(it) }
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTED, mutated))
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, mutated))
+        notifyEvent(ProcessorEvent(TypeProcessorEvent.FITNESS_CALCULATING, generation, mutated))
         // Calculate Fitness
         mutated.forEach {
             it.fitness = environment.calculateFitness(it.content)
         }
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATED, mutated))
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTING, mutated))
-        val selected = selectionOperator.select(mutated)
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTED, selected))
+        notifyEvent(ProcessorEvent(TypeProcessorEvent.SELECTING, generation, mutated))
+        val selected = selectionOperator.select(mutated.sortedBy { it.fitness }.reversed())
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATED, selected))
+        notifyEvent(ProcessorEvent(TypeProcessorEvent.GENERATION_EVALUATED, generation, selected))
 
         return processGeneration(generation + 1, selected)
     }
 
 
-    fun process(): List<C> {
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.STARTING, environment.maxGenerations))
+    fun process(): ProcessorEvent<C> {
+        notifyEvent(ProcessorEvent(TypeProcessorEvent.STARTING, environment.maxGenerations, listOf()))
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATING))
+        notifyEvent(ProcessorEvent(TypeProcessorEvent.FIRST_GENERATION_CREATING, 0, listOf()))
         val population = environment.getFirstGeneration()
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.FIRST_GENERATION_CREATED, population))
 
-        val (generation, finalPopulation) = processGeneration(1, population)
-
-        val result = finalPopulation.sortedBy { it.fitness }.reversed()
-        val cause = if (!continueProcessing) {
-            ProcessorEventEnum.ENDED_BY_INTERRUPTION
-        } else if (generation <= environment.maxGenerations) {
-            ProcessorEventEnum.ENDED_BY_FITNESS
-        } else {
-            ProcessorEventEnum.ENDED_BY_GENERATIONS
-        }
-        notifyEvent(ProcessorEvent(cause, result))
+        val result = processGeneration(1, population)
+        notifyEvent(result)
 
         return result
     }
