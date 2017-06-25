@@ -36,7 +36,7 @@ fun <G, C : Chromosome<G>> executeMain(
                     environment.generationSize)
 
             val processor = processorChoice.newInstance(environment, selectionStrategy)
-            processor.addListener(LogProcessorListener<G, C>())
+            processor.addListener(LogProcessorListener<C>())
             if (!line.hasOption(NO_STOP_PROCESSING_PARAMETER)) {
                 processor.addListener(ConsoleProcessorListener(processor))
             }

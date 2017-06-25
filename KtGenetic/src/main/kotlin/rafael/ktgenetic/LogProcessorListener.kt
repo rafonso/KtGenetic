@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger
 /**
  * Emits log messages according the [ProcessorEvent].
  */
-class LogProcessorListener<out G, C : Chromosome<G>> : ProcessorListener {
+class LogProcessorListener<C : Chromosome<*>> : ProcessorListener {
 
     private val CONSOLE_SIZE = 120
 
@@ -73,13 +73,13 @@ class LogProcessorListener<out G, C : Chromosome<G>> : ProcessorListener {
             }
             ProcessorEventEnum.CROSSING -> {
                 log(log.isEnabled(TRACER), {
-                    val (parent1, parent2) = event.value as Pair<List<G>, List<G>>
+                    val (parent1, parent2) = event.value as Pair<List<*>, List<*>>
                     log.log(TRACER, "Generation $currentGeneration - Crossing: {} x {}", parent1, parent2)
                 })
             }
             ProcessorEventEnum.CROSSED -> {
                 log(log.isEnabled(TRACER), {
-                    val (children1, children2) = event.value as Pair<List<G>, List<G>>
+                    val (children1, children2) = event.value as Pair<List<*>, List<*>>
                     log.log(TRACER, "Generation $currentGeneration - Crossed : {} x {}", children1, children2)
                 })
             }
