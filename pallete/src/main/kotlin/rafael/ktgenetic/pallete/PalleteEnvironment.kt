@@ -16,6 +16,7 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
                 event.event == ProcessorEventEnum.ENDED_BY_FITNESS ||
                 event.event == ProcessorEventEnum.ENDED_BY_GENERATIONS
                 ) {
+            @Suppress("UNCHECKED_CAST")
             val chromosomes = event.value as List<Pallete>
             mainLogger.info("Best pallete:\n${chromosomes[0].palleteToString}\n" +
                     "CM = ${chromosomes[0].centerOfMass}, " +

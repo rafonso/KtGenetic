@@ -27,6 +27,7 @@ class MutationTuner<C: Chromosome<*>>(val environment: Environment<*, C>): Proce
 
     override fun onEvent(event: ProcessorEvent) {
         if (event.event == ProcessorEventEnum.GENERATION_EVALUATED) {
+            @Suppress("UNCHECKED_CAST")
             val chromosomes = event.value as List<C>
             val proportion = calculateVariationProportion(chromosomes)
             adjustMutationFactor(proportion)

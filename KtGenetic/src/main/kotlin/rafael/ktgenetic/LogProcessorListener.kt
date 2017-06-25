@@ -39,6 +39,7 @@ class LogProcessorListener<out G, C : Chromosome<G>> : ProcessorListener {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onEvent(event: ProcessorEvent) {
         when (event.event) {
             ProcessorEventEnum.STARTING -> {
@@ -153,7 +154,6 @@ class LogProcessorListener<out G, C : Chromosome<G>> : ProcessorListener {
                     log.debug("Interrupted: {}", event.value)
                 })
             }
-            else -> error("Event not recognized: $event")
         }
     }
 
