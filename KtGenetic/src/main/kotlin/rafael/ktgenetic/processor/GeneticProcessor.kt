@@ -53,7 +53,7 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environme
         notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATING, generation))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCING, parents))
-        var children: List<C> = (0 until parents.size).pFlatMap { i ->
+        val children: List<C> = (0 until parents.size).pFlatMap { i ->
             ((i + 1) until parents.size).pFlatMap { j ->
                 cross(parents[i].content, parents[j].content)
             }
@@ -61,18 +61,18 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environme
         notifyEvent(ProcessorEvent(ProcessorEventEnum.REPRODUCED, children))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTING, children))
-        children = children.pMap { executeMutation(it) }
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTED, children))
+        val mutated = children.pMap { executeMutation(it) }
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.MUTATION_EXECUTED, mutated))
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, children))
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATING, mutated))
         // Calculate Fitness
-        children.forEach {
+        mutated.forEach {
             it.fitness = environment.calculateFitness(it.content)
         }
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATED, children))
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.FITNESS_CALCULATED, mutated))
 
-        notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTING, children))
-        val selected = selectionOperator.select(children)
+        notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTING, mutated))
+        val selected = selectionOperator.select(mutated)
         notifyEvent(ProcessorEvent(ProcessorEventEnum.SELECTED, selected))
 
         notifyEvent(ProcessorEvent(ProcessorEventEnum.GENERATION_EVALUATED, selected))
