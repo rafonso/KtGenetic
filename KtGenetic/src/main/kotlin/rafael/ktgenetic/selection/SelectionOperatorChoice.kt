@@ -10,18 +10,19 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
     },
     ROULETTE_ELITISM("r", "Roulette with Elitism") {
         override fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C> =
-                RouletteElitismSelectionOperator<C>(environment.generationSize)
+                ElitismDelegeteSelectionOperator<C>(
+                        RouletteSelectionOperator((environment.generationSize * 0.9).toInt()),
+                        environment.generationSize
+                )
     };
 
     internal abstract fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C>
 }
 
 fun codeToSelectionOperatorChoice(code: String): SelectionOperatorChoice {
-    for (ch in SelectionOperatorChoice.values()) {
-        if (code == ch.code) {
-            return ch
-        }
-    }
+    SelectionOperatorChoice.values()
+            .filter { code == it.code }
+            .forEach { return it }
 
     throw IllegalArgumentException("Illegal Selection Operator Choice code: $code")
 }
