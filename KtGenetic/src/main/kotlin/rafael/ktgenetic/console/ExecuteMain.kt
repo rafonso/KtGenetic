@@ -5,7 +5,7 @@ import rafael.ktgenetic.*
 import rafael.ktgenetic.processor.GeneticProcessor
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.selection.SelectionOperatorChoice
-import rafael.ktgenetic.selection.chooseSelectionOperator
+import rafael.ktgenetic.selection.codeToSelectionOperatorChoice
 import kotlin.system.measureTimeMillis
 
 fun <G, C : Chromosome<G>> executeMain(
@@ -31,9 +31,9 @@ fun <G, C : Chromosome<G>> executeMain(
 
         val executionTime = measureTimeMillis {
             val environment = getEnvironment(line)
-            val selectionStrategy = chooseSelectionOperator<C>(
-                    line.getOptionValue(SELECTION_STRATEGY_PARAMETER, SelectionOperatorChoice.TRUNCATE.code),
-                    environment.generationSize)
+            val selectionStrategy = codeToSelectionOperatorChoice(
+                    line.getOptionValue(SELECTION_STRATEGY_PARAMETER, SelectionOperatorChoice.TRUNCATE.code)
+            ).chooseSelectionOperator(environment)
 
             val processor = processorChoice.newInstance(environment, selectionStrategy)
             processor.addListener(LogProcessorListener())
