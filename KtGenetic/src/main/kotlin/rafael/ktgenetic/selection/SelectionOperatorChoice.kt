@@ -2,6 +2,8 @@ package rafael.ktgenetic.selection
 
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.Environment
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.primaryConstructor
 
 enum class SelectionOperatorChoice(val code: String, val description: String) {
     TRUNCATE("t", "Truncation") {
@@ -10,8 +12,8 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
     },
     ROULETTE_ELITISM("r", "Roulette with Elitism") {
         override fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C> =
-                ElitismDelegeteSelectionOperator<C>(
-                        RouletteSelectionOperator((environment.generationSize * 0.9).toInt()),
+                ElitismDelegateSelectionOperator<C>(
+                        RouletteSelectionOperator::class.primaryConstructor!! as KFunction<*>,
                         environment.generationSize
                 )
     };
