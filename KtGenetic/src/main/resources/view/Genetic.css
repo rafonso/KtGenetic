@@ -1,0 +1,30 @@
+
+* {
+/*	-fx-font-size: 15px;*/
+}
+
+.panel-control {
+	-fx-pref-width: 256px;
+	-fx-pref-height: 60px;
+}
+
+.panel-output {
+	-fx-orientation: vertical;
+}
+
+.label-title {
+	
+}
+
+.label-value {
+	 -fx-pref-width: 200px;
+	 /*-fx-min-width: 100%;*/
+	 -fx-text-alignment: right;
+	 -fx-alignment: center-right;
+	 -fx-font-size: 40px !important;
+	 -fx-font-weight: bold;
+}
+
+.spinner-value {
+     -fx-pref-width: 75px;
+}
