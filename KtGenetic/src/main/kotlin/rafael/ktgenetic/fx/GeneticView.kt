@@ -13,14 +13,18 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.GridPane
 import javafx.util.StringConverter
-import rafael.ktgenetic.Chromosome
-import rafael.ktgenetic.Environment
+import rafael.ktgenetic.*
+import rafael.ktgenetic.LogLevel.INFO
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.selection.SelectionOperatorChoice
 import tornadofx.*
+import java.time.Duration
+import java.time.Instant
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 
-abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorChoice: GeneticProcessorChoice) : View(title) {
+abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorChoice: GeneticProcessorChoice) : View(title), ProcessorListener {
     override val root: BorderPane by fxml("/view/Genetic.fxml")
 
     private val values: ObservableList<Int> = FXCollections.observableArrayList(1, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000)
@@ -43,6 +47,10 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
     private var lastRow = 1
     private var lastColumn = 0
+    private var t0: Instant? = null
+
+    private val averageFitnessByGeneration: MutableList<Double> = mutableListOf()
+    private val bestFitnessByGeneration: MutableList<Double> = mutableListOf()
 
     init {
         cmbGenerations.items = values
@@ -88,6 +96,16 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
         lastColumn += colspan
     }
 
+    override fun onEvent(event: ProcessorEvent<*>) {
+        if (event.eventType.ended) {
+            val (best, average, deviation) = getBestAverageDeviationFitness(event.population)
+            this.lblBestFitness.text = "%.3f (%.3f)".format(best, deviation)
+            val t = LocalTime.MIDNIGHT.plus(Duration.between(t0, Instant.now()))
+            val s = DateTimeFormatter.ofPattern("m:ss.SSS").format(t)
+            this.lblTime.text = s
+        }
+    }
+
     fun startProcessing() {
         try {
             validate()
@@ -96,6 +114,13 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
             disableInputComponents(true)
             val selectionOperator = cmbSelectionOperator.value.chooseSelectionOperator(environment)
             val processor = processorChoice.newInstance(environment, selectionOperator)
+
+            configureLog(INFO)
+            processor.addListener(LogProcessorListener())
+            processor.addListener(this)
+
+            t0 = Instant.now()
+            processor.process()
         } catch (e: IllegalStateException) {
             val alert = Alert(Alert.AlertType.ERROR)
             alert.title = "Validation Error!"
