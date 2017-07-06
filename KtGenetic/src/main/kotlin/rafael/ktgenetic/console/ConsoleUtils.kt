@@ -3,10 +3,7 @@ package rafael.ktgenetic.console
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.Options
-import org.apache.logging.log4j.Level
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.core.LoggerContext
-import rafael.ktgenetic.TRACER
+import rafael.ktgenetic.configureLog
 import rafael.ktgenetic.selection.SelectionOperatorChoice
 
 const val GENERATIONS_PARAMETER = "g"
@@ -16,8 +13,6 @@ const val LOG_LEVEL_PARAMETER = "l"
 const val NO_STOP_PROCESSING_PARAMETER = "p"
 const val SELECTION_STRATEGY_PARAMETER = "s"
 const val ADD_MUTATION_TUNER_PARAMETER = "m"
-
-val mainLogger = LogManager.getLogger("Main")!!
 
 fun CommandLine.getIntOptionValue(opt: String, defaultValue: Int): Int =
         this.getOptionValue(opt, defaultValue.toString()).toInt()
@@ -51,20 +46,8 @@ fun showOptions(options: Options) {
 
 fun configureLogLevel(line: CommandLine) {
     if (line.hasOption(LOG_LEVEL_PARAMETER)) {
-        /**
-         * Code extracted from https://stackoverflow.com/questions/23434252/programmatically-change-log-level-in-log4j2
-         */
-        val ctx = LogManager.getContext(false) as LoggerContext
-        val config = ctx.configuration
-        val loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME)
-
         val logLevel = line.getOptionValue(LOG_LEVEL_PARAMETER)
-        when (logLevel) {
-            "1" -> loggerConfig.level = Level.DEBUG
-            "2" -> loggerConfig.level = Level.TRACE
-            "3" -> loggerConfig.level = TRACER
-            else -> mainLogger.warn("Log level unrecognised: $logLevel")
-        }
-        ctx.updateLoggers()  // This causes all Loggers to refetch information from their LoggerConfig.
+        configureLog(logLevel)
     }
 }
+

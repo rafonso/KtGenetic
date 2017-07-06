@@ -1,6 +1,8 @@
 package rafael.ktgenetic
 
 import org.apache.logging.log4j.Level
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.core.LoggerContext
 import java.util.*
 
 private fun createRandomPositions(maxPos: Int, initialPos: Int): Pair<Int, Int> {
@@ -13,8 +15,6 @@ private fun createRandomPositions(maxPos: Int, initialPos: Int): Pair<Int, Int> 
     return Pair(pos1, pos2)
 }
 
-val TRACER: Level = Level.forName("TRACER", 700)
-
 val geneticRandom = Random()
 
 fun createCutPositions(maxPos: Int): Pair<Int, Int> = createRandomPositions(maxPos, 1)
@@ -26,3 +26,23 @@ fun <G> makeCuttingIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>):
                 sequence.subList(cutPositions.first, cutPositions.second),
                 sequence.subList(cutPositions.second, sequence.size)
         )
+
+/**
+ * From a list of [Chromosome]s, it returns the best [Chromosome.fitness], the average fitness and the deviation of this average.
+ *
+ * @param chromosomes Chromosomes to be evaluated
+ * @return A [Triple] compound by the best [Chromosome.fitness], the average fitness and the deviation of this average.
+ */
+fun getBestAverageDeviationFitness(chromosomes: List<Chromosome<*>>): Triple<Double, Double, Double> {
+    val fitnesses = chromosomes.map { it.fitness }
+
+    val bestFitness = fitnesses.max()
+    val averageFitness = fitnesses.sum() / fitnesses.size
+    val averageFitnessDeviation = Math.sqrt(
+            fitnesses.map { Math.pow(it - averageFitness, 2.0) }.sum() /
+                    (fitnesses.size * (fitnesses.size - 1))
+    )
+
+    return Triple(bestFitness!!, averageFitness, averageFitnessDeviation)
+}
+
