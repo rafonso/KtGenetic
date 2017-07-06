@@ -4,7 +4,7 @@ package rafael.ktgenetic
  * Represents the type of eventType that occurs during the evolutionary process in [rafael.ktgenetic.processor.GeneticProcessor].
  * Each type of eventType is accompanied by a specific kind of object in [ProcessorEvent] class.
  */
-enum class TypeProcessorEvent {
+enum class TypeProcessorEvent(val ended: Boolean = false) {
     /**
      * Stating of processing.
      */
@@ -54,15 +54,15 @@ enum class TypeProcessorEvent {
      * Processing ended because the generation number reached the maximum number of generations indicated by
      * [Environment.maxGenerations]. Companion: The last Generation.
      */
-    ENDED_BY_FITNESS,
+    ENDED_BY_FITNESS(true),
     /**
      * Processing ended because the generator was interrupted by calling [GeneticProcessor#stop()].
      * Companion: The last Generation.
      */
-    ENDED_BY_INTERRUPTION,
+    ENDED_BY_INTERRUPTION(true),
     /**
      * Processing ended because the desired criteria indicated by [Environment.resultFound] was reached.
      * Companion: The last Generation.
      */
-    ENDED_BY_GENERATIONS
+    ENDED_BY_GENERATIONS(true)
 }
