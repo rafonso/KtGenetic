@@ -5,6 +5,7 @@ import javafx.collections.ObservableList
 import javafx.geometry.Orientation
 import javafx.scene.Node
 import javafx.scene.chart.LineChart
+import javafx.scene.chart.XYChart
 import javafx.scene.control.Alert
 import javafx.scene.control.Button
 import javafx.scene.control.ComboBox
@@ -14,7 +15,7 @@ import javafx.scene.layout.FlowPane
 import javafx.scene.layout.GridPane
 import javafx.util.StringConverter
 import rafael.ktgenetic.*
-import rafael.ktgenetic.LogLevel.INFO
+import rafael.ktgenetic.LogLevel.DEBUG
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.selection.SelectionOperatorChoice
 import tornadofx.*
@@ -42,6 +43,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
     private val btnStart: Button                                        by fxid()
     private val lblGeneration: Label                                    by fxid()
     private val lblBestFitness: Label                                   by fxid()
+    private val lblAverageFitness: Label                                by fxid()
     private val lblTime: Label                                          by fxid()
     private val lineChartFitness: LineChart<Int, Double>                by fxid()
 
@@ -67,6 +69,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
         cmbSelectionOperator.converter = SelectionOperatorConverter()
 
         lineChartFitness.yAxis.isTickMarkVisible = false
+
+        configureLog(DEBUG)
     }
 
     private fun disableInputComponents(disable: Boolean) {
@@ -115,12 +119,26 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
             val selectionOperator = cmbSelectionOperator.value.chooseSelectionOperator(environment)
             val processor = processorChoice.newInstance(environment, selectionOperator)
 
-            configureLog(INFO)
-            processor.addListener(LogProcessorListener())
-            processor.addListener(this)
+            lineChartFitness.data.clear()
 
-            t0 = Instant.now()
-            processor.process()
+            val averageSeries = XYChart.Series<Int, Double>()
+            averageSeries.name = "Average"
+            lineChartFitness.data.add(averageSeries)
+
+            val bestSeries = XYChart.Series<Int, Double>()
+            bestSeries.name = "Best"
+            lineChartFitness.data.add(bestSeries)
+
+            val task = GeneticTask(processor)
+
+            lblGeneration.textProperty().bind(task.generationProperty)
+            lblBestFitness.textProperty().bind(task.bestFitnessProperty)
+            lblTime.textProperty().bind(task.timeProperty)
+            lblAverageFitness.textProperty().bind(task.averageFitnessProperty)
+            averageSeries.dataProperty().bind(task.averageData)
+            bestSeries.dataProperty().bind(task.bestData)
+
+            Thread(task).start()
         } catch (e: IllegalStateException) {
             val alert = Alert(Alert.AlertType.ERROR)
             alert.title = "Validation Error!"

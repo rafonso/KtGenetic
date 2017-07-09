@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -90,6 +89,14 @@
                   <Separator prefWidth="200.0" />
                </children>
             </FlowPane>
+            <FlowPane orientation="VERTICAL" prefWidth="200.0">
+               <children>
+                  <Label text="Average Fitness" />
+                  <Label fx:id="lblAverageFitness" prefWidth="100.0" styleClass="label-value" text="000 (000)">
+                  </Label>
+                   <Separator prefWidth="200.0" />
+               </children>
+            </FlowPane>
             <FlowPane layoutX="10.0" layoutY="175.0" orientation="VERTICAL">
                <children>
                   <Label text="Time" />
@@ -97,9 +104,9 @@
                   <Separator prefWidth="200.0" />
                </children>
             </FlowPane>
-            <LineChart fx:id="lineChartFitness" createSymbols="false" legendVisible="false" prefHeight="105.0" prefWidth="200.0">
+            <LineChart fx:id="lineChartFitness" createSymbols="false" horizontalZeroLineVisible="false" legendVisible="false" prefHeight="105.0" prefWidth="200.0" verticalGridLinesVisible="false">
               <xAxis>
-                <CategoryAxis side="BOTTOM" />
+                  <NumberAxis autoRanging="true" minorTickCount="10" minorTickLength="1.0" side="LEFT" tickLabelGap="2.0" tickLength="10.0" tickUnit="0.1" upperBound="1.0" />
               </xAxis>
               <yAxis>
                 <NumberAxis autoRanging="false" minorTickCount="10" minorTickLength="1.0" side="LEFT" tickLabelGap="2.0" tickLength="10.0" tickUnit="0.1" upperBound="1.0" />
