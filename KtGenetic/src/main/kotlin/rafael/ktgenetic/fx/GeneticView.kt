@@ -49,7 +49,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
     private var lastRow = 1
     private var lastColumn = 0
-    private var t0: Instant? = null
+    private lateinit var t0: Instant
+    private lateinit var task: GeneticTask<C>
 
     private val averageFitnessByGeneration: MutableList<Double> = mutableListOf()
     private val bestFitnessByGeneration: MutableList<Double> = mutableListOf()
@@ -79,6 +80,37 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
         pnlInput.children.filtered { it != pnlButtons }.forEach { it.isDisable = disable }
     }
 
+    private fun showError(e: IllegalStateException) {
+        val alert = Alert(Alert.AlertType.ERROR)
+        alert.title = "Validation Error!"
+        alert.headerText = "Can not proceed Processing"
+        alert.contentText = e.message
+        alert.showAndWait()
+    }
+
+    private fun createSeries(): Pair<XYChart.Series<Int, Double>, XYChart.Series<Int, Double>> {
+        lineChartFitness.data.clear()
+
+        val averageSeries = XYChart.Series<Int, Double>()
+        averageSeries.name = "Average"
+        lineChartFitness.data.add(averageSeries)
+
+        val bestSeries = XYChart.Series<Int, Double>()
+        bestSeries.name = "Best"
+        lineChartFitness.data.add(bestSeries)
+
+        return Pair(averageSeries, bestSeries)
+    }
+
+    private fun makeBind(task: GeneticTask<C>, averageSeries: XYChart.Series<Int, Double>, bestSeries: XYChart.Series<Int, Double>) {
+        lblGeneration.textProperty().bind(task.generationProperty)
+        lblBestFitness.textProperty().bind(task.bestFitnessProperty)
+        lblTime.textProperty().bind(task.timeProperty)
+        lblAverageFitness.textProperty().bind(task.averageFitnessProperty)
+        averageSeries.dataProperty().bind(task.averageData)
+        bestSeries.dataProperty().bind(task.bestData)
+    }
+
     protected abstract fun validate()
 
     protected abstract fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<G, C>
@@ -102,7 +134,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
     override fun onEvent(event: ProcessorEvent<*>) {
         if (event.eventType.ended) {
-            val (best, average, deviation) = getBestAverageDeviationFitness(event.population)
+            val (best, _, deviation) = getBestAverageDeviationFitness(event.population)
             this.lblBestFitness.text = "%.3f (%.3f)".format(best, deviation)
             val t = LocalTime.MIDNIGHT.plus(Duration.between(t0, Instant.now()))
             val s = DateTimeFormatter.ofPattern("m:ss.SSS").format(t)
@@ -119,36 +151,20 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
             val selectionOperator = cmbSelectionOperator.value.chooseSelectionOperator(environment)
             val processor = processorChoice.newInstance(environment, selectionOperator)
 
-            lineChartFitness.data.clear()
+            val (averageSeries, bestSeries) = createSeries()
 
-            val averageSeries = XYChart.Series<Int, Double>()
-            averageSeries.name = "Average"
-            lineChartFitness.data.add(averageSeries)
+            task = GeneticTask(processor)
 
-            val bestSeries = XYChart.Series<Int, Double>()
-            bestSeries.name = "Best"
-            lineChartFitness.data.add(bestSeries)
-
-            val task = GeneticTask(processor)
-
-            lblGeneration.textProperty().bind(task.generationProperty)
-            lblBestFitness.textProperty().bind(task.bestFitnessProperty)
-            lblTime.textProperty().bind(task.timeProperty)
-            lblAverageFitness.textProperty().bind(task.averageFitnessProperty)
-            averageSeries.dataProperty().bind(task.averageData)
-            bestSeries.dataProperty().bind(task.bestData)
+            makeBind(task, averageSeries, bestSeries)
 
             Thread(task).start()
         } catch (e: IllegalStateException) {
-            val alert = Alert(Alert.AlertType.ERROR)
-            alert.title = "Validation Error!"
-            alert.headerText = "Can not proceed Processing"
-            alert.contentText = e.message
-            alert.showAndWait()
+            showError(e)
         }
     }
 
     fun stopProcessing() {
+        task.cancel(true)
         disableInputComponents(false)
     }
 }

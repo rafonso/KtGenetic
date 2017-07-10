@@ -14,7 +14,6 @@ import rafael.ktgenetic.processor.GeneticProcessor
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 internal class GeneticTask<C : Chromosome<*>>(private val processor: GeneticProcessor<*, C>) :
@@ -30,7 +29,7 @@ internal class GeneticTask<C : Chromosome<*>>(private val processor: GeneticProc
     val bestData: ObjectProperty<ObservableList<XYChart.Data<Int, Double>>> = SimpleObjectProperty(FXCollections.observableArrayList<XYChart.Data<Int, Double>>())
 
     override fun call(): ProcessorEvent<C> {
-        processor.addListener(this);
+        processor.addListener(this)
         processor.addListener(LogProcessorListener())
 
         t0 = Instant.now()
@@ -38,6 +37,11 @@ internal class GeneticTask<C : Chromosome<*>>(private val processor: GeneticProc
     }
 
     private val formatter = SimpleDateFormat("mm:ss.SSS")
+
+    override fun cancel(mayInterruptIfRunning: Boolean): Boolean {
+        processor.continueProcessing = false
+        return super.cancel(mayInterruptIfRunning)
+    }
 
     override fun onEvent(event: ProcessorEvent<*>) {
         if((event.eventType == TypeProcessorEvent.GENERATION_EVALUATING) || event.eventType.ended) {
