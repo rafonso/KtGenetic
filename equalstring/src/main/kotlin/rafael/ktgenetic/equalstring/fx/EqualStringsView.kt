@@ -1,8 +1,8 @@
 package rafael.ktgenetic.equalstring.fx
 
 import javafx.collections.FXCollections
-import javafx.scene.control.ComboBox
-import javafx.scene.control.TextField
+import javafx.scene.control.*
+import javafx.scene.control.cell.PropertyValueFactory
 import javafx.util.StringConverter
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.equalstring.EqualStringEnvironment
@@ -15,6 +15,9 @@ import tornadofx.*
 class EqualStringsViewApp : App(EqualStringsView::class)
 
 class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcessorChoice.SIMPLE) {
+
+    val wordsTable: TableView<Word> = TableView<Word>()
+
     private val cmbStringFitness = ComboBox<StringFitnessChoice>()
 
     private val txfTarget: TextField = TextField()
@@ -27,6 +30,24 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcess
 
         txfTarget.prefWidth = 400.0
         addComponent("Target", txfTarget, 2)
+
+        val fitnessColumn = TableColumn<Word, Double>("Fitness")
+        fitnessColumn.prefWidth = 100.0
+        fitnessColumn.cellValueFactory = PropertyValueFactory<Word, Double>("fitness")
+
+        val wordColumn = TableColumn<Word, String>("Word")
+        wordColumn.prefWidth = 500.0
+        wordColumn.cellValueFactory = PropertyValueFactory<Word, String>("content")
+
+        wordsTable.prefWidth = Control.USE_COMPUTED_SIZE
+        wordsTable.columns.addAll(fitnessColumn, wordColumn)
+
+        val pane = ScrollPane(wordsTable)
+        pane.vbarPolicy = ScrollPane.ScrollBarPolicy.ALWAYS
+
+        wordsTable.items = FXCollections.observableArrayList((1..100).map { Word("TESTEEEEEEEEEEEEE") })
+
+        root.center = pane
     }
 
     override fun validate() {
