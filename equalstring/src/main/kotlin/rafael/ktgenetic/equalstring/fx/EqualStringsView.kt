@@ -1,8 +1,10 @@
 package rafael.ktgenetic.equalstring.fx
 
+import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
 import javafx.scene.control.*
-import javafx.scene.control.cell.PropertyValueFactory
+import javafx.util.Callback
 import javafx.util.StringConverter
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.equalstring.EqualStringEnvironment
@@ -15,7 +17,6 @@ import tornadofx.*
 class EqualStringsViewApp : App(EqualStringsView::class)
 
 class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcessorChoice.SIMPLE) {
-
     val wordsTable: TableView<Word> = TableView<Word>()
 
     private val cmbStringFitness = ComboBox<StringFitnessChoice>()
@@ -29,31 +30,30 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcess
         addComponent("Fitness Method", cmbStringFitness)
 
         txfTarget.prefWidth = 400.0
-        addComponent("Target", txfTarget, 2)
+        addComponent("Target", txfTarget, 3)
 
-        val fitnessColumn = TableColumn<Word, Double>("Fitness")
+        val fitnessColumn = TableColumn<Word, String>("Fitness")
         fitnessColumn.prefWidth = 100.0
-        fitnessColumn.cellValueFactory = PropertyValueFactory<Word, Double>("fitness")
+        fitnessColumn.cellValueFactory = WordToFitnessString()
 
         val wordColumn = TableColumn<Word, String>("Word")
         wordColumn.prefWidth = 500.0
-        wordColumn.cellValueFactory = PropertyValueFactory<Word, String>("content")
+        wordColumn.cellValueFactory = WordToValueString()
 
         wordsTable.prefWidth = Control.USE_COMPUTED_SIZE
         wordsTable.columns.addAll(fitnessColumn, wordColumn)
 
-        val pane = ScrollPane(wordsTable)
-        pane.vbarPolicy = ScrollPane.ScrollBarPolicy.ALWAYS
-
-        wordsTable.items = FXCollections.observableArrayList((1..100).map { Word("TESTEEEEEEEEEEEEE") })
-
-        root.center = pane
+        root.center = wordsTable
     }
 
     override fun validate() {
         if (txfTarget.text.isEmpty()) {
             throw IllegalStateException("Target not defined")
         }
+    }
+
+    override fun fillOwnComponent(genome: List<Word>) {
+        wordsTable.items = FXCollections.observableArrayList(genome)
     }
 
     override fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<Char, Word> =
@@ -72,4 +72,14 @@ class StringFitnessChoiceConverter : StringConverter<StringFitnessChoice>() {
 
     override fun fromString(string: String?): StringFitnessChoice = StringFitnessChoice.values().first { it.description == string }
 
+}
+
+class WordToFitnessString : Callback<TableColumn.CellDataFeatures<Word, String>, ObservableValue<String>> {
+    override fun call(param: TableColumn.CellDataFeatures<Word, String>?): ObservableValue<String> = //
+            SimpleObjectProperty<String>("%.3f".format(param!!.value.fitness))
+}
+
+class WordToValueString : Callback<TableColumn.CellDataFeatures<Word, String>, ObservableValue<String>> {
+    override fun call(param: TableColumn.CellDataFeatures<Word, String>?): ObservableValue<String> = //
+            SimpleObjectProperty<String>(String(param!!.value.content.toCharArray()))
 }

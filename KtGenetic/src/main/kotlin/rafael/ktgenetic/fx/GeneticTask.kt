@@ -16,7 +16,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 
-internal class GeneticTask<C : Chromosome<*>>(private val processor: GeneticProcessor<*, C>) :
+internal class GeneticTask<C : Chromosome<*>>(private val processor: GeneticProcessor<*, C>, private val fillOwnComponent: (List<C>) -> Unit) :
         Task<ProcessorEvent<C>>(), ProcessorListener {
 
     lateinit var t0: Instant
@@ -56,6 +56,8 @@ internal class GeneticTask<C : Chromosome<*>>(private val processor: GeneticProc
                     averageFitnessProperty.value = "%.3f (%.3f)".format(average, deviation)
                     averageData.value.add(XYChart.Data(event.generation, average))
                     bestData.value.add(XYChart.Data(event.generation, best))
+
+                    fillOwnComponent(event.population as List<C>)
                 }
             }
         }

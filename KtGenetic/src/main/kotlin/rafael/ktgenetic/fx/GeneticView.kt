@@ -115,6 +115,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
     protected abstract fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<G, C>
 
+    protected abstract fun fillOwnComponent(genome: List<C>): Unit
+
     protected fun addComponent(title: String, component: Node, colspan: Int = 1) {
         assert(colspan <= 5) // , () -> {"Colspan must be at least 5. It was $colspan"})
 
@@ -153,7 +155,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
             val (averageSeries, bestSeries) = createSeries()
 
-            task = GeneticTask(processor)
+            task = GeneticTask(processor, this::fillOwnComponent)
 
             makeBind(task, averageSeries, bestSeries)
 
