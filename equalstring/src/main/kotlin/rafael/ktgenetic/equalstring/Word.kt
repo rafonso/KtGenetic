@@ -10,5 +10,11 @@ data class Word(override val content: List<Char>) : Chromosome<Char>() {
 
     override fun toString() = super.toString()
 
+    override fun compareTo(other: Chromosome<Char>): Int {
+        val compare = super.compareTo(other)
+
+        return if(compare == 0) String(this.content.toCharArray()).compareTo(String(other.content.toCharArray())) else compare
+    }
+
 }
 

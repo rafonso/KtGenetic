@@ -6,7 +6,7 @@ package rafael.ktgenetic
  * @param G the gene type of this Chromosome
  * @constructor Creates a new genotype with a initial fitness, by default 0.0
  */
-abstract class Chromosome<out G>(private var _fitness: Double = 0.0) {
+abstract class Chromosome<G>(private var _fitness: Double = 0.0): Comparable<Chromosome<G>> {
 
     /**
      * Fitness value indicating how much this genotype value is near from the goal. The greater, better.
@@ -28,5 +28,7 @@ abstract class Chromosome<out G>(private var _fitness: Double = 0.0) {
     open fun valueToString(): String = content.toString()
 
     override fun toString() = "[${"%.3f".format(fitness)}, ${valueToString()}]"
+
+    override fun compareTo(other: Chromosome<G>): Int = this.fitness.compareTo(other.fitness)
 
 }

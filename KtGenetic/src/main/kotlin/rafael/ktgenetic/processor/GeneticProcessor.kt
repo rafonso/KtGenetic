@@ -11,8 +11,6 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environme
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 
-    val genotypeComparator = ChromosomeFitnessComparator<C>()
-
     var continueProcessing = true
 
     private fun notifyEvent(event: ProcessorEvent<*>) {
