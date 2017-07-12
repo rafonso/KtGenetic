@@ -2,6 +2,7 @@ package rafael.ktgenetic.selection
 
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.geneticRandom
+import rafael.ktgenetic.makeCuttingIntoPieces
 
 internal class RouletteSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :
         SelectionOperator<C> {
@@ -25,8 +26,10 @@ internal class RouletteSelectionOperator<C : Chromosome<*>>(override val generat
         val sortedValue = geneticRandom.nextDouble() * totalFitness
         val selectedPosition = selectPosition(candidates, sortedValue)
         val selectedElement = candidates[selectedPosition]
+        val (first, _, second) = makeCuttingIntoPieces(candidates, Pair(selectedPosition, selectedPosition + 1))
 
-        return selectElements(candidates - selected, remainingQuantity - 1, totalFitness - selectedElement.fitness, selected + selectedElement)
+        return selectElements((first + second), remainingQuantity - 1,
+                totalFitness - selectedElement.fitness, selected + selectedElement)
     }
 
     override fun select(children: List<C>): List<C> {
