@@ -10,6 +10,7 @@ import rafael.ktgenetic.Environment
 import rafael.ktgenetic.equalstring.EqualStringEnvironment
 import rafael.ktgenetic.equalstring.StringFitnessChoice
 import rafael.ktgenetic.equalstring.Word
+import rafael.ktgenetic.fx.ChomosomeToFitnessCellString
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
@@ -34,7 +35,7 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcess
 
         val fitnessColumn = TableColumn<Word, String>("Fitness")
         fitnessColumn.prefWidth = 100.0
-        fitnessColumn.cellValueFactory = WordToFitnessString()
+        fitnessColumn.cellValueFactory = ChomosomeToFitnessCellString()
 
         val wordColumn = TableColumn<Word, String>("Word")
         wordColumn.prefWidth = 500.0
@@ -72,11 +73,6 @@ class StringFitnessChoiceConverter : StringConverter<StringFitnessChoice>() {
 
     override fun fromString(string: String?): StringFitnessChoice = StringFitnessChoice.values().first { it.description == string }
 
-}
-
-class WordToFitnessString : Callback<TableColumn.CellDataFeatures<Word, String>, ObservableValue<String>> {
-    override fun call(param: TableColumn.CellDataFeatures<Word, String>?): ObservableValue<String> = //
-            SimpleObjectProperty<String>("%.3f".format(param!!.value.fitness))
 }
 
 class WordToValueString : Callback<TableColumn.CellDataFeatures<Word, String>, ObservableValue<String>> {
