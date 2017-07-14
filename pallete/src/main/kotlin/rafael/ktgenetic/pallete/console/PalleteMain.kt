@@ -1,4 +1,4 @@
-package rafael.ktgenetic.pallete
+package rafael.ktgenetic.pallete.console
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
@@ -7,6 +7,10 @@ import rafael.ktgenetic.console.executeMain
 import rafael.ktgenetic.console.getIntOptionValue
 import rafael.ktgenetic.console.getMaxGenerations
 import rafael.ktgenetic.console.getPopulationByGeneration
+import rafael.ktgenetic.pallete.Box
+import rafael.ktgenetic.pallete.Pallete
+import rafael.ktgenetic.pallete.PalleteDimensions
+import rafael.ktgenetic.pallete.PalleteEnvironment
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 
 private const val WEIGHT_PARAMETER = "w"
