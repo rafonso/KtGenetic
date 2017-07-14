@@ -28,7 +28,7 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
         addComponent("Initial Configuration", txfBalance, 5)
 
         val fitnessColumn = TableColumn<Balance, String>("Fitness")
-        fitnessColumn.prefWidth = 100.0
+        fitnessColumn.prefWidth = 50.0
         fitnessColumn.cellValueFactory = ChomosomeToFitnessCellString()
 
         val balanceColumn = TableColumn<Balance, String>("Balance")
@@ -39,8 +39,16 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
         cmColumn.prefWidth = 50.0
         cmColumn.cellValueFactory = ChromosomeToCellString({c  -> "%.3f".format((c as Balance).centerOfMass)})
 
+        val miColumn = TableColumn<Balance, String>("MI")
+        miColumn.prefWidth = 75.0
+        miColumn.cellValueFactory = ChromosomeToCellString({c  -> "%2.3f".format((c as Balance).momentOfInertia)})
+
+        val hmColumn = TableColumn<Balance, String>("HM")
+        hmColumn.prefWidth = 100.0
+        hmColumn.cellValueFactory = ChromosomeToCellString({c  -> (c as Balance).halfMasses.toString()})
+
         balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
-        balanceTable.columns.addAll(fitnessColumn, balanceColumn, cmColumn)
+        balanceTable.columns.addAll(fitnessColumn, balanceColumn, cmColumn, miColumn, hmColumn)
 
         root.center = balanceTable
     }
