@@ -7,6 +7,7 @@ import javafx.scene.control.Control
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
+import javafx.util.Callback
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.balancedtable.Balance
 import rafael.ktgenetic.balancedtable.BalanceEnvironment
@@ -15,7 +16,6 @@ import rafael.ktgenetic.fx.ChomosomeToFitnessCellString
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
-import javafx.util.Callback
 
 
 class BalanceViewApp : App(BalanceView::class)
@@ -35,10 +35,14 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
 
         val balanceColumn = TableColumn<Balance, String>("Balance")
         balanceColumn.prefWidth = 500.0
-        balanceColumn.cellValueFactory = WordToValueString()
+        balanceColumn.cellValueFactory = BalanceToValueString()
+
+        val cmColumn = TableColumn<Balance, String>("CM")
+        cmColumn.prefWidth = 50.0
+        cmColumn.cellValueFactory = CenterOfMassString()
 
         balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
-        balanceTable.columns.addAll(fitnessColumn, balanceColumn)
+        balanceTable.columns.addAll(fitnessColumn, balanceColumn, cmColumn)
 
         root.center = balanceTable
     }
@@ -51,7 +55,7 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
     }
 
     override fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<Box, Balance> {
-        val weights =txfBalance.text.trim().split(Regex(" +")).map { Integer.parseInt(it) }
+        val weights = txfBalance.text.trim().split(Regex(" +")).map { Integer.parseInt(it) }
 
         return BalanceEnvironment(
                 weights, //
@@ -66,7 +70,28 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
 
 }
 
-class WordToValueString : Callback<TableColumn.CellDataFeatures<Balance, String>, ObservableValue<String>> {
+class BalanceToValueString : Callback<TableColumn.CellDataFeatures<Balance, String>, ObservableValue<String>> {
     override fun call(param: TableColumn.CellDataFeatures<Balance, String>?): ObservableValue<String> = //
             SimpleObjectProperty<String>(param!!.value.content.map { it.value }.toString())
 }
+
+class CenterOfMassString : Callback<TableColumn.CellDataFeatures<Balance, String>, ObservableValue<String>> {
+    override fun call(param: TableColumn.CellDataFeatures<Balance, String>?): ObservableValue<String> = //
+            SimpleObjectProperty<String>("%.3f".format(param!!.value.centerOfMass))
+
+}
+
+/*
+000 FFFFFF
+010 FFE5E5
+020 FFCCCC
+030 FFB2B2
+040 FF9999
+050 FF7F7F
+060 FF6666
+070 FF4C4C
+080 FF3333
+090 FF1919
+100 FF0000
+ */
+// 0 15 17 18 22 24 26 27 19 29 28 25 11 3 2 20 4 5 8 1 23 21 16 14 13 9 10 7 12 6
