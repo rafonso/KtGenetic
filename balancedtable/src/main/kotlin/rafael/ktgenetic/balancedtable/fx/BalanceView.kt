@@ -1,18 +1,16 @@
 package rafael.ktgenetic.balancedtable.fx
 
-import javafx.beans.property.SimpleObjectProperty
-import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
 import javafx.scene.control.Control
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
-import javafx.util.Callback
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.balancedtable.Balance
 import rafael.ktgenetic.balancedtable.BalanceEnvironment
 import rafael.ktgenetic.balancedtable.Box
 import rafael.ktgenetic.fx.ChomosomeToFitnessCellString
+import rafael.ktgenetic.fx.ChromosomeToCellString
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
@@ -35,11 +33,11 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
 
         val balanceColumn = TableColumn<Balance, String>("Balance")
         balanceColumn.prefWidth = 500.0
-        balanceColumn.cellValueFactory = BalanceToValueString()
+        balanceColumn.cellValueFactory = ChromosomeToCellString({c -> c.content.map { it.value }.toString()})
 
         val cmColumn = TableColumn<Balance, String>("CM")
         cmColumn.prefWidth = 50.0
-        cmColumn.cellValueFactory = CenterOfMassString()
+        cmColumn.cellValueFactory = ChromosomeToCellString({c  -> "%.3f".format((c as Balance).centerOfMass)})
 
         balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
         balanceTable.columns.addAll(fitnessColumn, balanceColumn, cmColumn)
@@ -69,18 +67,6 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
     }
 
 }
-
-class BalanceToValueString : Callback<TableColumn.CellDataFeatures<Balance, String>, ObservableValue<String>> {
-    override fun call(param: TableColumn.CellDataFeatures<Balance, String>?): ObservableValue<String> = //
-            SimpleObjectProperty<String>(param!!.value.content.map { it.value }.toString())
-}
-
-class CenterOfMassString : Callback<TableColumn.CellDataFeatures<Balance, String>, ObservableValue<String>> {
-    override fun call(param: TableColumn.CellDataFeatures<Balance, String>?): ObservableValue<String> = //
-            SimpleObjectProperty<String>("%.3f".format(param!!.value.centerOfMass))
-
-}
-
 /*
 000 FFFFFF
 010 FFE5E5

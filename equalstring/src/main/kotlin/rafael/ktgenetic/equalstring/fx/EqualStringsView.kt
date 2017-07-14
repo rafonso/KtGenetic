@@ -1,16 +1,14 @@
 package rafael.ktgenetic.equalstring.fx
 
-import javafx.beans.property.SimpleObjectProperty
-import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
 import javafx.scene.control.*
-import javafx.util.Callback
 import javafx.util.StringConverter
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.equalstring.EqualStringEnvironment
 import rafael.ktgenetic.equalstring.StringFitnessChoice
 import rafael.ktgenetic.equalstring.Word
 import rafael.ktgenetic.fx.ChomosomeToFitnessCellString
+import rafael.ktgenetic.fx.ChromosomeToCellString
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
@@ -39,7 +37,7 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcess
 
         val wordColumn = TableColumn<Word, String>("Word")
         wordColumn.prefWidth = 500.0
-        wordColumn.cellValueFactory = WordToValueString()
+        wordColumn.cellValueFactory = ChromosomeToCellString({ c -> String(c.content.toCharArray()) })
 
         wordsTable.prefWidth = Control.USE_COMPUTED_SIZE
         wordsTable.columns.addAll(fitnessColumn, wordColumn)
@@ -73,9 +71,4 @@ class StringFitnessChoiceConverter : StringConverter<StringFitnessChoice>() {
 
     override fun fromString(string: String?): StringFitnessChoice = StringFitnessChoice.values().first { it.description == string }
 
-}
-
-class WordToValueString : Callback<TableColumn.CellDataFeatures<Word, String>, ObservableValue<String>> {
-    override fun call(param: TableColumn.CellDataFeatures<Word, String>?): ObservableValue<String> = //
-            SimpleObjectProperty<String>(String(param!!.value.content.toCharArray()))
 }

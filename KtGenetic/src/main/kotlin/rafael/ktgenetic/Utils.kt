@@ -1,8 +1,5 @@
 package rafael.ktgenetic
 
-import org.apache.logging.log4j.Level
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.core.LoggerContext
 import java.util.*
 
 private fun createRandomPositions(maxPos: Int, initialPos: Int): Pair<Int, Int> {
