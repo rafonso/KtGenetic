@@ -1,10 +1,10 @@
 package rafael.ktgenetic.balancedtable.fx
 
 import javafx.collections.FXCollections
-import javafx.scene.control.Control
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
-import javafx.scene.control.TextField
+import javafx.scene.control.*
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.HBox
+import javafx.scene.layout.Pane
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.balancedtable.Balance
 import rafael.ktgenetic.balancedtable.BalanceEnvironment
@@ -15,42 +15,79 @@ import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
 
+/**
+ * Gradient from white to red. extracted from http://www.perbang.dk/rgbgradient/
+ */
+private val gradients = listOf(
+        Pair("FFFFFF", "000000"),
+        Pair("FFE5E5", "000000"),
+        Pair("FFCCCC", "000000"),
+        Pair("FFB2B2", "000000"),
+        Pair("FF9999", "000000"),
+        Pair("FF7F7F", "000000"),
+        Pair("FF6666", "000000"),
+        Pair("FF4C4C", "000000"),
+        Pair("FF3333", "FFFFFF"),
+        Pair("FF1919", "FFFFFF"),
+        Pair("FF0000", "FFFFFF")
+)
 
 class BalanceViewApp : App(BalanceView::class)
 
 class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.ORDERED) {
-    val balanceTable: TableView<Balance> = TableView<Balance>()
 
     val txfBalance: TextField = TextField()
+
+    val pnlBestBalance: Pane = HBox(10.0)
+
+    val balanceTable: TableView<Balance> = TableView()
+
+    val colorsByBox: MutableMap<Int, Pair<String, String>> = mutableMapOf()
 
     init {
         txfBalance.prefWidth = 600.0
         addComponent("Initial Configuration", txfBalance, 5)
 
+        fillBalanceTable()
+
+        pnlBestBalance.prefHeight = 20.0
+
+        val pnlBalance = BorderPane()
+        pnlBalance.top = pnlBestBalance
+        pnlBalance.center = balanceTable
+
+        root.center = pnlBalance
+    }
+
+    private fun fillBalanceTable() {
         val fitnessColumn = TableColumn<Balance, String>("Fitness")
         fitnessColumn.prefWidth = 50.0
         fitnessColumn.cellValueFactory = ChomosomeToFitnessCellString()
 
         val balanceColumn = TableColumn<Balance, String>("Balance")
         balanceColumn.prefWidth = 500.0
-        balanceColumn.cellValueFactory = ChromosomeToCellString({c -> c.content.map { it.value }.toString()})
+        balanceColumn.cellValueFactory = ChromosomeToCellString({ c -> c.content.map { it.value }.toString() })
 
         val cmColumn = TableColumn<Balance, String>("CM")
         cmColumn.prefWidth = 50.0
-        cmColumn.cellValueFactory = ChromosomeToCellString({c  -> "%.3f".format((c as Balance).centerOfMass)})
+        cmColumn.cellValueFactory = ChromosomeToCellString({ c -> "%.3f".format((c as Balance).centerOfMass) })
 
         val miColumn = TableColumn<Balance, String>("MI")
         miColumn.prefWidth = 75.0
-        miColumn.cellValueFactory = ChromosomeToCellString({c  -> "%2.3f".format((c as Balance).momentOfInertia)})
+        miColumn.cellValueFactory = ChromosomeToCellString({ c -> "%2.3f".format((c as Balance).momentOfInertia) })
 
         val hmColumn = TableColumn<Balance, String>("HM")
         hmColumn.prefWidth = 100.0
-        hmColumn.cellValueFactory = ChromosomeToCellString({c  -> (c as Balance).halfMasses.toString()})
+        hmColumn.cellValueFactory = ChromosomeToCellString({ c -> (c as Balance).halfMasses.toString() })
 
         balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
         balanceTable.columns.addAll(fitnessColumn, balanceColumn, cmColumn, miColumn, hmColumn)
+    }
 
-        root.center = balanceTable
+    private fun fillColorsByBox(weights: List<Int>) {
+        val max = weights.max()!!.toDouble()
+        colorsByBox.clear()
+        weights.forEach { colorsByBox.put(it, gradients[((it / max) * 10).toInt()]) }
     }
 
     override fun validate() {
@@ -62,6 +99,7 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
 
     override fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<Box, Balance> {
         val weights = txfBalance.text.trim().split(Regex(" +")).map { Integer.parseInt(it) }
+        fillColorsByBox(weights)
 
         return BalanceEnvironment(
                 weights, //
@@ -70,22 +108,20 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
                 mutationFactor)
     }
 
+    private fun boxToLabel(b: Box): Label {
+        val label = Label(b.value.toString())
+        val (back, front) = colorsByBox.get(b.value)!!
+        label.style = "-fx-background-color: #$back; -fx-text-fill: #$front;"
+
+        return label;
+    }
+
     override fun fillOwnComponent(genome: List<Balance>) {
         balanceTable.items = FXCollections.observableArrayList(genome)
+        pnlBestBalance.clear()
+        genome[0].content.forEach { pnlBestBalance.add(boxToLabel(it)) }
     }
 
 }
-/*
-000 FFFFFF
-010 FFE5E5
-020 FFCCCC
-030 FFB2B2
-040 FF9999
-050 FF7F7F
-060 FF6666
-070 FF4C4C
-080 FF3333
-090 FF1919
-100 FF0000
- */
 // 0 15 17 18 22 24 26 27 19 29 28 25 11 3 2 20 4 5 8 1 23 21 16 14 13 9 10 7 12 6
+// 152 190 41 151 149 122 174 50 22 45 195 93 167 52 14 96 124 167 140 99 35 39 70 74 155 197 47 128 171 178
