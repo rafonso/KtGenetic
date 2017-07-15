@@ -67,7 +67,8 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
 
         val balanceColumn = TableColumn<Balance, String>("Balance")
         balanceColumn.prefWidth = 500.0
-        balanceColumn.cellValueFactory = ChromosomeToCellString({ c -> c.content.map { it.value }.toString() })
+        balanceColumn.cellValueFactory = ChromosomeToCellString({ c -> c.content.map { it.value }.
+                joinToString(separator = " ", transform = { "%3d".format(it) }) })
         balanceColumn.styleClass.add("mono")
 
         val cmColumn = TableColumn<Balance, String>("CM")
