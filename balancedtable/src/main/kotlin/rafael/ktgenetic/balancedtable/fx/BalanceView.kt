@@ -63,22 +63,27 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
         val fitnessColumn = TableColumn<Balance, String>("Fitness")
         fitnessColumn.prefWidth = 50.0
         fitnessColumn.cellValueFactory = ChomosomeToFitnessCellString()
+        fitnessColumn.styleClass.add("mono")
 
         val balanceColumn = TableColumn<Balance, String>("Balance")
         balanceColumn.prefWidth = 500.0
         balanceColumn.cellValueFactory = ChromosomeToCellString({ c -> c.content.map { it.value }.toString() })
+        balanceColumn.styleClass.add("mono")
 
         val cmColumn = TableColumn<Balance, String>("CM")
         cmColumn.prefWidth = 50.0
         cmColumn.cellValueFactory = ChromosomeToCellString({ c -> "%.3f".format((c as Balance).centerOfMass) })
+        cmColumn.styleClass.add("mono")
 
         val miColumn = TableColumn<Balance, String>("MI")
         miColumn.prefWidth = 75.0
         miColumn.cellValueFactory = ChromosomeToCellString({ c -> "%2.3f".format((c as Balance).momentOfInertia) })
+        miColumn.styleClass.add("mono")
 
         val hmColumn = TableColumn<Balance, String>("HM")
         hmColumn.prefWidth = 100.0
         hmColumn.cellValueFactory = ChromosomeToCellString({ c -> (c as Balance).halfMasses.toString() })
+        hmColumn.styleClass.add("mono")
 
         balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
         balanceTable.columns.addAll(fitnessColumn, balanceColumn, cmColumn, miColumn, hmColumn)
@@ -109,11 +114,12 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
     }
 
     private fun boxToLabel(b: Box): Label {
-        val label = Label(b.value.toString())
+        val label = Label("%3d".format(b.value))
         val (back, front) = colorsByBox.get(b.value)!!
         label.style = "-fx-background-color: #$back; -fx-text-fill: #$front;"
+        label.styleClass.add("mono-right")
 
-        return label;
+        return label
     }
 
     override fun fillOwnComponent(genome: List<Balance>) {
@@ -123,5 +129,5 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
     }
 
 }
-// 0 15 17 18 22 24 26 27 19 29 28 25 11 3 2 20 4 5 8 1 23 21 16 14 13 9 10 7 12 6
+//   0  15 17  18  22  24  26 27 19 29  28 25  11  3  2 20   4   5   8  1 23 21 16 14  13   9 10   7  12   6
 // 152 190 41 151 149 122 174 50 22 45 195 93 167 52 14 96 124 167 140 99 35 39 70 74 155 197 47 128 171 178

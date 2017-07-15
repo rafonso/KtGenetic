@@ -26,6 +26,7 @@
 	 -fx-font-weight: bold;
 }
 
-.spinner-value {
-     -fx-pref-width: 75px;
+.mono-right, .mono.table-cell:filled {
+    -fx-text-alignment: right;
+    -fx-font-family: monospace
 }
