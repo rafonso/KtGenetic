@@ -2,14 +2,18 @@ package rafael.ktgenetic.fx
 
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import javafx.event.EventHandler
 import javafx.geometry.Orientation
 import javafx.scene.Node
 import javafx.scene.chart.LineChart
+import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
 import javafx.scene.control.Alert
 import javafx.scene.control.Button
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
+import javafx.scene.input.MouseEvent
+import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.GridPane
@@ -46,6 +50,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
     private val lblAverageFitness: Label                                by fxid()
     private val lblTime: Label                                          by fxid()
     private val lineChartFitness: LineChart<Int, Double>                by fxid()
+    private val yAxisChartFitness: NumberAxis                           by fxid()
 
     private var lastRow = 1
     private var lastColumn = 0
@@ -70,8 +75,33 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
         cmbSelectionOperator.converter = SelectionOperatorConverter()
 
         lineChartFitness.yAxis.isTickMarkVisible = false
+        yAxisChartFitness.onMouseClicked = EventHandler { yAxisClicked(it) }
+        yAxisChartFitness.onScroll = EventHandler { yAxisScrolled(it) }
 
         configureLog(DEBUG)
+    }
+
+    private fun yAxisScrolled(event: ScrollEvent?) {
+
+        fun adjust(comparator: (Double, Double) -> Double, limit: Double, signal: Int) {
+            val currentLowerBound = yAxisChartFitness.lowerBound
+            val deltaLowerBound = (yAxisChartFitness.upperBound - currentLowerBound) / 2
+            yAxisChartFitness.lowerBound = comparator(limit, currentLowerBound + signal * deltaLowerBound)
+            yAxisChartFitness.tickUnit = (yAxisChartFitness.upperBound - yAxisChartFitness.lowerBound) / 10
+        }
+
+        if (event!!.deltaY > 0.0) {
+            adjust(Math::min, 1.0, +1)
+        } else if (event.deltaY < 0.0) {
+            adjust(Math::max, 0.0, -1)
+        }
+    }
+
+    private fun yAxisClicked(event: MouseEvent) {
+        if (event.clickCount == 2) {
+            yAxisChartFitness.lowerBound = 0.0
+            yAxisChartFitness.tickUnit = (yAxisChartFitness.upperBound - yAxisChartFitness.lowerBound) / 10
+        }
     }
 
     private fun disableInputComponents(disable: Boolean) {

@@ -104,12 +104,12 @@
                   <Separator prefWidth="200.0" />
                </children>
             </FlowPane>
-            <LineChart fx:id="lineChartFitness" createSymbols="false" horizontalZeroLineVisible="false" legendVisible="false" prefHeight="105.0" prefWidth="200.0" verticalGridLinesVisible="false">
+            <LineChart fx:id="lineChartFitness" createSymbols="false" horizontalZeroLineVisible="false" legendVisible="false" prefHeight="105.0" prefWidth="200.0" verticalGridLinesVisible="false" >
               <xAxis>
                   <NumberAxis autoRanging="true" minorTickCount="10" minorTickLength="1.0" side="LEFT" tickLabelGap="2.0" tickLength="10.0" tickUnit="0.1" upperBound="1.0" />
               </xAxis>
               <yAxis>
-                <NumberAxis autoRanging="false" minorTickCount="10" minorTickLength="1.0" side="LEFT" tickLabelGap="2.0" tickLength="10.0" tickUnit="0.1" upperBound="1.0" />
+                <NumberAxis fx:id="yAxisChartFitness" autoRanging="false" minorTickCount="10" minorTickLength="1.0" side="LEFT" tickLabelGap="2.0" tickLength="10.0" tickUnit="0.1" upperBound="1.0" />
               </yAxis>
             </LineChart>
          </children>

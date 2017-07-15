@@ -116,7 +116,7 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
 
     private fun boxToLabel(b: Box): Label {
         val label = Label("%3d".format(b.value))
-        val (back, front) = colorsByBox.get(b.value)!!
+        val (back, front) = colorsByBox[b.value]!!
         label.style = "-fx-background-color: #$back; -fx-text-fill: #$front;"
         label.styleClass.add("mono-right")
 
