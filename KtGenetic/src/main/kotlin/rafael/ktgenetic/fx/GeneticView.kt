@@ -23,10 +23,7 @@ import rafael.ktgenetic.LogLevel.DEBUG
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.selection.SelectionOperatorChoice
 import tornadofx.*
-import java.time.Duration
 import java.time.Instant
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 
 abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorChoice: GeneticProcessorChoice) : View(title), ProcessorListener {
@@ -44,6 +41,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
     private val cmbMutationFactor: ComboBox<Double>                     by fxid()
     private val cmbSelectionOperator: ComboBox<SelectionOperatorChoice> by fxid()
     private val btnStop: Button                                         by fxid()
+    private val btnReset: Button                                        by fxid()
     private val btnStart: Button                                        by fxid()
     private val lblGeneration: Label                                    by fxid()
     private val lblBestFitness: Label                                   by fxid()
@@ -106,6 +104,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
     private fun disableInputComponents(disable: Boolean) {
         btnStart.isDisable = disable
+        btnReset.isDisable = disable
         btnStop.isDisable = !disable
         pnlInput.children.filtered { it != pnlButtons }.forEach { it.isDisable = disable }
     }
@@ -146,6 +145,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
     protected abstract fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<G, C>
 
     protected abstract fun fillOwnComponent(genome: List<C>): Unit
+
+    protected abstract fun resetComponents(): Unit
 
     protected fun addComponent(title: String, component: Node, colspan: Int = 1) {
         assert(colspan <= 5) // , () -> {"Colspan must be at least 5. It was $colspan"})
@@ -195,6 +196,28 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
     fun stopProcessing() {
         task.cancel(true)
         disableInputComponents(false)
+    }
+
+    fun reset() {
+        cmbSelectionOperator.selectionModel.selectFirst()
+        cmbGenerations.value = 100
+        cmbMutationFactor.value = 0.1
+        cmbPopulation.value = 100
+
+        lblGeneration.textProperty().unbind()
+        lblGeneration.text = ""
+        lblTime.textProperty().unbind()
+        lblTime.text = ""
+        lblBestFitness.textProperty().unbind()
+        lblBestFitness.text = ""
+        lblAverageFitness.textProperty().unbind()
+        lblAverageFitness.text = ""
+        lineChartFitness.data.clear()
+        yAxisChartFitness.upperBound = 1.0
+        yAxisChartFitness.lowerBound = 0.0
+        yAxisChartFitness.tickUnit = 0.1
+
+        resetComponents()
     }
 }
 

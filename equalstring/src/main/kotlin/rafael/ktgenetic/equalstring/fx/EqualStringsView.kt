@@ -55,6 +55,12 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcess
         wordsTable.items = FXCollections.observableArrayList(genome)
     }
 
+    override fun resetComponents() {
+        cmbStringFitness.selectionModel.selectFirst()
+        txfTarget.text = ""
+        wordsTable.items = FXCollections.emptyObservableList()
+    }
+
     override fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<Char, Word> =
             EqualStringEnvironment(
                     txfTarget.text, //

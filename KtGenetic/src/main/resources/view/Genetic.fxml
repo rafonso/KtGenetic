@@ -54,10 +54,12 @@
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Button fx:id="btnStart" mnemonicParsing="false" onAction="#startProcessing" text="START!" GridPane.halignment="CENTER" />
+                        <Button fx:id="btnStart" defaultButton="true" mnemonicParsing="false" onAction="#startProcessing" text="START!" GridPane.halignment="CENTER" />
                         <Button fx:id="btnStop" disable="true" mnemonicParsing="false" onAction="#stopProcessing" text="STOP!" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                  <Button fx:id="btnReset" cancelButton="true" mnemonicParsing="false" onAction="#reset" text="RESET!" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                     </children>
                 </GridPane>
             <FlowPane orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3">
@@ -78,21 +80,21 @@
             <FlowPane orientation="VERTICAL">
                <children>
                   <Label text="Generation" />
-                  <Label fx:id="lblGeneration" prefWidth="100.0" styleClass="label-value" text="000" />
+                  <Label fx:id="lblGeneration" prefWidth="100.0" styleClass="label-value" />
                   <Separator prefWidth="200.0" />
                </children>
             </FlowPane>
             <FlowPane layoutX="10.0" layoutY="10.0" orientation="VERTICAL">
                <children>
                   <Label text="Best Fitness" />
-                  <Label fx:id="lblBestFitness" prefWidth="100.0" styleClass="label-value" text="000" />
+                  <Label fx:id="lblBestFitness" prefWidth="100.0" styleClass="label-value" />
                   <Separator prefWidth="200.0" />
                </children>
             </FlowPane>
             <FlowPane orientation="VERTICAL" prefWidth="200.0">
                <children>
                   <Label text="Average Fitness" />
-                  <Label fx:id="lblAverageFitness" prefWidth="100.0" styleClass="label-value" text="000 (000)">
+                  <Label fx:id="lblAverageFitness" prefWidth="100.0" styleClass="label-value">
                   </Label>
                    <Separator prefWidth="200.0" />
                </children>
@@ -100,11 +102,11 @@
             <FlowPane layoutX="10.0" layoutY="175.0" orientation="VERTICAL">
                <children>
                   <Label text="Time" />
-                  <Label fx:id="lblTime" prefWidth="100.0" styleClass="label-value" text="000" />
+                  <Label fx:id="lblTime" prefWidth="100.0" styleClass="label-value" />
                   <Separator prefWidth="200.0" />
                </children>
             </FlowPane>
-            <LineChart fx:id="lineChartFitness" createSymbols="false" horizontalZeroLineVisible="false" legendVisible="false" prefHeight="105.0" prefWidth="200.0" verticalGridLinesVisible="false" >
+            <LineChart fx:id="lineChartFitness" createSymbols="false" horizontalZeroLineVisible="false" legendVisible="false" prefHeight="105.0" prefWidth="200.0" verticalGridLinesVisible="false">
               <xAxis>
                   <NumberAxis autoRanging="true" minorTickCount="10" minorTickLength="1.0" side="LEFT" tickLabelGap="2.0" tickLength="10.0" tickUnit="0.1" upperBound="1.0" />
               </xAxis>

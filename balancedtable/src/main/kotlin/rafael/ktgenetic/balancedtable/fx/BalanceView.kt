@@ -96,6 +96,12 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
         weights.forEach { colorsByBox.put(it, gradients[((it / max) * 10).toInt()]) }
     }
 
+    override fun resetComponents() {
+        txfBalance.text = ""
+        pnlBestBalance.clear()
+        balanceTable.items = FXCollections.emptyObservableList()
+    }
+
     override fun validate() {
         if (!txfBalance.text.matches(Regex("^((\\d+) *)+$"))) {
             throw IllegalStateException("Weights incorrect. " +
