@@ -166,11 +166,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
     override fun onEvent(event: ProcessorEvent<*>) {
         if (event.eventType.ended) {
-            val (best, _, deviation) = getBestAverageDeviationFitness(event.population)
-            this.lblBestFitness.text = "%.3f (%.3f)".format(best, deviation)
-            val t = LocalTime.MIDNIGHT.plus(Duration.between(t0, Instant.now()))
-            val s = DateTimeFormatter.ofPattern("m:ss.SSS").format(t)
-            this.lblTime.text = s
+            disableInputComponents(false)
         }
     }
 
@@ -182,6 +178,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
             disableInputComponents(true)
             val selectionOperator = cmbSelectionOperator.value.chooseSelectionOperator(environment)
             val processor = processorChoice.newInstance(environment, selectionOperator)
+            processor.addListener(this)
 
             val (averageSeries, bestSeries) = createSeries()
 
