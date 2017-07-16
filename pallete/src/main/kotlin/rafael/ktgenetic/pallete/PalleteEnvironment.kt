@@ -59,3 +59,42 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
     }
 
 }
+
+fun getPallete(weights: Collection<Int>, rows: Int, cols: Int): Pair<List<Int>, PalleteDimensions> {
+
+    fun getPalleteDimensions(): Pair<Int, Int> {
+        if (rows == 0 && cols == 0) {
+            val sqrtSize = Math.sqrt(weights.size.toDouble()).toInt()
+            val side: Int = sqrtSize + (if (weights.size == sqrtSize * sqrtSize) 0 else 1)
+            return Pair(side, side)
+        }
+        if (rows == 0 && cols != 0) {
+            return Pair((weights.size / cols) + (if (weights.size % cols == 0) 0 else 1), cols)
+        }
+        if (rows != 0 && cols == 0) {
+            return Pair(rows, (weights.size / rows) + (if (weights.size % rows == 0) 0 else 1))
+        }
+
+        if ((rows * cols) < weights.size) {
+            throw IllegalArgumentException("Number of Rows ($rows) times the number of columns ($cols) " +
+                    "lesser than the size of weights (${weights.size})")
+        }
+
+        return Pair(rows, cols)
+    }
+
+    fun getNormalizedPallete(r: Int, c: Int): List<Int> {
+        if (weights.size == r * c) {
+            return weights.toList()
+        }
+
+        val result = IntArray(c * r)
+        weights.forEachIndexed { index, w -> result[index] = w }
+        return result.toList()
+    }
+
+    val (r, c) = getPalleteDimensions()
+    val normalizedPallet = getNormalizedPallete(r, c)
+
+    return Pair(normalizedPallet, PalleteDimensions(r, c))
+}
