@@ -56,4 +56,6 @@ data class PalleteDimensions(val rows: Int, val cols: Int) {
         return cols * row + col
     }
 
+    fun indexToPosition(index: Int): Pair<Int, Int> = Pair(index / cols, index % cols)
+
 }
