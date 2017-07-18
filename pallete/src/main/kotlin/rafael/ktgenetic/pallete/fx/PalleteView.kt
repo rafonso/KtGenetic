@@ -1,15 +1,16 @@
 package rafael.ktgenetic.pallete.fx
 
 import javafx.collections.FXCollections
+import javafx.geometry.Insets
 import javafx.geometry.Pos
-import javafx.scene.control.ComboBox
-import javafx.scene.control.Label
-import javafx.scene.control.TextField
+import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.HBox
 import rafael.ktgenetic.Environment
+import rafael.ktgenetic.fx.ChomosomeToFitnessCellString
+import rafael.ktgenetic.fx.ChromosomeToCellString
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.pallete.*
 import rafael.ktgenetic.processor.GeneticProcessorChoice
@@ -50,23 +51,11 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
 
     private val colorsByBox: MutableMap<Int, Pair<String, String>> = mutableMapOf()
 
-    private lateinit var dimensions: PalleteDimensions
+    private val balanceTable: TableView<Pallete> = TableView()
 
     private val gridBestPallete = GridPane()
 
-    private val cmPattern = "Center of Mass: (%.2f, %.2f)"
-    private val lblCm = Label()
-
-    private val miPattern = "Moment of Inertia: %.2f"
-    private val lblMi = Label()
-
-    private val fbhmPattern = "Front/Back Half masses: %d / %d"
-    private val lblFbhm = Label()
-
-    private val rlhmPattern = "Roght/Left Half masses: %d / %d"
-    private val lblRlhm = Label()
-
-    // CM = (1,95, 1,96), MI = 290,500, FBHM = (98, 99), RLHM = (99, 98)
+    private lateinit var dimensions: PalleteDimensions
 
     init {
         cmbRows.value = 0
@@ -80,19 +69,55 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
 
         val pnlBestPalleteGrid = FlowPane()
         pnlBestPalleteGrid.alignment = Pos.TOP_CENTER
+        pnlBestPalleteGrid.minHeight = 100.0
         pnlBestPalleteGrid.add(gridBestPallete)
 
-        val pnlBestPalleteData = HBox()
-        pnlBestPalleteData.add(lblCm)
-        pnlBestPalleteData.add(lblMi)
-        pnlBestPalleteData.add(lblFbhm)
-        pnlBestPalleteData.add(lblRlhm)
+        fillBalanceTable()
 
         val pnlBest = BorderPane()
-        pnlBest.center = pnlBestPalleteGrid
-        pnlBest.bottom = pnlBestPalleteData
+        pnlBest.padding = Insets(10.0, 10.0, 10.0, 10.0)
+        pnlBest.top = pnlBestPalleteGrid
+        pnlBest.center = balanceTable
 
         root.center = pnlBest
+    }
+
+    private fun fillBalanceTable() {
+        val fitnessColumn = TableColumn<Pallete, String>("Fitness")
+        fitnessColumn.prefWidth = 50.0
+        fitnessColumn.cellValueFactory = ChomosomeToFitnessCellString()
+        fitnessColumn.styleClass.add("mono")
+
+        val cmColumn = TableColumn<Pallete, String>("CM")
+        cmColumn.prefWidth = 100.0
+        cmColumn.cellValueFactory = ChromosomeToCellString({ (it as Pallete).centerOfMass.toString() })
+        cmColumn.styleClass.add("mono")
+
+        val miColumn = TableColumn<Pallete, String>("MI")
+        miColumn.prefWidth = 50.0
+        miColumn.cellValueFactory = ChromosomeToCellString({ "%.0f".format((it as Pallete).momentOfInertia) })
+        miColumn.styleClass.add("mono")
+
+        val fbhmColumn = TableColumn<Pallete, String>("FBHM")
+        fbhmColumn.prefWidth = 100.0
+        fbhmColumn.cellValueFactory = ChromosomeToCellString({ (it as Pallete).frontBackHalfMasses.toString() })
+        fbhmColumn.styleClass.add("mono")
+
+        val rlhmColumn = TableColumn<Pallete, String>("RLHM")
+        rlhmColumn.prefWidth = 100.0
+        rlhmColumn.cellValueFactory = ChromosomeToCellString({ (it as Pallete).rightLeftHalfMasses.toString() })
+        rlhmColumn.styleClass.add("mono")
+
+        val palleteColumn = TableColumn<Pallete, String>("Pallete")
+        palleteColumn.prefWidth = 500.0
+        palleteColumn.cellValueFactory = ChromosomeToCellString({ c ->
+            c.content.map { it.value }.
+                    joinToString(separator = " ", transform = { "%3d".format(it) })
+        })
+        palleteColumn.styleClass.add("mono")
+
+        balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
+        balanceTable.columns.addAll(fitnessColumn, cmColumn, miColumn, fbhmColumn, rlhmColumn, palleteColumn)
     }
 
     private fun handleBestPallete(bestPallete: Pallete) {
@@ -109,11 +134,6 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
         }
 
         bestPallete.content.forEachIndexed(::addBoxToGrid)
-
-        lblCm.text = cmPattern.format(bestPallete.centerOfMass.col, bestPallete.centerOfMass.row)
-        lblMi.text = miPattern.format(bestPallete.momentOfInertia)
-        lblFbhm.text = fbhmPattern.format(bestPallete.frontBackHalfMasses.first, bestPallete.frontBackHalfMasses.second)
-        lblRlhm.text = rlhmPattern.format(bestPallete.rightLeftHalfMasses.first, bestPallete.rightLeftHalfMasses.second)
     }
 
     private fun fillColorsByBox(weights: List<Int>) {
@@ -152,8 +172,8 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
     }
 
     override fun fillOwnComponent(genome: List<Pallete>) {
-        val bestPallete = genome[0]
-        handleBestPallete(bestPallete)
+        handleBestPallete(genome[0])
+        balanceTable.items = FXCollections.observableArrayList(genome)
     }
 
     override fun resetComponents() {
@@ -161,6 +181,7 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
         cmbCols.value = 0
         txfPallete.text = ""
         gridBestPallete.clear()
+        balanceTable.items = FXCollections.emptyObservableList()
     }
 
 }
