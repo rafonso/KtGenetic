@@ -16,6 +16,13 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
                         RouletteSelectionOperator::class.primaryConstructor!! as KFunction<*>,
                         environment.generationSize
                 )
+    },
+    TOURNAMENT_ELITISM("o", "Tournament with Elitism") {
+        override fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C> =
+                ElitismDelegateSelectionOperator<C>(
+                        TournamentSelectionOperator::class.primaryConstructor!! as KFunction<*>,
+                        environment.generationSize
+                )
     };
 
     internal abstract fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C>
