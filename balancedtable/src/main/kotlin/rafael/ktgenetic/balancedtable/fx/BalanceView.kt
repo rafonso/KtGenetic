@@ -1,6 +1,7 @@
 package rafael.ktgenetic.balancedtable.fx
 
 import javafx.collections.FXCollections
+import javafx.geometry.Insets
 import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
@@ -53,6 +54,7 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
         pnlBestBalance.prefHeight = 20.0
 
         val pnlBalance = BorderPane()
+        pnlBalance.padding = Insets(10.0, 10.0, 10.0, 10.0)
         pnlBalance.top = pnlBestBalance
         pnlBalance.center = balanceTable
 
