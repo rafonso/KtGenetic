@@ -79,17 +79,17 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
                 classes)
 
         val cmColumn = chromosomeToTableColumn<Box, Balance>("CM",
-                { c -> "%.3f".format((c as Balance).centerOfMass) },
+                { c -> "%.3f".format(c.centerOfMass) },
                 50.0,
                 classes)
 
         val miColumn = chromosomeToTableColumn<Box, Balance>("MI",
-                { c -> "%2.3f".format((c as Balance).momentOfInertia) },
+                { c -> "%2.3f".format(c.momentOfInertia) },
                 75.0,
                 classes)
 
         val hmColumn = chromosomeToTableColumn<Box, Balance>("HM",
-                { c -> (c as Balance).halfMasses.toString() },
+                { c -> c.halfMasses.toString() },
                 100.0,
                 classes)
 

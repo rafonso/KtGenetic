@@ -87,22 +87,22 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
         val fitnessColumn = fitnessToTableColumn<Box, Pallete>(50.0, classes)
 
         val cmColumn = chromosomeToTableColumn<Box, Pallete>("CM",
-                { (it as Pallete).centerOfMass.toString() },
+                { it.centerOfMass.toString() },
                 100.0,
                 classes)
 
         val miColumn = chromosomeToTableColumn<Box, Pallete>("MI",
-                { "%.0f".format((it as Pallete).momentOfInertia) },
+                { "%.0f".format(it.momentOfInertia) },
                 50.0,
                 classes)
 
         val fbhmColumn = chromosomeToTableColumn<Box, Pallete>("FBHM",
-                { (it as Pallete).frontBackHalfMasses.toString() },
+                { it.frontBackHalfMasses.toString() },
                 100.0,
                 classes)
 
         val rlhmColumn = chromosomeToTableColumn<Box, Pallete>("RLHM",
-                { (it as Pallete).rightLeftHalfMasses.toString() },
+                { it.rightLeftHalfMasses.toString() },
                 100.0,
                 classes)
 

@@ -5,14 +5,15 @@ import javafx.scene.control.TableColumn
 import rafael.ktgenetic.Chromosome
 
 fun <G, C : Chromosome<G>> chromosomeToTableColumn(title: String,
-                                                   chromosomeToString: (Chromosome<G>) -> String,
+                                                   chromosomeToString: (C) -> String,
                                                    prefWidth: Double = Control.USE_COMPUTED_SIZE,
                                                    classes: List<String> = listOf(),
                                                    style: String = ""):
         TableColumn<C, String> {
     val balanceColumn = TableColumn<C, String>(title)
 
-    balanceColumn.cellValueFactory = ChromosomeToCellString<G, C>(chromosomeToString)
+    val converter = chromosomeToString as (@kotlin.Suppress("UNCHECKED_CAST") Chromosome<G>) -> String
+    balanceColumn.cellValueFactory = ChromosomeToCellString(converter)
     balanceColumn.prefWidth = prefWidth
     balanceColumn.styleClass.addAll(classes)
     balanceColumn.style = style

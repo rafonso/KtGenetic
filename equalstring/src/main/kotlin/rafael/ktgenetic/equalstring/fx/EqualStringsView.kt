@@ -44,7 +44,7 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcess
         val fitnessColumn = fitnessToTableColumn<Char, Word>(50.0, classes)
 
         val wordColumn = chromosomeToTableColumn<Char, Word>("Word",
-                { c -> String(c.content.toCharArray()) },
+                { (content) -> String(content.toCharArray()) },
                 500.0,
                 classes)
 
