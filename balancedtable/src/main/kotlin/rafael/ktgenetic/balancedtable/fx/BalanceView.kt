@@ -89,7 +89,7 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
         hmColumn.styleClass.add("mono")
 
         balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
-        balanceTable.columns.addAll(fitnessColumn, balanceColumn, cmColumn, miColumn, hmColumn)
+        balanceTable.columns.addAll(fitnessColumn, cmColumn, miColumn, hmColumn, balanceColumn)
     }
 
     private fun fillColorsByBox(weights: List<Int>) {
