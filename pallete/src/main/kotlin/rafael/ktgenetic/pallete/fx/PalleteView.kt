@@ -7,11 +7,10 @@ import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.GridPane
-import javafx.scene.layout.HBox
 import rafael.ktgenetic.Environment
-import rafael.ktgenetic.fx.ChomosomeToFitnessCellString
-import rafael.ktgenetic.fx.ChromosomeToCellString
 import rafael.ktgenetic.fx.GeneticView
+import rafael.ktgenetic.fx.chromosomeToTableColumn
+import rafael.ktgenetic.fx.fitnessToTableColumn
 import rafael.ktgenetic.pallete.*
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
@@ -83,38 +82,37 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
     }
 
     private fun fillBalanceTable() {
-        val fitnessColumn = TableColumn<Pallete, String>("Fitness")
-        fitnessColumn.prefWidth = 50.0
-        fitnessColumn.cellValueFactory = ChomosomeToFitnessCellString()
-        fitnessColumn.styleClass.add("mono")
+        val classes = listOf("mono")
 
-        val cmColumn = TableColumn<Pallete, String>("CM")
-        cmColumn.prefWidth = 100.0
-        cmColumn.cellValueFactory = ChromosomeToCellString({ (it as Pallete).centerOfMass.toString() })
-        cmColumn.styleClass.add("mono")
+        val fitnessColumn = fitnessToTableColumn<Box, Pallete>(50.0, classes)
 
-        val miColumn = TableColumn<Pallete, String>("MI")
-        miColumn.prefWidth = 50.0
-        miColumn.cellValueFactory = ChromosomeToCellString({ "%.0f".format((it as Pallete).momentOfInertia) })
-        miColumn.styleClass.add("mono")
+        val cmColumn = chromosomeToTableColumn<Box, Pallete>("CM",
+                { (it as Pallete).centerOfMass.toString() },
+                100.0,
+                classes)
 
-        val fbhmColumn = TableColumn<Pallete, String>("FBHM")
-        fbhmColumn.prefWidth = 100.0
-        fbhmColumn.cellValueFactory = ChromosomeToCellString({ (it as Pallete).frontBackHalfMasses.toString() })
-        fbhmColumn.styleClass.add("mono")
+        val miColumn = chromosomeToTableColumn<Box, Pallete>("MI",
+                { "%.0f".format((it as Pallete).momentOfInertia) },
+                50.0,
+                classes)
 
-        val rlhmColumn = TableColumn<Pallete, String>("RLHM")
-        rlhmColumn.prefWidth = 100.0
-        rlhmColumn.cellValueFactory = ChromosomeToCellString({ (it as Pallete).rightLeftHalfMasses.toString() })
-        rlhmColumn.styleClass.add("mono")
+        val fbhmColumn = chromosomeToTableColumn<Box, Pallete>("FBHM",
+                { (it as Pallete).frontBackHalfMasses.toString() },
+                100.0,
+                classes)
 
-        val palleteColumn = TableColumn<Pallete, String>("Pallete")
-        palleteColumn.prefWidth = 500.0
-        palleteColumn.cellValueFactory = ChromosomeToCellString({ c ->
-            c.content.map { it.value }.
-                    joinToString(separator = " ", transform = { "%3d".format(it) })
-        })
-        palleteColumn.styleClass.add("mono")
+        val rlhmColumn = chromosomeToTableColumn<Box, Pallete>("RLHM",
+                { (it as Pallete).rightLeftHalfMasses.toString() },
+                100.0,
+                classes)
+
+        val palleteColumn = chromosomeToTableColumn<Box, Pallete>("Pallete",
+                { c ->
+                    c.content.map { it.value }.
+                            joinToString(separator = " ", transform = { "%3d".format(it) })
+                },
+                500.0,
+                classes)
 
         balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
         balanceTable.columns.addAll(fitnessColumn, cmColumn, miColumn, fbhmColumn, rlhmColumn, palleteColumn)

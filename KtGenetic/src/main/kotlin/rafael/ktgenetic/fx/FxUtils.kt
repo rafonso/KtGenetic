@@ -1,0 +1,34 @@
+package rafael.ktgenetic.fx
+
+import javafx.scene.control.Control
+import javafx.scene.control.TableColumn
+import rafael.ktgenetic.Chromosome
+
+fun <G, C : Chromosome<G>> chromosomeToTableColumn(title: String,
+                                                   chromosomeToString: (Chromosome<G>) -> String,
+                                                   prefWidth: Double = Control.USE_COMPUTED_SIZE,
+                                                   classes: List<String> = listOf(),
+                                                   style: String = ""):
+        TableColumn<C, String> {
+    val balanceColumn = TableColumn<C, String>(title)
+
+    balanceColumn.cellValueFactory = ChromosomeToCellString<G, C>(chromosomeToString)
+    balanceColumn.prefWidth = prefWidth
+    balanceColumn.styleClass.addAll(classes)
+    balanceColumn.style = style
+
+    return balanceColumn
+}
+
+/**
+ * Converts a property inside a [Chromosome.fitness] to a String to be showed in a TableCell
+ */
+fun <G, C : Chromosome<G>> fitnessToTableColumn(prefWidth: Double = 50.0,
+                                                classes: List<String> = listOf(),
+                                                style: String = ""):
+        TableColumn<C, String> =
+        chromosomeToTableColumn("Fitness",
+                { c -> "%.3f".format(c.fitness) },
+                prefWidth,
+                classes,
+                style)

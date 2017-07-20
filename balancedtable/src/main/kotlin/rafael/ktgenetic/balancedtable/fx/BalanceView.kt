@@ -2,7 +2,10 @@ package rafael.ktgenetic.balancedtable.fx
 
 import javafx.collections.FXCollections
 import javafx.geometry.Insets
-import javafx.scene.control.*
+import javafx.scene.control.Control
+import javafx.scene.control.Label
+import javafx.scene.control.TableView
+import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
@@ -10,9 +13,9 @@ import rafael.ktgenetic.Environment
 import rafael.ktgenetic.balancedtable.Balance
 import rafael.ktgenetic.balancedtable.BalanceEnvironment
 import rafael.ktgenetic.balancedtable.Box
-import rafael.ktgenetic.fx.ChomosomeToFitnessCellString
-import rafael.ktgenetic.fx.ChromosomeToCellString
 import rafael.ktgenetic.fx.GeneticView
+import rafael.ktgenetic.fx.chromosomeToTableColumn
+import rafael.ktgenetic.fx.fitnessToTableColumn
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
 
@@ -37,7 +40,11 @@ class BalanceViewApp : App(BalanceView::class)
 
 class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.ORDERED) {
 
+    // INPUT COMPONENTS
+
     val txfBalance: TextField = TextField()
+
+    // OUTPUT COMPONENTS
 
     val pnlBestBalance: Pane = HBox(10.0)
 
@@ -62,31 +69,29 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
     }
 
     private fun fillBalanceTable() {
-        val fitnessColumn = TableColumn<Balance, String>("Fitness")
-        fitnessColumn.prefWidth = 50.0
-        fitnessColumn.cellValueFactory = ChomosomeToFitnessCellString()
-        fitnessColumn.styleClass.add("mono")
+        val classes = listOf("mono")
 
-        val balanceColumn = TableColumn<Balance, String>("Balance")
-        balanceColumn.prefWidth = 500.0
-        balanceColumn.cellValueFactory = ChromosomeToCellString({ c -> c.content.map { it.value }.
-                joinToString(separator = " ", transform = { "%3d".format(it) }) })
-        balanceColumn.styleClass.add("mono")
+        val fitnessColumn = fitnessToTableColumn<Box, Balance>(50.0, classes)
 
-        val cmColumn = TableColumn<Balance, String>("CM")
-        cmColumn.prefWidth = 50.0
-        cmColumn.cellValueFactory = ChromosomeToCellString({ c -> "%.3f".format((c as Balance).centerOfMass) })
-        cmColumn.styleClass.add("mono")
+        val balanceColumn = chromosomeToTableColumn<Box, Balance>("Balance",
+                { c -> c.content.map { it.value }.joinToString(separator = " ", transform = { "%3d".format(it) }) },
+                500.0,
+                classes)
 
-        val miColumn = TableColumn<Balance, String>("MI")
-        miColumn.prefWidth = 75.0
-        miColumn.cellValueFactory = ChromosomeToCellString({ c -> "%2.3f".format((c as Balance).momentOfInertia) })
-        miColumn.styleClass.add("mono")
+        val cmColumn = chromosomeToTableColumn<Box, Balance>("CM",
+                { c -> "%.3f".format((c as Balance).centerOfMass) },
+                50.0,
+                classes)
 
-        val hmColumn = TableColumn<Balance, String>("HM")
-        hmColumn.prefWidth = 100.0
-        hmColumn.cellValueFactory = ChromosomeToCellString({ c -> (c as Balance).halfMasses.toString() })
-        hmColumn.styleClass.add("mono")
+        val miColumn = chromosomeToTableColumn<Box, Balance>("MI",
+                { c -> "%2.3f".format((c as Balance).momentOfInertia) },
+                75.0,
+                classes)
+
+        val hmColumn = chromosomeToTableColumn<Box, Balance>("HM",
+                { c -> (c as Balance).halfMasses.toString() },
+                100.0,
+                classes)
 
         balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
         balanceTable.columns.addAll(fitnessColumn, cmColumn, miColumn, hmColumn, balanceColumn)

@@ -1,26 +1,34 @@
 package rafael.ktgenetic.equalstring.fx
 
 import javafx.collections.FXCollections
-import javafx.scene.control.*
+import javafx.scene.control.ComboBox
+import javafx.scene.control.Control
+import javafx.scene.control.TableView
+import javafx.scene.control.TextField
 import javafx.util.StringConverter
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.equalstring.EqualStringEnvironment
 import rafael.ktgenetic.equalstring.StringFitnessChoice
 import rafael.ktgenetic.equalstring.Word
-import rafael.ktgenetic.fx.ChomosomeToFitnessCellString
-import rafael.ktgenetic.fx.ChromosomeToCellString
 import rafael.ktgenetic.fx.GeneticView
+import rafael.ktgenetic.fx.chromosomeToTableColumn
+import rafael.ktgenetic.fx.fitnessToTableColumn
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
 
 class EqualStringsViewApp : App(EqualStringsView::class)
 
 class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcessorChoice.SIMPLE) {
-    val wordsTable: TableView<Word> = TableView<Word>()
+
+    // INPUT COMPONENTS
 
     private val cmbStringFitness = ComboBox<StringFitnessChoice>()
 
     private val txfTarget: TextField = TextField()
+
+    // OUTPUT COMPONENTS
+
+    val wordsTable: TableView<Word> = TableView<Word>()
 
     init {
         cmbStringFitness.items = FXCollections.observableArrayList(StringFitnessChoice.values().toList())
@@ -31,13 +39,14 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcess
         txfTarget.prefWidth = 400.0
         addComponent("Target", txfTarget, 3)
 
-        val fitnessColumn = TableColumn<Word, String>("Fitness")
-        fitnessColumn.prefWidth = 100.0
-        fitnessColumn.cellValueFactory = ChomosomeToFitnessCellString()
+        val classes = listOf("mono")
 
-        val wordColumn = TableColumn<Word, String>("Word")
-        wordColumn.prefWidth = 500.0
-        wordColumn.cellValueFactory = ChromosomeToCellString({ c -> String(c.content.toCharArray()) })
+        val fitnessColumn = fitnessToTableColumn<Char, Word>(50.0, classes)
+
+        val wordColumn = chromosomeToTableColumn<Char, Word>("Word",
+                { c -> String(c.content.toCharArray()) },
+                500.0,
+                classes)
 
         wordsTable.prefWidth = Control.USE_COMPUTED_SIZE
         wordsTable.columns.addAll(fitnessColumn, wordColumn)
