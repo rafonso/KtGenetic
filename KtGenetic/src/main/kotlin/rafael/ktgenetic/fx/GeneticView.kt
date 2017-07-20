@@ -81,17 +81,18 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
     private fun yAxisScrolled(event: ScrollEvent?) {
 
-        fun adjust(comparator: (Double, Double) -> Double, limit: Double, signal: Int) {
-            val currentLowerBound = yAxisChartFitness.lowerBound
-            val deltaLowerBound = (yAxisChartFitness.upperBound - currentLowerBound) / 2
-            yAxisChartFitness.lowerBound = comparator(limit, currentLowerBound + signal * deltaLowerBound)
-            yAxisChartFitness.tickUnit = (yAxisChartFitness.upperBound - yAxisChartFitness.lowerBound) / 10
+        fun adjust(signal: Int) {
+            val newLowerBound = yAxisChartFitness.lowerBound + signal * 0.1
+            if(newLowerBound >= 0.0 && newLowerBound < 1.0 ) {
+                yAxisChartFitness.lowerBound = newLowerBound
+                yAxisChartFitness.tickUnit = (yAxisChartFitness.upperBound - yAxisChartFitness.lowerBound) / 10
+            }
         }
 
         if (event!!.deltaY > 0.0) {
-            adjust(Math::min, 1.0, +1)
+            adjust(+1)
         } else if (event.deltaY < 0.0) {
-            adjust(Math::max, 0.0, -1)
+            adjust(-1)
         }
     }
 
