@@ -1,20 +1,22 @@
 package rafael.ktgenetic.selection
 
 import rafael.ktgenetic.Chromosome
-import rafael.ktgenetic.geneticRandom
+import rafael.ktgenetic.createRandomPositions
+import rafael.ktgenetic.makeCuttingIntoPieces
 
-internal class TournamentSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) : SelectionOperator<C> {
+internal class TournamentSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :
+        SelectionOperator<C> {
 
-    private fun select(population: List<C>, winners: List<C>): List<C> {
+    private tailrec fun select(population: List<C>, winners: List<C>): List<C> {
         if (winners.size >= generationSize) {
             return winners
         }
 
-        val candidate1 = population[geneticRandom.nextInt(population.size)]
-        val candidate2 = population[geneticRandom.nextInt(population.size)]
-        val winner = if (candidate1.fitness > candidate2.fitness) candidate1 else candidate2
+        val (pos1, pos2) = createRandomPositions(population.size)
+        val winnerPos = if (population[pos1].fitness > population[pos2].fitness) pos1 else pos2
+        val (first, _, second) = makeCuttingIntoPieces(population, Pair(winnerPos, winnerPos + 1))
 
-        return select(population, winners + winner)
+        return select(first + second, winners + population[winnerPos])
     }
 
     override fun select(children: List<C>): List<C> = select(children, listOf()).sortedBy { it.fitness }.reversed()

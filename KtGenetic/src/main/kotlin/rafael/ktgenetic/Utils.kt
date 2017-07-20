@@ -2,7 +2,7 @@ package rafael.ktgenetic
 
 import java.util.*
 
-private fun createRandomPositions(maxPos: Int, initialPos: Int): Pair<Int, Int> {
+fun createRandomPositions(maxPos: Int, initialPos: Int = 0): Pair<Int, Int> {
     val pos1 = initialPos + geneticRandom.nextInt(maxPos - 2)
     val pos2 = if (pos1 == (maxPos - 2))
         (maxPos - 1)
