@@ -7,7 +7,7 @@ internal class ElitismDelegateSelectionOperator<C : Chromosome<*>>(delegatedClas
                                                                    override val generationSize: Int) :
         SelectionOperator<C> {
 
-    private val eliteChildrenSize: Int = (0.1 * generationSize).toInt()
+    private val eliteChildrenSize: Int = Math.max ((0.1 * generationSize).toInt(), 1)
     private val delegatedSelector: SelectionOperator<C>
 
     init {
@@ -17,8 +17,8 @@ internal class ElitismDelegateSelectionOperator<C : Chromosome<*>>(delegatedClas
     }
 
     override fun select(children: List<C>): List<C> {
-        val eliteChildren = children.subList(0, eliteChildrenSize)
-        val remainingChildren = children.subList(eliteChildrenSize, children.size)
+        val eliteChildren = children.subList(0, eliteChildrenSize).toSet().toList()
+        val remainingChildren = children.subList(eliteChildren.size, children.size)
 
         val remainingSurvivors = delegatedSelector.select(remainingChildren)
 
