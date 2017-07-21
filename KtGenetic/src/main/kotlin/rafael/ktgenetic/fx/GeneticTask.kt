@@ -52,8 +52,8 @@ internal class GeneticTask<C : Chromosome<*>>(private val processor: GeneticProc
                 generationProperty.value = event.generation.toString()
                 if (!event.population.isEmpty()) {
                     val (best, average, deviation) = getBestAverageDeviationFitness(event.population)
-                    bestFitnessProperty.value = "%.3f".format(best)
-                    averageFitnessProperty.value = "%.3f (%.3f)".format(average, deviation)
+                    bestFitnessProperty.value = "%.4f".format(best)
+                    averageFitnessProperty.value = "%.4f (%.4f)".format(average, deviation)
                     averageData.value.add(XYChart.Data(event.generation, average))
                     bestData.value.add(XYChart.Data(event.generation, best))
 

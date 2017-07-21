@@ -29,7 +29,7 @@ fun <G, C : Chromosome<G>> fitnessToTableColumn(prefWidth: Double = 50.0,
                                                 style: String = ""):
         TableColumn<C, String> =
         chromosomeToTableColumn("Fitness",
-                { c -> "%.3f".format(c.fitness) },
+                { c -> "%.4f".format(c.fitness) },
                 prefWidth,
                 classes,
                 style)
