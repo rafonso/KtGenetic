@@ -3,6 +3,8 @@ package rafael.ktgenetic.track.fx
 import javafx.event.EventHandler
 import javafx.scene.Group
 import javafx.scene.canvas.Canvas
+import javafx.scene.control.Label
+import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import rafael.ktgenetic.Environment
@@ -39,24 +41,35 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
 """.trimMargin()
 
 */
+        val borderPane = BorderPane()
+        val label = Label("teste")
         // Create a wrapper Pane first
         val wrapperPane = Pane()
-        // Put canvas in the center of the window
-//        val canvas = Canvas()
-        wrapperPane.children.add(trackCanvas)
-        // Bind the width/height property to the wrapper Pane
-        trackCanvas.widthProperty().bind(wrapperPane.widthProperty())
-        trackCanvas.heightProperty().bind(wrapperPane.heightProperty())
+        borderPane.center = wrapperPane
+        borderPane.bottom = label
+        // Put canvas in the center of the window (*)
+        val canvas = Canvas()
+        wrapperPane.children.add(canvas)
+        // Bind the width/height property so that the size of the Canvas will be
+        // resized as the window is resized
+        canvas.widthProperty().bind(wrapperPane.widthProperty())
+        canvas.heightProperty().bind(wrapperPane.heightProperty())
         // redraw when resized
-        trackCanvas.widthProperty().addListener { event -> draw(trackCanvas) }
-        trackCanvas.heightProperty().addListener { event -> draw(trackCanvas) }
-        draw(trackCanvas)
+        canvas.widthProperty().addListener { event -> draw(canvas) }
+        canvas.heightProperty().addListener { event -> draw(canvas) }
+        canvas.setOnMouseMoved { event ->
+            val y = canvas.height - event.y
+            label.text = event.x.toString() + " x " + y
+        }
+        canvas.setOnMouseExited { event -> label.text = "" }
+        draw(canvas)
 
+        root.center =borderPane
 
-        root.center =wrapperPane
     }
 
     /**
+     * https://stackoverflow.com/questions/37678704/how-to-embed-javafx-canvas-into-borderpane
      * Draw crossed red lines which each each end is at the corner of window,
      * and 4 blue circles whose each center is at the corner of the window,
      * so that make it possible to know where is the extent the Canvas draws
@@ -64,6 +77,7 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
     private fun draw(canvas: Canvas) {
         val width = canvas.width.toInt()
         val height = canvas.height.toInt()
+        println("$width X $height")
         val gc = canvas.graphicsContext2D
         gc.clearRect(0.0, 0.0, width.toDouble(), height.toDouble())
         gc.stroke = Color.RED
