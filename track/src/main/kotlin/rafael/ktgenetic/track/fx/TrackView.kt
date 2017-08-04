@@ -1,10 +1,13 @@
 package rafael.ktgenetic.track.fx
 
-import javafx.event.EventHandler
-import javafx.scene.Group
+import javafx.beans.property.*
+import javafx.collections.FXCollections
+import javafx.geometry.Pos
 import javafx.scene.canvas.Canvas
+import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.FlowPane
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import rafael.ktgenetic.Environment
@@ -18,7 +21,32 @@ class TrackViewApp : App(TrackView::class)
 
 class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.SIMPLE) {
 
-    private val trackCanvas = Canvas()
+    private val distanceFactors = FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.4, 0.6, 0.7, 0.8, 0.9, 1.0)
+
+    private val lblCanvasWidth = Label("width")
+
+    private val cmbWidthFactor = ComboBox<Double>(distanceFactors)
+
+    private val lblCanvasHeight = Label("height")
+
+    private val cmbHeightFactor = ComboBox<Double>(distanceFactors)
+
+    private val lblDistance = Label("Distance")
+
+    private val lblMouseCanvasPosition = Label("")
+
+    private val canvas = Canvas()
+
+    private val distanceToGo: DoubleProperty = SimpleDoubleProperty(this, "Distance to Go")
+
+    private val mouseCanvasXPosition: IntegerProperty = SimpleIntegerProperty(canvas, "xCanvas")
+
+    private val mouseCanvasYPosition: IntegerProperty = SimpleIntegerProperty(canvas, "yCanvas")
+
+    private val widthFactor: DoubleProperty = SimpleDoubleProperty()
+
+    private val heightFactor: DoubleProperty = SimpleDoubleProperty()
+
 /*
         style {
 //            borderColor += box(Color.RED,Color.GREEN,Color.BLUE,Color.YELLOW)
@@ -39,33 +67,77 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
         |-fx-border-radius: 5;
         |-fx-border-color: blue;
 """.trimMargin()
-
 */
-        val borderPane = BorderPane()
-        val label = Label("teste")
-        // Create a wrapper Pane first
+        fun initComboPanel(label: Label, combo: ComboBox<Double>, factor: DoubleProperty, canvasProperty: DoubleProperty): FlowPane {
+            label.textProperty().bind(canvasProperty.asString("%4.0f"))
+            combo.value = 0.1
+            combo.valueProperty().addListener { event ->
+                if (event is SimpleObjectProperty<*>) {
+                    factor.value = (event.value as Double)
+                }
+            }
+            factor.value = combo.value
+
+            val flowPane = FlowPane()
+            flowPane.add(combo)
+            flowPane.add(Label(" x "))
+            flowPane.add(label)
+
+            return flowPane
+        }
+
+        mouseCanvasXPosition.addListener { _ -> onCanvasMousePositionChanged() }
+        mouseCanvasYPosition.addListener { _ -> onCanvasMousePositionChanged() }
+
+//        cmbWidthFactor.valueProperty().doubleBinding()
+        distanceToGo.bind(canvas.widthProperty().multiply(widthFactor).multiply(canvas.heightProperty()).multiply(heightFactor))
+
+        addComponent("Width", initComboPanel(lblCanvasWidth, cmbWidthFactor, widthFactor, canvas.widthProperty()))
+
+        addComponent("Height", initComboPanel(lblCanvasHeight, cmbHeightFactor, heightFactor, canvas.heightProperty()))
+
+        lblDistance.textProperty().bind(distanceToGo.asString("%8.0f"))
+        lblDistance.alignment = Pos.BOTTOM_LEFT
+        addComponent("Distance To Go", lblDistance)
+
+
         val wrapperPane = Pane()
-        borderPane.center = wrapperPane
-        borderPane.bottom = label
-        // Put canvas in the center of the window (*)
-        val canvas = Canvas()
-        wrapperPane.children.add(canvas)
         // Bind the width/height property so that the size of the Canvas will be
         // resized as the window is resized
         canvas.widthProperty().bind(wrapperPane.widthProperty())
         canvas.heightProperty().bind(wrapperPane.heightProperty())
         // redraw when resized
-        canvas.widthProperty().addListener { event -> draw(canvas) }
-        canvas.heightProperty().addListener { event -> draw(canvas) }
+        canvas.widthProperty().addListener { _ -> draw(canvas) }
+        canvas.heightProperty().addListener { _ -> draw(canvas) }
         canvas.setOnMouseMoved { event ->
-            val y = canvas.height - event.y
-            label.text = event.x.toString() + " x " + y
+            mouseCanvasXPosition.value = event.x.toInt()
+            mouseCanvasYPosition.value = canvas.height.toInt() - event.y.toInt()
         }
-        canvas.setOnMouseExited { event -> label.text = "" }
+        canvas.setOnMouseExited { _ ->
+            mouseCanvasXPosition.value = Integer.MIN_VALUE
+            mouseCanvasYPosition.value = Integer.MIN_VALUE
+        }
+
+        // Put canvas in the center of the window (*)
+        wrapperPane.children.add(canvas)
+
+        val borderPane = BorderPane()
+        // Create a wrapper Pane first
+        borderPane.center = wrapperPane
+        borderPane.bottom = lblMouseCanvasPosition
+
+        root.center = borderPane
+
         draw(canvas)
+    }
 
-        root.center =borderPane
-
+    private fun onCanvasMousePositionChanged() {
+        lblMouseCanvasPosition.text =
+                if (mouseCanvasXPosition.value > 0 && mouseCanvasYPosition.value > 0) {
+                    "%4d x %4d".format(mouseCanvasXPosition.value, mouseCanvasYPosition.value)
+                } else {
+                    ""
+                }
     }
 
     /**
