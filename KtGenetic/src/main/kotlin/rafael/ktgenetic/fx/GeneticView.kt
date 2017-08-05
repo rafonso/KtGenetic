@@ -180,7 +180,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
             val environment: Environment<G, C> = getEnvironment(cmbGenerations.value, cmbPopulation.value, cmbMutationFactor.value)
             disableInputComponents(true)
-            val selectionOperator = cmbSelectionOperator.value.chooseSelectionOperator(environment)
+            val operatorChoice = cmbSelectionOperator.value
+            val selectionOperator = operatorChoice.chooseSelectionOperator(environment)
             val processor = processorChoice.newInstance(environment, selectionOperator)
             processor.addListener(this)
 

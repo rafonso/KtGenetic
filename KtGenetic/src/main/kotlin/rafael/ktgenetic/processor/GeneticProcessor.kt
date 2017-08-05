@@ -72,7 +72,7 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environme
         notifyEvent(ProcessorEvent(TypeProcessorEvent.FITNESS_CALCULATING, generation, mutated))
         // Calculate Fitness
         mutated.forEach {
-            it.fitness = environment.calculateFitness(it.content)
+            it.fitness = environment.calculateFitness(it)
         }
 
         notifyEvent(ProcessorEvent(TypeProcessorEvent.SELECTING, generation, mutated))

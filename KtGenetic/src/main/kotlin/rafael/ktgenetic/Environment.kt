@@ -25,7 +25,7 @@ interface Environment<G, C : Chromosome<G>> {
 
     fun createNewChromosome(sequence: List<G>): C
 
-    fun calculateFitness(sequence: List<G>): Double
+    fun calculateFitness(chromosome: C): Double
 
     fun resultFound(genotypes: List<C>): Boolean = false
 

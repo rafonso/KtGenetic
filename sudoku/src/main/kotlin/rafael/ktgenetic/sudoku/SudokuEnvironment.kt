@@ -19,11 +19,11 @@ class SudokuEnvironment(override val maxGenerations: Int = Int.MAX_VALUE,
 
     override fun createNewChromosome(sequence: List<Cell>): Puzzle = Puzzle(sequence)
 
-    override fun calculateFitness(sequence: List<Cell>): Double {
+    override fun calculateFitness(chromosome: Puzzle): Double {
 
         fun getCorrectSets(set: List<List<Int>>): Int = set.map {
             positions ->
-            if (positions.map { sequence[it].value }.toSet().size == 9) 1 else 0
+            if (positions.map { chromosome.content[it].value }.toSet().size == 9) 1 else 0
         }.sum()
 
         val correctRows = getCorrectSets(Puzzle.rows)

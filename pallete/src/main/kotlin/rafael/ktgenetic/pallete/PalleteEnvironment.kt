@@ -48,12 +48,11 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
 
     override fun createNewChromosome(sequence: Boxes): Pallete = Pallete(sequence, palleteDimension)
 
-    override fun calculateFitness(sequence: Boxes): Double {
-        val pallete = Pallete(sequence, palleteDimension)
-        val centerOfMassFitness = 1 - pallete.centerOfMass.distance(palleteDimension.center) / palleteDimension.greatestDistanceFromCenter
-        val momentOfInertiaFitness = 1 - pallete.momentOfInertia / greatestMomentOfInertia
-        val frontBackBalanceFitness = 1 - Math.abs(pallete.frontBackHalfMasses.first - pallete.frontBackHalfMasses.second).toDouble() / pallete.totalMass
-        val rightLeftBalanceFitness = 1 - Math.abs(pallete.rightLeftHalfMasses.first - pallete.rightLeftHalfMasses.second).toDouble() / pallete.totalMass
+    override fun calculateFitness(chromosome: Pallete): Double {
+        val centerOfMassFitness = 1 - chromosome.centerOfMass.distance(palleteDimension.center) / palleteDimension.greatestDistanceFromCenter
+        val momentOfInertiaFitness = 1 - chromosome.momentOfInertia / greatestMomentOfInertia
+        val frontBackBalanceFitness = 1 - Math.abs(chromosome.frontBackHalfMasses.first - chromosome.frontBackHalfMasses.second).toDouble() / chromosome.totalMass
+        val rightLeftBalanceFitness = 1 - Math.abs(chromosome.rightLeftHalfMasses.first - chromosome.rightLeftHalfMasses.second).toDouble() / chromosome.totalMass
 
         return (centerOfMassFitness + momentOfInertiaFitness + frontBackBalanceFitness + rightLeftBalanceFitness) / 4
     }

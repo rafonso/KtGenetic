@@ -35,11 +35,10 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
 
     override fun createNewChromosome(sequence: Boxes): Balance = Balance(sequence, dimensions)
 
-    override fun calculateFitness(sequence: Boxes): Double {
-        val bal = Balance(sequence, dimensions)
-        val centerOfMassFitness = 1 - Math.abs(bal.centerOfMass - dimensions.center) / dimensions.center
-        val momentOfInertiaFitness = 1 - bal.momentOfInertia / greatestMomentOfInertia
-        val balanceFitness = 1 - Math.abs(bal.halfMasses.first - bal.halfMasses.second).toDouble() / bal.totalMass
+    override fun calculateFitness(chromosome: Balance): Double {
+        val centerOfMassFitness = 1 - Math.abs(chromosome.centerOfMass - dimensions.center) / dimensions.center
+        val momentOfInertiaFitness = 1 - chromosome.momentOfInertia / greatestMomentOfInertia
+        val balanceFitness = 1 - Math.abs(chromosome.halfMasses.first - chromosome.halfMasses.second).toDouble() / chromosome.totalMass
 
         return (centerOfMassFitness + momentOfInertiaFitness + balanceFitness) / 3
     }

@@ -33,8 +33,8 @@ class EqualStringEnvironment(val target: String,
 
     override fun getCutPositions(): Pair<Int, Int> = createCutPositions(target.length)
 
-    override fun calculateFitness(sequence: List<Char>): Double =
-            fitnessFunction.calculate(String(sequence.toCharArray()), target)
+    override fun calculateFitness(chromosome: Word): Double =
+            fitnessFunction.calculate(String(chromosome.content.toCharArray()), target)
 
     override fun resultFound(genotypes: List<Word>) =
             String(genotypes[0].content.toCharArray()) == target
