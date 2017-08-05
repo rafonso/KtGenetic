@@ -25,6 +25,16 @@ class PathTest {
     fun reverse2() = testPath(listOf(Direction.B, Direction.T), listOf(Point(0, 0)), PathStatus.STUCK)
 
     @Test
+    fun stuck() = testPath(listOf(Direction.T, Direction.R, Direction.T, Direction.R, Direction.B, Direction.B, Direction.B, Direction.B),
+            listOf(
+                    Point(0, 0), Point(0, 1),
+                    Point(1, 1), Point(1, 2),
+                    Point(2, 2), Point(2, 1),
+                    Point(2, 0)
+            ),
+            PathStatus.STUCK)
+
+    @Test
     fun goTo1_0() = testPath(listOf(Direction.R), listOf(Point(0, 0), Point(1, 0)), PathStatus.SUSPENDED)
 
     @Test
@@ -39,7 +49,7 @@ class PathTest {
 
     @Test
     fun goToTargetZigZag() = testPath(
-            listOf(Direction.T, Direction.R, Direction.T, Direction.R, Direction.T, Direction.R, Direction.T, Direction.R, Direction.T, Direction.R),
+            listOf(Direction.T, Direction.R, Direction.T, Direction.R, Direction.T, Direction.R, Direction.T, Direction.R, Direction.T, Direction.R, Direction.T, Direction.R, Direction.T, Direction.R),
             listOf(
                     Point(0, 0), Point(0, 1),
                     Point(1, 1), Point(1, 2),
@@ -50,6 +60,7 @@ class PathTest {
             ),
             PathStatus.TARGETED
     )
+
 
     @Test(expected = AssertionError::class)
     fun redoPathAfterExecution() {

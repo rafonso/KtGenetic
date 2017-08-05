@@ -6,9 +6,7 @@ import javafx.geometry.Pos
 import javafx.scene.canvas.Canvas
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
-import javafx.scene.layout.BorderPane
-import javafx.scene.layout.FlowPane
-import javafx.scene.layout.Pane
+import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.fx.GeneticView
@@ -16,6 +14,7 @@ import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.track.Direction
 import rafael.ktgenetic.track.Path
 import tornadofx.*
+
 
 class TrackViewApp : App(TrackView::class)
 
@@ -102,13 +101,13 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
 
 
         val wrapperPane = Pane()
+        wrapperPane.border = Border(BorderStroke(Color.BLACK,
+                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT))
+
         // Bind the width/height property so that the size of the Canvas will be
         // resized as the window is resized
         canvas.widthProperty().bind(wrapperPane.widthProperty())
         canvas.heightProperty().bind(wrapperPane.heightProperty())
-        // redraw when resized
-        canvas.widthProperty().addListener { _ -> draw(canvas) }
-        canvas.heightProperty().addListener { _ -> draw(canvas) }
         canvas.setOnMouseMoved { event ->
             mouseCanvasXPosition.value = event.x.toInt()
             mouseCanvasYPosition.value = canvas.height.toInt() - event.y.toInt()
@@ -117,7 +116,9 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
             mouseCanvasXPosition.value = Integer.MIN_VALUE
             mouseCanvasYPosition.value = Integer.MIN_VALUE
         }
-
+        // redraw when resized
+        canvas.widthProperty().addListener { _ -> draw(canvas) }
+        canvas.heightProperty().addListener { _ -> draw(canvas) }
         // Put canvas in the center of the window (*)
         wrapperPane.children.add(canvas)
 
@@ -151,15 +152,23 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
         val height = canvas.height.toInt()
         println("$width X $height")
         val gc = canvas.graphicsContext2D
-        gc.clearRect(0.0, 0.0, width.toDouble(), height.toDouble())
-        gc.stroke = Color.RED
-        gc.strokeLine(0.0, 0.0, width.toDouble(), height.toDouble())
-        gc.strokeLine(0.0, height.toDouble(), width.toDouble(), 0.0)
-        gc.fill = Color.BLUE
-        gc.fillOval(-30.0, -30.0, 60.0, 60.0)
-        gc.fillOval((-30 + width).toDouble(), -30.0, 60.0, 60.0)
-        gc.fillOval(-30.0, (-30 + height).toDouble(), 60.0, 60.0)
-        gc.fillOval((-30 + width).toDouble(), (-30 + height).toDouble(), 60.0, 60.0)
+
+        // JVM property: -Dshowgrid
+        if (System.getProperty("showgrid") == null) {
+            canvas.style = "-fx-background-color: black;";
+        } else {
+            val radio = 30.0
+            val radio2 = 2 * radio
+            gc.clearRect(0.0, 0.0, width.toDouble(), height.toDouble())
+            gc.stroke = Color.RED
+            gc.strokeLine(0.0, 0.0, width.toDouble(), height.toDouble())
+            gc.strokeLine(0.0, height.toDouble(), width.toDouble(), 0.0)
+            gc.fill = Color.BLUE
+            gc.fillOval(-radio, -radio, radio2, radio2)
+            gc.fillOval((-radio + width), -radio, radio2, radio2)
+            gc.fillOval(-radio, (-radio + height), radio2, radio2)
+            gc.fillOval((-radio + width), (-radio + height), radio2, radio2)
+        }
     }
 
     override fun validate() {
