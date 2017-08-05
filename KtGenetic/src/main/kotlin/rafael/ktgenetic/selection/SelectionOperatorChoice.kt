@@ -25,7 +25,8 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
                 )
     };
 
-    internal abstract fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C>
+    // "internal" removed
+    abstract fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C>
 }
 
 fun codeToSelectionOperatorChoice(code: String): SelectionOperatorChoice {

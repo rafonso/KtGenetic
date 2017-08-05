@@ -19,7 +19,8 @@ enum class GeneticProcessorChoice {
                 OrderedGeneticProcessor(environment, selectionOperator)
     };
 
-    internal abstract fun <G, C : Chromosome<G>> newInstance(environment: Environment<G, C>,
-                                                             selectionOperator: SelectionOperator<C>):
+    // "internal" removed
+    abstract fun <G, C : Chromosome<G>> newInstance(environment: Environment<G, C>,
+                                                    selectionOperator: SelectionOperator<C>):
             GeneticProcessor<G, C>
 }

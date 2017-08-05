@@ -13,7 +13,8 @@ abstract class Chromosome<G>(private var _fitness: Double = 0.0): Comparable<Chr
      */
     var fitness: Double
         get() = _fitness
-        internal set(f) {
+    // "internal" removed
+        set(f) {
             _fitness = f
         }
 
