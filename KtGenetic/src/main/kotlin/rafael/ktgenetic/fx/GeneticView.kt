@@ -26,7 +26,6 @@ import rafael.ktgenetic.selection.SelectionOperatorChoice
 import tornadofx.*
 import java.time.Instant
 
-
 abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorChoice: GeneticProcessorChoice) : View(title), ProcessorListener {
     override val root: BorderPane by fxml("/view/Genetic.fxml")
 
@@ -76,6 +75,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
         lineChartFitness.yAxis.isTickMarkVisible = false
         yAxisChartFitness.onMouseClicked = EventHandler { yAxisClicked(it) }
         yAxisChartFitness.onScroll = EventHandler { yAxisScrolled(it) }
+
+        primaryStage.icons.add(Image("/view/dna_helix_genetic_gene-32.png"))
 
         configureLog(DEBUG)
     }
