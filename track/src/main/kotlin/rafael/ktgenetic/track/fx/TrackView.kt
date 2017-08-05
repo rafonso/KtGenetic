@@ -13,6 +13,7 @@ import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.track.Direction
 import rafael.ktgenetic.track.Path
+import rafael.ktgenetic.track.TrackEnvironment
 import tornadofx.*
 
 
@@ -46,27 +47,7 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
 
     private val heightFactor: DoubleProperty = SimpleDoubleProperty()
 
-/*
-        style {
-//            borderColor += box(Color.RED,Color.GREEN,Color.BLUE,Color.YELLOW)
-            backgroundColor = MultiValue<Paint>(arrayOf(Color.RED))
-            bo
-        }
-*/
-
-
     init {
-        /*
-        trackCanvas.onMouseMoved = EventHandler { println(it.toString()) }
-        trackCanvas.style = """
-        |-fx-padding: 10;
-        |-fx-border-style: solid inside;
-        |-fx-border-width: 2;
-        |-fx-border-insets: 5;
-        |-fx-border-radius: 5;
-        |-fx-border-color: blue;
-""".trimMargin()
-*/
         fun initComboPanel(label: Label, combo: ComboBox<Double>, factor: DoubleProperty, canvasProperty: DoubleProperty): FlowPane {
             label.textProperty().bind(canvasProperty.asString("%4.0f"))
             combo.value = 0.1
@@ -88,7 +69,6 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
         mouseCanvasXPosition.addListener { _ -> onCanvasMousePositionChanged() }
         mouseCanvasYPosition.addListener { _ -> onCanvasMousePositionChanged() }
 
-//        cmbWidthFactor.valueProperty().doubleBinding()
         distanceToGo.bind(canvas.widthProperty().multiply(widthFactor).multiply(canvas.heightProperty()).multiply(heightFactor))
 
         addComponent("Width", initComboPanel(lblCanvasWidth, cmbWidthFactor, widthFactor, canvas.widthProperty()))
@@ -104,6 +84,21 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
         wrapperPane.border = Border(BorderStroke(Color.BLACK,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT))
 
+        configureCanvas(wrapperPane)
+        // Put canvas in the center of the window (*)
+        wrapperPane.children.add(canvas)
+
+        val borderPane = BorderPane()
+        // Create a wrapper Pane first
+        borderPane.center = wrapperPane
+        borderPane.bottom = lblMouseCanvasPosition
+
+        root.center = borderPane
+
+        draw(canvas)
+    }
+
+    private fun configureCanvas(wrapperPane: Pane) {
         // Bind the width/height property so that the size of the Canvas will be
         // resized as the window is resized
         canvas.widthProperty().bind(wrapperPane.widthProperty())
@@ -119,17 +114,6 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
         // redraw when resized
         canvas.widthProperty().addListener { _ -> draw(canvas) }
         canvas.heightProperty().addListener { _ -> draw(canvas) }
-        // Put canvas in the center of the window (*)
-        wrapperPane.children.add(canvas)
-
-        val borderPane = BorderPane()
-        // Create a wrapper Pane first
-        borderPane.center = wrapperPane
-        borderPane.bottom = lblMouseCanvasPosition
-
-        root.center = borderPane
-
-        draw(canvas)
     }
 
     private fun onCanvasMousePositionChanged() {
@@ -172,19 +156,20 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
     }
 
     override fun validate() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<Direction, Path> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return TrackEnvironment(canvas.width.toInt(), canvas.height.toInt(), distanceToGo.intValue(), maxGenerations, generationSize, mutationFactor)
     }
 
     override fun fillOwnComponent(genome: List<Path>) {
+        primaryStage.isResizable = false;
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun resetComponents() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        primaryStage.isResizable = true;
     }
 
 }
