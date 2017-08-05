@@ -7,6 +7,15 @@ data class Point(val hPos: Int = 0, val vPos: Int = 0) {
     operator fun plus(direction: Direction): Point =
             Point(this.hPos + direction.horizontal, this.vPos + direction.vertical)
 
+    fun distance(p: Point): Double {
+        val deltaW = this.hPos - p.hPos
+        val deltaH = this.vPos - p.vPos
+
+        return Math.sqrt((deltaW * deltaW + deltaH * deltaH).toDouble())
+    }
+
+    override fun toString(): String = "(%4d, %4d)".format(hPos, vPos)
+
 }
 
 data class Path(override val content: List<Direction>) : Chromosome<Direction>() {
