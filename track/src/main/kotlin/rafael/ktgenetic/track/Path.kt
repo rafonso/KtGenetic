@@ -31,13 +31,13 @@ data class Path(override val content: List<Direction>) : Chromosome<Direction>()
         get() = _track
 
     fun calculatePath(hLimit: Int, vLimit: Int) {
-        assert(status == PathStatus.WAITING, { -> "Path just Calculated" })
+        assert(status==PathStatus.WAITING, { -> "Path just Calculated" })
 
         fun isStuck(currentPoint: Point): Boolean {
             return currentPoint.hPos < 0 || currentPoint.vPos < 0 || currentPoint.hPos > hLimit || currentPoint.vPos > vLimit
         }
 
-        fun arrivedToTarget(currentPoint: Point): Boolean = (currentPoint.hPos == hLimit) && (currentPoint.vPos == vLimit)
+        fun arrivedToTarget(currentPoint: Point): Boolean = (currentPoint.hPos==hLimit) && (currentPoint.vPos==vLimit)
 
         tailrec fun calculate(currentTrack: List<Point>): Pair<List<Point>, PathStatus> {
             val nextPoint = currentTrack.last() + content[currentTrack.size - 1]
@@ -57,6 +57,17 @@ data class Path(override val content: List<Direction>) : Chromosome<Direction>()
         val (t, s) = calculate(listOf(Point(0, 0)))
         _track = t
         _status = s
+    }
+
+    override fun valueToString(): String =
+            if (status==PathStatus.WAITING) {
+                content.joinToString(separator = "", prefix = "[", postfix = "]")
+            } else {
+                "$status[${track.joinToString(separator = "")}]"
+            }
+
+    override fun toString(): String {
+        return super.toString()
     }
 
 }

@@ -13,8 +13,8 @@ import rafael.ktgenetic.track.Path
 import rafael.ktgenetic.track.TrackEnvironment
 
 private const val FACTOR_PARAMETER = "f"
-private const val HEIGHT_PARAMETER = "h"
-private const val WIDTH_PARAMETER = "w"
+private const val HEIGHT_PARAMETER = "he"
+private const val WIDTH_PARAMETER = "wi"
 
 private const val HEIGHT_DEFAULT = 5
 private const val WIDTH_DEFAULT = 5

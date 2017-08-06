@@ -5,7 +5,7 @@ import rafael.ktgenetic.createCutPositions
 import rafael.ktgenetic.geneticRandom
 
 private const val DISTANCE_WEIGHT = 1.0
-private const val LENGHT_WEIGHT = 0.5
+private const val LENGHT_WEIGHT = 1.0
 
 class TrackEnvironment(val width: Int,
                        val height: Int,
@@ -39,8 +39,10 @@ class TrackEnvironment(val width: Int,
     override fun createNewChromosome(sequence: List<Direction>): Path = Path(sequence)
 
     override fun calculateFitness(chromosome: Path): Double {
+        chromosome.calculatePath(width, height)
+
         val endPointDistanceToTargetFactor = 1.0 / (1.0 + chromosome.track.last().distance(target))
-        val travelledDistanceFactor = 1.0 / (1.0 + Math.abs(chromosome.track.size - diagonalLenght))
+        val travelledDistanceFactor = if (chromosome.status==PathStatus.TARGETED) 1.0 / (1.0 + Math.abs(chromosome.track.size - width - height)) else 0.0
 
         return (DISTANCE_WEIGHT * endPointDistanceToTargetFactor + LENGHT_WEIGHT * travelledDistanceFactor) /
                 (DISTANCE_WEIGHT + LENGHT_WEIGHT)
