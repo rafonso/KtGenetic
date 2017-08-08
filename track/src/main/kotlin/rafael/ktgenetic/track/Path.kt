@@ -39,22 +39,24 @@ data class Path(override val content: List<Direction>) : Chromosome<Direction>()
 
         fun arrivedToTarget(currentPoint: Point): Boolean = (currentPoint.hPos==hLimit) && (currentPoint.vPos==vLimit)
 
-        tailrec fun calculate(currentTrack: List<Point>): Pair<List<Point>, PathStatus> {
-            val nextPoint = currentTrack.last() + content[currentTrack.size - 1]
-            val nextTrack = currentTrack + nextPoint
+        tailrec fun calculate(track: MutableList<Point>): Pair<List<Point>, PathStatus> {
+            val nextPoint = track.last() + content[track.size - 1]
 
-            return if (isStuck(nextPoint)) {
-                Pair(currentTrack, PathStatus.STUCK)
-            } else if (arrivedToTarget(nextPoint)) {
-                Pair(nextTrack, PathStatus.TARGETED)
-            } else if (nextTrack.size > content.size) {
-                Pair(nextTrack, PathStatus.SUSPENDED)
+            if (isStuck(nextPoint)) {
+                return Pair(track, PathStatus.STUCK)
+            }
+
+            track += nextPoint
+            return if (arrivedToTarget(nextPoint)) {
+                Pair(track, PathStatus.TARGETED)
+            } else if (track.size > content.size) {
+                Pair(track, PathStatus.SUSPENDED)
             } else {
-                calculate(nextTrack)
+                calculate(track)
             }
         }
 
-        val (t, s) = calculate(listOf(Point(0, 0)))
+        val (t, s) = calculate(mutableListOf(Point(0, 0)))
         _track = t
         _status = s
     }

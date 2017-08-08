@@ -19,7 +19,7 @@ fun createCutPositions(maxPos: Int): Pair<Int, Int> = createRandomPositions(maxP
 fun <G> makeCuttingIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>):
         ListPieces<G> =
         ListPieces(
-                sequence.subList(0, cutPositions.first),
+                sequence.subList(0, cutPositions.first) ,
                 sequence.subList(cutPositions.first, cutPositions.second),
                 sequence.subList(cutPositions.second, sequence.size)
         )
