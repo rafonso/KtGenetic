@@ -25,4 +25,6 @@ internal class ElitismDelegateSelectionOperator<C : Chromosome<*>>(delegatedClas
         return (eliteChildren + remainingSurvivors).sortedBy { it.fitness }.reversed()
     }
 
+    override fun toString(): String = "Elitism[$delegatedSelector, elite = $eliteChildrenSize]"
+
 }
