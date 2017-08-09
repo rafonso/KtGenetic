@@ -21,64 +21,52 @@ class TrackViewApp : App(TrackView::class)
 
 class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.SIMPLE) {
 
-    private val distanceFactors = FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.4, 0.6, 0.7, 0.8, 0.9, 1.0)
+    private val distanceFactors = FXCollections.observableArrayList((1..10).toList())
 
     private val lblCanvasWidth = Label("width")
 
-    private val cmbWidthFactor = ComboBox<Double>(distanceFactors)
+    private val cmbDistanceFactor = ComboBox<Int>(distanceFactors)
 
     private val lblCanvasHeight = Label("height")
 
-    private val cmbHeightFactor = ComboBox<Double>(distanceFactors)
-
-    private val lblDistance = Label("Distance")
+    private val lblTrackLength = Label("Length")
 
     private val lblMouseCanvasPosition = Label("")
 
     private val canvas = Canvas()
 
-    private val distanceToGo: DoubleProperty = SimpleDoubleProperty(this, "Distance to Go")
+    private val trackLenght: IntegerProperty = SimpleIntegerProperty(this, "Track Length")
 
     private val mouseCanvasXPosition: IntegerProperty = SimpleIntegerProperty(canvas, "xCanvas")
 
     private val mouseCanvasYPosition: IntegerProperty = SimpleIntegerProperty(canvas, "yCanvas")
 
-    private val widthFactor: DoubleProperty = SimpleDoubleProperty()
+    private val distanceFactor: IntegerProperty = SimpleIntegerProperty(this, "distanceFactor")
 
-    private val heightFactor: DoubleProperty = SimpleDoubleProperty()
 
     init {
-        fun initComboPanel(label: Label, combo: ComboBox<Double>, factor: DoubleProperty, canvasProperty: DoubleProperty): FlowPane {
-            label.textProperty().bind(canvasProperty.asString("%4.0f"))
-            combo.value = 0.1
-            combo.valueProperty().addListener { event ->
-                if (event is SimpleObjectProperty<*>) {
-                    factor.value = (event.value as Double)
-                }
-            }
-            factor.value = combo.value
-
-            val flowPane = FlowPane()
-            flowPane.add(combo)
-            flowPane.add(Label(" x "))
-            flowPane.add(label)
-
-            return flowPane
-        }
-
         mouseCanvasXPosition.addListener { _ -> onCanvasMousePositionChanged() }
         mouseCanvasYPosition.addListener { _ -> onCanvasMousePositionChanged() }
 
-        distanceToGo.bind(canvas.widthProperty().multiply(widthFactor).multiply(canvas.heightProperty()).multiply(heightFactor))
+        trackLenght.bind(distanceFactor.multiply(canvas.widthProperty().add(canvas.heightProperty())))
 
-        addComponent("Width", initComboPanel(lblCanvasWidth, cmbWidthFactor, widthFactor, canvas.widthProperty()))
+        lblCanvasWidth.textProperty().bind(canvas.widthProperty().asString("%4.0f"))
+        addComponent("Width", lblCanvasWidth)
 
-        addComponent("Height", initComboPanel(lblCanvasHeight, cmbHeightFactor, heightFactor, canvas.heightProperty()))
+        lblCanvasHeight.textProperty().bind(canvas.heightProperty().asString("%4.0f"))
+        addComponent("Height", lblCanvasHeight)
 
-        lblDistance.textProperty().bind(distanceToGo.asString("%8.0f"))
-        lblDistance.alignment = Pos.BOTTOM_LEFT
-        addComponent("Distance To Go", lblDistance)
+        cmbDistanceFactor.valueProperty().addListener { event ->
+            if (event is SimpleObjectProperty<*>) {
+                distanceFactor.value = (event.value as Int)
+            }
+        }
+        cmbDistanceFactor.value = 2
+        addComponent("Track Lenght Factor", cmbDistanceFactor)
 
+        lblTrackLength.textProperty().bind(trackLenght.asString("%5d"))
+        lblTrackLength.alignment = Pos.BOTTOM_LEFT
+        addComponent("Distance To Go", lblTrackLength)
 
         val wrapperPane = Pane()
         wrapperPane.border = Border(BorderStroke(Color.BLACK,
@@ -98,6 +86,8 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
         draw(canvas)
     }
 
+    private inline fun yToYCanvas(y: Int) = canvas.height.toInt() - y
+
     private fun configureCanvas(wrapperPane: Pane) {
         // Bind the width/height property so that the size of the Canvas will be
         // resized as the window is resized
@@ -105,7 +95,7 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
         canvas.heightProperty().bind(wrapperPane.heightProperty())
         canvas.setOnMouseMoved { event ->
             mouseCanvasXPosition.value = event.x.toInt()
-            mouseCanvasYPosition.value = canvas.height.toInt() - event.y.toInt()
+            mouseCanvasYPosition.value = yToYCanvas(event.y.toInt())
         }
         canvas.setOnMouseExited { _ ->
             mouseCanvasXPosition.value = Integer.MIN_VALUE
@@ -159,7 +149,7 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
     }
 
     override fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<Direction, Path> {
-        return TrackEnvironment(canvas.width.toInt(), canvas.height.toInt(), distanceToGo.intValue(), maxGenerations, generationSize, mutationFactor)
+        return TrackEnvironment(canvas.width.toInt(), canvas.height.toInt(), trackLenght.intValue(), maxGenerations, generationSize, mutationFactor)
     }
 
     override fun fillOwnComponent(genome: List<Path>) {

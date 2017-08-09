@@ -65,7 +65,7 @@ data class Path(override val content: List<Direction>) : Chromosome<Direction>()
             if (status==PathStatus.WAITING) {
                 content.joinToString(separator = "", prefix = "[", postfix = "]")
             } else {
-                "$status[${track.joinToString(separator = "")}]"
+                "$status[${track.size} - ${track.joinToString(separator = "")}]"
             }
 
     override fun toString(): String {
