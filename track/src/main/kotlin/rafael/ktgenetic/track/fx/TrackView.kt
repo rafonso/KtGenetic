@@ -154,11 +154,13 @@ class TrackView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.S
 
     override fun fillOwnComponent(genome: List<Path>) {
         primaryStage.isResizable = false;
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun resetComponents() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         primaryStage.isResizable = true;
     }
 
