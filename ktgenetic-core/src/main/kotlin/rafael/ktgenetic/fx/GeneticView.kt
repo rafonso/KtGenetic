@@ -33,7 +33,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
     private val mutationFactors: ObservableList<Double> = FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
     private val maxColumns = 5
 
-    protected val pnlInput: GridPane                                    by fxid()
+    private val pnlInput: GridPane                                    by fxid()
     private val pnlOutput: GridPane                                     by fxid()
     private val pnlButtons: GridPane                                    by fxid()
     private val cmbGenerations: ComboBox<Int>                           by fxid()
@@ -147,7 +147,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
     protected abstract fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<G, C>
 
-    protected abstract fun fillOwnComponent(genome: List<C>): Unit
+    protected abstract fun fillOwnComponent(genome: List<C>)
 
     protected abstract fun resetComponents(): Unit
 

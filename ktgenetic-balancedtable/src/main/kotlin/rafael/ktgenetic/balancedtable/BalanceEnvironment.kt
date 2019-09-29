@@ -5,6 +5,7 @@ import rafael.ktgenetic.createCutPositions
 import rafael.ktgenetic.geneticRandom
 import rafael.ktgenetic.randomSwap
 import java.util.*
+import kotlin.math.abs
 
 class BalanceEnvironment(val originalBoxes: List<Int>,
                          override val maxGenerations: Int = Int.MAX_VALUE,
@@ -22,7 +23,7 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
 
         while (firstGeneration.size < generationSize) {
             val temp = originalBalance.content.toMutableList()
-            Collections.shuffle(temp, geneticRandom)
+            temp.shuffle(geneticRandom)
             firstGeneration.add(Balance(temp.toList(), dimensions))
         }
 
@@ -36,9 +37,9 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
     override fun createNewChromosome(sequence: Boxes): Balance = Balance(sequence, dimensions)
 
     override fun calculateFitness(chromosome: Balance): Double {
-        val centerOfMassFitness = 1 - Math.abs(chromosome.centerOfMass - dimensions.center) / dimensions.center
+        val centerOfMassFitness = 1 - abs(chromosome.centerOfMass - dimensions.center) / dimensions.center
         val momentOfInertiaFitness = 1 - chromosome.momentOfInertia / greatestMomentOfInertia
-        val balanceFitness = 1 - Math.abs(chromosome.halfMasses.first - chromosome.halfMasses.second).toDouble() / chromosome.totalMass
+        val balanceFitness = 1 - abs(chromosome.halfMasses.first - chromosome.halfMasses.second).toDouble() / chromosome.totalMass
 
         return (centerOfMassFitness + momentOfInertiaFitness + balanceFitness) / 3
     }

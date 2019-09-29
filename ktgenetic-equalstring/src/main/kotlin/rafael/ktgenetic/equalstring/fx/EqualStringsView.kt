@@ -28,7 +28,7 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcess
 
     // OUTPUT COMPONENTS
 
-    val wordsTable: TableView<Word> = TableView<Word>()
+    private val wordsTable: TableView<Word> = TableView<Word>()
 
     init {
         cmbStringFitness.items = FXCollections.observableArrayList(StringFitnessChoice.values().toList())
@@ -55,9 +55,7 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcess
     }
 
     override fun validate() {
-        if (txfTarget.text.isEmpty()) {
-            throw IllegalStateException("Target not defined")
-        }
+        check(!txfTarget.text.isEmpty()) { "Target not defined" }
     }
 
     override fun fillOwnComponent(genome: List<Word>) {

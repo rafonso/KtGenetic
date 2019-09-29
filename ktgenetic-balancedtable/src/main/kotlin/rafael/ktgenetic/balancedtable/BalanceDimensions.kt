@@ -1,5 +1,7 @@
 package rafael.ktgenetic.balancedtable
 
+import kotlin.math.abs
+
 data class BalanceDimensions(val size: Int) {
 
     private fun calcHalves(): Pair<List<Int>, List<Int>>  {
@@ -14,6 +16,6 @@ data class BalanceDimensions(val size: Int) {
 
     val blocks: List<Double> = (0 until size).map { it + 0.5 }
 
-    val distanceFromCenter: List<Double> = blocks.map { Math.abs(it - center) }
+    val distanceFromCenter: List<Double> = blocks.map { abs(it - center) }
 
 }

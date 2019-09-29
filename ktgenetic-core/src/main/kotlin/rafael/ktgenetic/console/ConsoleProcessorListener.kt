@@ -9,11 +9,11 @@ import java.util.*
 
 class ConsoleProcessorListener<C: Chromosome<*>>(val processor: GeneticProcessor<*, C>) : ProcessorListener {
 
-    val scanner = Scanner(System.`in`)
+    private val scanner = Scanner(System.`in`)
 
-    var generationsToWait: Int = 0
+    private var generationsToWait: Int = 0
 
-    var currentGeneration: Int = 0
+    private var currentGeneration: Int = 0
 
     override fun onEvent(event: ProcessorEvent<*>) {
         if (event.eventType == TypeProcessorEvent.GENERATION_EVALUATED) {

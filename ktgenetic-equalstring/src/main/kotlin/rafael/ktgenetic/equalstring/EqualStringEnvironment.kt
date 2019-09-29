@@ -14,13 +14,13 @@ class EqualStringEnvironment(val target: String,
 
     private val range = ' '.rangeTo('~') + 192.toChar().rangeTo(255.toChar())
 
-    private fun randomChar(): Char = range[rafael.ktgenetic.geneticRandom.nextInt(range.size)]
+    private fun randomChar(): Char = range[geneticRandom.nextInt(range.size)]
 
     private fun createRandomWord(): Word =
-            Word(1.rangeTo(target.length).pMap { _ -> randomChar() }.joinToString(""))
+            Word(1.rangeTo(target.length).pMap { randomChar() }.joinToString(""))
 
     override fun getFirstGeneration(): List<Word> =
-            (1..generationSize).map { _ -> createRandomWord() }
+            (1..generationSize).map { createRandomWord() }
 
     override fun executeMutation(sequence: List<Char>): List<Char> {
         val mutationPoint = geneticRandom.nextInt(sequence.size)

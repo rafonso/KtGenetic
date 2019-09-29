@@ -16,19 +16,17 @@ private const val SUBTRACT_CHARS_FITNESS_PARAMETER = "s"
 private fun addOptions(options: Options) {
     options.addOption(WORD_PARAMETER, true, "Expression Target, rounded by quotation marks")
     options.addOption(FITNESS_PARAMETER, true, "Fitness function. Values: " +
-            "${EQUAL_CHARS_FITNESS_PARAMETER} - Equal Chars, " +
-            "${SUBTRACT_CHARS_FITNESS_PARAMETER} - Subtract Chars " +
+            "$EQUAL_CHARS_FITNESS_PARAMETER - Equal Chars, " +
+            "$SUBTRACT_CHARS_FITNESS_PARAMETER - Subtract Chars " +
             "(Default Value: ${EQUAL_CHARS_FITNESS_PARAMETER})")
 }
 
 private fun validateParameters(line: CommandLine) {
-    if (!line.hasOption(WORD_PARAMETER)) {
-        throw IllegalArgumentException("Please provide the word to be processed")
-    }
-    if (line.hasOption(FITNESS_PARAMETER) &&
-            !setOf(EQUAL_CHARS_FITNESS_PARAMETER, SUBTRACT_CHARS_FITNESS_PARAMETER).contains(line.getOptionValue(FITNESS_PARAMETER))) {
-        throw IllegalArgumentException("Fitness parameter should be ${EQUAL_CHARS_FITNESS_PARAMETER} " +
-                "or ${SUBTRACT_CHARS_FITNESS_PARAMETER}")
+    require(line.hasOption(WORD_PARAMETER)) { "Please provide the word to be processed" }
+    require(!(line.hasOption(FITNESS_PARAMETER) &&
+            !setOf(EQUAL_CHARS_FITNESS_PARAMETER, SUBTRACT_CHARS_FITNESS_PARAMETER).contains(line.getOptionValue(FITNESS_PARAMETER)))) {
+        "Fitness parameter should be $EQUAL_CHARS_FITNESS_PARAMETER " +
+                "or $SUBTRACT_CHARS_FITNESS_PARAMETER"
     }
 }
 
@@ -36,11 +34,11 @@ private fun getFitnessFunction(line: CommandLine): StringFitness {
     val fitnessParameter = line.getOptionValue(FITNESS_PARAMETER, EQUAL_CHARS_FITNESS_PARAMETER)
 
     val fitnessFunction: StringFitness
-    when (fitnessParameter) {
-        EQUAL_CHARS_FITNESS_PARAMETER -> fitnessFunction = EqualCharsFitness()
-        SUBTRACT_CHARS_FITNESS_PARAMETER -> fitnessFunction = SubtractCharsFitness()
-        else -> throw IllegalArgumentException("Fitness parameter should be ${EQUAL_CHARS_FITNESS_PARAMETER} " +
-                "or ${SUBTRACT_CHARS_FITNESS_PARAMETER}")
+    fitnessFunction = when (fitnessParameter) {
+        EQUAL_CHARS_FITNESS_PARAMETER    -> EqualCharsFitness()
+        SUBTRACT_CHARS_FITNESS_PARAMETER -> SubtractCharsFitness()
+        else                             -> throw IllegalArgumentException("Fitness parameter should be $EQUAL_CHARS_FITNESS_PARAMETER " +
+                "or $SUBTRACT_CHARS_FITNESS_PARAMETER")
     }
 
     return fitnessFunction

@@ -21,12 +21,10 @@ private fun addOptions(options: Options) {
 }
 
 private fun validateParameters(line: CommandLine) {
-    if (!line.hasOption(WEIGHT_PARAMETER)) {
-        throw IllegalArgumentException("Please provide the weights to be processed (ex: \"2 4 10 0 5 2\")")
-    }
-    if (!line.getOptionValue(WEIGHT_PARAMETER).matches(Regex("^((\\d+) *)+$"))) {
-        throw IllegalArgumentException("Weights incorrect: \"${line.getOptionValue(WEIGHT_PARAMETER)}\"; " +
-                "Please provide the weights to be processed (ex: \"2 4 10 0 5 2\")")
+    require(line.hasOption(WEIGHT_PARAMETER)) { "Please provide the weights to be processed (ex: \"2 4 10 0 5 2\")" }
+    require(line.getOptionValue(WEIGHT_PARAMETER).matches(Regex("^((\\d+) *)+$"))) {
+        "Weights incorrect: \"${line.getOptionValue(WEIGHT_PARAMETER)}\"; " +
+                "Please provide the weights to be processed (ex: \"2 4 10 0 5 2\")"
     }
 }
 

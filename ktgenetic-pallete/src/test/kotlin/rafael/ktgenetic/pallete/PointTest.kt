@@ -1,6 +1,7 @@
 package rafael.ktgenetic.pallete
 
 import org.junit.Test
+import kotlin.math.sqrt
 import kotlin.test.assertEquals
 
 class PointTest {
@@ -19,7 +20,7 @@ class PointTest {
 
         assertEquals(1.0, pt0.distance(pt1))
         assertEquals(pt1.distance(pt0), pt0.distance(pt1))
-        assertEquals(Math.sqrt(2.0), pt0.distance(pt2))
+        assertEquals(sqrt(2.0), pt0.distance(pt2))
     }
 
     @Test fun test345() {

@@ -25,7 +25,7 @@ internal class OrderedGeneticProcessor<G, C : Chromosome<G>>(environment: Enviro
     }
 
     override fun executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): List<C> {
-        if (!pieces1.core.intersect(pieces2.left + pieces2.right).isEmpty() || !pieces2.core.intersect(pieces1.left + pieces1.right).isEmpty()) {
+        if (pieces1.core.intersect(pieces2.left + pieces2.right).isNotEmpty() || !pieces2.core.intersect(pieces1.left + pieces1.right).isEmpty()) {
             return executeCross(pieces1, pieces2)
         }
         return super.basicCrossing(pieces1, pieces2)

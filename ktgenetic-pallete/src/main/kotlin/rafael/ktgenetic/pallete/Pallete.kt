@@ -39,12 +39,10 @@ data class Pallete(override val content: Boxes, private val dimensions: PalleteD
     }
 
     val centerOfMass: Point by lazy {
-        val cmRow = (0 until dimensions.rows).map {
-            r ->
+        val cmRow = (0 until dimensions.rows).map { r ->
             getCenterOfMassOfRow(content, r, dimensions)
         }.sum() / dimensions.rows
-        val cmCol = (0 until dimensions.cols).map {
-            c ->
+        val cmCol = (0 until dimensions.cols).map { c ->
             getCenterOfMassOfColumn(content, c, dimensions)
         }.sum() / dimensions.cols
 
@@ -52,8 +50,7 @@ data class Pallete(override val content: Boxes, private val dimensions: PalleteD
     }
 
     val momentOfInertia =
-            content.mapIndexed {
-                index, box ->
+            content.mapIndexed { index, box ->
                 box.value * dimensions.distanceFromCenter[index] * dimensions.distanceFromCenter[index]
             }.sum()
 
@@ -66,16 +63,14 @@ data class Pallete(override val content: Boxes, private val dimensions: PalleteD
     val rightLeftHalfMasses: Pair<Int, Int> = calcHalfMasses(dimensions.leftAndRightHalves)
 
     private fun boxesToString(rowSeparator: String): String {
-        return (0 until dimensions.rows).map {
-            r ->
+        return (0 until dimensions.rows).joinToString(separator = rowSeparator) { r ->
             (0 until dimensions.cols).map { c ->
                 "%3d".format(content[r * dimensions.cols + c].value)
             }.joinToString(separator = " ")
-        }.joinToString(separator = rowSeparator)
+        }
     }
 
-    override fun valueToString(): String = "[CM = %s, MI = %2.3f, FBHM = %s, RLHM = %s - %s]".
-            format(centerOfMass, momentOfInertia, frontBackHalfMasses, rightLeftHalfMasses, boxesToString("|"))
+    override fun valueToString(): String = "[CM = %s, MI = %2.3f, FBHM = %s, RLHM = %s - %s]".format(centerOfMass, momentOfInertia, frontBackHalfMasses, rightLeftHalfMasses, boxesToString("|"))
 
     override fun toString() = super.toString()
 

@@ -47,7 +47,7 @@ fun <G, C : Chromosome<G>> executeMain(
             prepareProcessing(processor, environment)
             mainLogger.info("Max Generations: ${environment.maxGenerations}, " +
                     "Generation Size: ${environment.generationSize}, " +
-                    "Selection Strategy: ${selectionStrategy}")
+                    "Selection Strategy: $selectionStrategy")
             mainLogger.info(showEnvironmentDetails(environment))
 
             val result = processor.process()

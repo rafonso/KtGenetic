@@ -108,8 +108,7 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
 
         val palleteColumn = chromosomeToTableColumn<Box, Pallete>("Pallete",
                 { c ->
-                    c.content.map { it.value }.
-                            joinToString(separator = " ", transform = { "%3d".format(it) })
+                    c.content.map { it.value }.joinToString(separator = " ", transform = { "%3d".format(it) })
                 },
                 500.0,
                 classes)
@@ -137,7 +136,7 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
     private fun fillColorsByBox(weights: List<Int>) {
         val max = weights.max()!!.toDouble()
         colorsByBox.clear()
-        weights.forEach { colorsByBox.put(it, gradients[((it / max) * 10).toInt()]) }
+        weights.forEach { colorsByBox[it] = gradients[((it / max) * 10).toInt()] }
     }
 
     override fun validate() {
@@ -145,9 +144,9 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
             if (cmbCols.value > 0 && cmbRows.value > 0) {
                 val quantBoxes = txfPallete.text.trim().split(Regex(" +")).size
                 val palleteCapacity = cmbCols.value * cmbRows.value
-                if (quantBoxes > palleteCapacity) {
-                    throw IllegalStateException("There are more boxes ($quantBoxes) than the Pallete capacity " +
-                            "(${cmbRows.value} rows x ${cmbCols.value} columns = $palleteCapacity)")
+                check(quantBoxes <= palleteCapacity) {
+                    "There are more boxes ($quantBoxes) than the Pallete capacity " +
+                            "(${cmbRows.value} rows x ${cmbCols.value} columns = $palleteCapacity)"
                 }
             }
         } else {

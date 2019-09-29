@@ -17,7 +17,7 @@ class UtilsTest {
             assertTrue(positions.second <= (maxPos - 1), "Second size should be lesser then $maxPos: $positions")
         }
 
-        (1..1000).forEach { test() }
+        (1..1000).forEach { _ -> test() }
     }
 
 }

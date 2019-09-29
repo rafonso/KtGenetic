@@ -1,6 +1,7 @@
 package rafael.ktgenetic.pallete
 
 import org.junit.Test
+import kotlin.math.sqrt
 import kotlin.test.assertEquals
 
 class PalleteDimensionsTest {
@@ -41,7 +42,7 @@ class PalleteDimensionsTest {
         assertEquals(Point(1.5, 0.5), dimensions.points[2])
         assertEquals(Point(1.5, 1.5), dimensions.points[3])
         assertEquals(4, dimensions.distanceFromCenter.size)
-        assertEquals(Math.sqrt(2.0) / 2, dimensions.distanceFromCenter[0])
+        assertEquals(sqrt(2.0) / 2, dimensions.distanceFromCenter[0])
         assertEquals(dimensions.rows, dimensions.blocksByRow.size)
         assertEquals(dimensions.cols, dimensions.blocksByColumn.size)
         assertEquals(3, dimensions.blockToIndex(1, 1))
@@ -58,7 +59,7 @@ class PalleteDimensionsTest {
         assertEquals(Point(1.5, 0.5), dimensions.points[2])
         assertEquals(Point(1.5, 1.5), dimensions.points[3])
         assertEquals(6, dimensions.distanceFromCenter.size)
-        assertEquals(Math.sqrt(5.0) / 2, dimensions.distanceFromCenter[0])
+        assertEquals(sqrt(5.0) / 2, dimensions.distanceFromCenter[0])
         assertEquals(dimensions.rows, dimensions.blocksByRow.size)
         assertEquals(dimensions.cols, dimensions.blocksByColumn.size)
     }

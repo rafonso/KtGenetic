@@ -1,7 +1,8 @@
 package rafael.ktgenetic.pallete
 
 import rafael.ktgenetic.*
-import java.util.*
+import kotlin.math.abs
+import kotlin.math.sqrt
 
 class PalleteEnvironment(val originalBoxes: List<Int>,
                          val palleteDimension: PalleteDimensions,
@@ -14,7 +15,7 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
         if (event.eventType == TypeProcessorEvent.ENDED_BY_INTERRUPTION ||
                 event.eventType == TypeProcessorEvent.ENDED_BY_FITNESS ||
                 event.eventType == TypeProcessorEvent.ENDED_BY_GENERATIONS
-                ) {
+        ) {
             val chromosomes = event.population.filterIsInstance<Pallete>()
             mainLogger.info("Best pallete:\n${chromosomes[0].palleteToString}\n" +
                     "CM = ${chromosomes[0].centerOfMass}, " +
@@ -35,7 +36,7 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
 
         while (firstGeneration.size < generationSize) {
             val temp = originalBalance.content.toMutableList()
-            Collections.shuffle(temp, geneticRandom)
+            temp.shuffle(geneticRandom)
             firstGeneration.add(Pallete(temp.toList(), palleteDimension))
         }
 
@@ -51,8 +52,8 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
     override fun calculateFitness(chromosome: Pallete): Double {
         val centerOfMassFitness = 1 - chromosome.centerOfMass.distance(palleteDimension.center) / palleteDimension.greatestDistanceFromCenter
         val momentOfInertiaFitness = 1 - chromosome.momentOfInertia / greatestMomentOfInertia
-        val frontBackBalanceFitness = 1 - Math.abs(chromosome.frontBackHalfMasses.first - chromosome.frontBackHalfMasses.second).toDouble() / chromosome.totalMass
-        val rightLeftBalanceFitness = 1 - Math.abs(chromosome.rightLeftHalfMasses.first - chromosome.rightLeftHalfMasses.second).toDouble() / chromosome.totalMass
+        val frontBackBalanceFitness = 1 - abs(chromosome.frontBackHalfMasses.first - chromosome.frontBackHalfMasses.second).toDouble() / chromosome.totalMass
+        val rightLeftBalanceFitness = 1 - abs(chromosome.rightLeftHalfMasses.first - chromosome.rightLeftHalfMasses.second).toDouble() / chromosome.totalMass
 
         return (centerOfMassFitness + momentOfInertiaFitness + frontBackBalanceFitness + rightLeftBalanceFitness) / 4
     }
@@ -63,7 +64,7 @@ fun getPallete(weights: Collection<Int>, rows: Int, cols: Int): Pair<List<Int>, 
 
     fun getPalleteDimensions(): Pair<Int, Int> {
         if (rows == 0 && cols == 0) {
-            val sqrtSize = Math.sqrt(weights.size.toDouble()).toInt()
+            val sqrtSize = sqrt(weights.size.toDouble()).toInt()
             val side: Int = sqrtSize + (if (weights.size == sqrtSize * sqrtSize) 0 else 1)
             return Pair(side, side)
         }
@@ -74,9 +75,9 @@ fun getPallete(weights: Collection<Int>, rows: Int, cols: Int): Pair<List<Int>, 
             return Pair(rows, (weights.size / rows) + (if (weights.size % rows == 0) 0 else 1))
         }
 
-        if ((rows * cols) < weights.size) {
-            throw IllegalArgumentException("Number of Rows ($rows) times the number of columns ($cols) " +
-                    "lesser than the size of weights (${weights.size})")
+        require((rows * cols) >= weights.size) {
+            "Number of Rows ($rows) times the number of columns ($cols) " +
+                    "lesser than the size of weights (${weights.size})"
         }
 
         return Pair(rows, cols)

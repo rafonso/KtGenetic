@@ -7,7 +7,7 @@ import rafael.ktgenetic.selection.SelectionOperator
  * Executes the evolutionary process.
  */
 abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environment<G, C>,
-                                                      val selectionOperator: SelectionOperator<C>) {
+                                                      private val selectionOperator: SelectionOperator<C>) {
 
     private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 
@@ -22,9 +22,9 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environme
             environment.createNewChromosome(pieces1.left + pieces2.core + pieces1.right)
     )
 
-    abstract protected fun executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): List<C>
+    protected abstract fun executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): List<C>
 
-    fun executeMutation(chromosome: C): C = if (Math.random() < environment.mutationFactor) environment.createNewChromosome(environment.executeMutation(chromosome.content))
+    private fun executeMutation(chromosome: C): C = if (Math.random() < environment.mutationFactor) environment.createNewChromosome(environment.executeMutation(chromosome.content))
     else chromosome
 
 
@@ -60,7 +60,7 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environme
         notifyEvent(ProcessorEvent(TypeProcessorEvent.GENERATION_EVALUATING, generation, parents))
 
         notifyEvent(ProcessorEvent(TypeProcessorEvent.REPRODUCING, generation, parents))
-        val children = (0 until parents.size).pFlatMap { i ->
+        val children = (parents.indices).pFlatMap { i ->
             ((i + 1) until parents.size).pFlatMap { j ->
                 cross(generation, parents[i], parents[j])
             }

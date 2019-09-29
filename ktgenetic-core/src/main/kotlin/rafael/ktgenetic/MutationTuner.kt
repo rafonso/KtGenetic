@@ -2,9 +2,9 @@ package rafael.ktgenetic
 
 class MutationTuner<C: Chromosome<*>>(val environment: Environment<*, C>): ProcessorListener {
 
-    val minimunVariation = 0.01
+    private val minimunVariation = 0.01
 
-    val maximumVariation = 0.05
+    private val maximumVariation = 0.05
 
     private fun calculateVariationProportion(chromosomes: List<Chromosome<*>>): Double {
         val averageFitness = chromosomes.pMap { it.fitness }.sum() / chromosomes.size
@@ -20,7 +20,7 @@ class MutationTuner<C: Chromosome<*>>(val environment: Environment<*, C>): Proce
         if (proportion < minimunVariation && (environment.mutationFactor <= 0.99)) {
             environment.mutationFactor += 0.01
         } else if ((proportion > maximumVariation) && (environment.mutationFactor >= 0.01)) {
-            environment.mutationFactor = Math.max(environment.mutationFactor - 0.01, 0.01)
+            environment.mutationFactor = (environment.mutationFactor - 0.01).coerceAtLeast(0.01)
 
         }
     }
