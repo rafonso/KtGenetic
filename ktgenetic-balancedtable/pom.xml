@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>rafael.ktgenetic</groupId>
-		<artifactId>ktgenetic</artifactId>
-		<version>0.0.1</version>
-	</parent>
+    <parent>
+        <groupId>rafael.ktgenetic</groupId>
+        <artifactId>ktgenetic</artifactId>
+        <version>0.0.1</version>
+    </parent>
 
     <artifactId>ktgenetic-balancedtable</artifactId>
     <packaging>jar</packaging>
@@ -17,17 +17,74 @@
     <properties>
     </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>rafael.ktgenetic</groupId>
-			<artifactId>ktgenetic-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>rafael.ktgenetic</groupId>
+            <artifactId>ktgenetic-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+
+        <plugins>
+            <!-- Maven Shade Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <!-- Run shade goal on package phase -->
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>ktgenetic-balancedtable</finalName>
+                            <transformers>
+                                <!-- add Main-Class to manifest file -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>rafael.ktgenetic.balancedtable.fx.BalanceViewApp</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <!-- http://launch4j.sourceforge.net/docs.html -->
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <jar>${project.build.directory}/ktgenetic-balancedtable.jar</jar>
+                            <outfile>${project.build.directory}/ktgenetic-balancedtable.exe</outfile>
+                            <classPath>
+                                <mainClass>rafael.ktgenetic.balancedtable.fx.BalanceViewApp</mainClass>
+                                <preCp>anything</preCp>
+                            </classPath>
+                            <jre>
+                                <minVersion>1.8</minVersion>
+                                <jdkPreference>preferJre</jdkPreference>
+                            </jre>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
     </build>
 
 </project>

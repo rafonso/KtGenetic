@@ -27,7 +27,65 @@
 
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
+<!--
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+-->
+		<plugins>
+			<!-- Maven Shade Plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.1</version>
+				<executions>
+					<!-- Run shade goal on package phase -->
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<finalName>ktgenetic-equalstring</finalName>
+							<transformers>
+								<!-- add Main-Class to manifest file -->
+								<transformer
+										implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>rafael.ktgenetic.equalstring.fx.EqualStringsViewApp</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<!-- http://launch4j.sourceforge.net/docs.html -->
+				<groupId>com.akathist.maven.plugins.launch4j</groupId>
+				<artifactId>launch4j-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>l4j-clui</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<headerType>gui</headerType>
+							<jar>${project.build.directory}/ktgenetic-equalstring.jar</jar>
+							<outfile>${project.build.directory}/ktgenetic-equalstring.exe</outfile>
+							<classPath>
+								<mainClass>rafael.ktgenetic.equalstring.fx.EqualStringsViewApp</mainClass>
+								<preCp>anything</preCp>
+							</classPath>
+							<jre>
+								<minVersion>1.8</minVersion>
+								<jdkPreference>preferJre</jdkPreference>
+							</jre>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
     </build>
 
 </project>
