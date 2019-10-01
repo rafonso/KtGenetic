@@ -4,7 +4,6 @@ import rafael.ktgenetic.Environment
 import rafael.ktgenetic.createCutPositions
 import rafael.ktgenetic.geneticRandom
 import rafael.ktgenetic.randomSwap
-import java.util.*
 import kotlin.math.abs
 
 class BalanceEnvironment(val originalBoxes: List<Int>,
