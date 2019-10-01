@@ -1,7 +1,7 @@
 package rafael.ktgenetic.balancedtable
 
 import kotlin.test.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class BalanceDimensionsTest {
 

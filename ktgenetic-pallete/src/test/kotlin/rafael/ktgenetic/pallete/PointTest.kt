@@ -1,6 +1,6 @@
 package rafael.ktgenetic.pallete
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import kotlin.math.sqrt
 import kotlin.test.assertEquals
 
