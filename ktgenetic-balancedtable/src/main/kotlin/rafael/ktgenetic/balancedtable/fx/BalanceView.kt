@@ -42,15 +42,15 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
 
     // INPUT COMPONENTS
 
-    val txfBalance: TextField = TextField()
+    private val txfBalance: TextField = TextField()
 
     // OUTPUT COMPONENTS
 
-    val pnlBestBalance: Pane = HBox(10.0)
+    private val pnlBestBalance: Pane = HBox(10.0)
 
-    val balanceTable: TableView<Balance> = TableView()
+    private val balanceTable: TableView<Balance> = TableView()
 
-    val colorsByBox: MutableMap<Int, Pair<String, String>> = mutableMapOf()
+    private val colorsByBox: MutableMap<Int, Pair<String, String>> = mutableMapOf()
 
     init {
         txfBalance.prefWidth = 600.0
@@ -100,7 +100,7 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
     private fun fillColorsByBox(weights: List<Int>) {
         val max = weights.max()!!.toDouble()
         colorsByBox.clear()
-        weights.forEach { colorsByBox.put(it, gradients[((it / max) * 10).toInt()]) }
+        weights.forEach { colorsByBox[it] = gradients[((it / max) * 10).toInt()] }
     }
 
     override fun resetComponents() {
@@ -110,9 +110,9 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
     }
 
     override fun validate() {
-        if (!txfBalance.text.matches(Regex("^((\\d+) *)+$"))) {
-            throw IllegalStateException("Weights incorrect. " +
-                    "Please provide the weights to be processed (ex: \"2 4 10 0 5 2\")")
+        check(txfBalance.text.matches(Regex("^((\\d+) *)+$"))) {
+            "Weights incorrect. " +
+                    "Please provide the weights to be processed (ex: \"2 4 10 0 5 2\")"
         }
     }
 

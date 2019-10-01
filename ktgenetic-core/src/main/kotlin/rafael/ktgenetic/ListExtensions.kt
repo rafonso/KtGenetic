@@ -8,7 +8,7 @@ import java.util.stream.Collectors
 
 fun <T> List<T>.shuffle(): List<T> {
     val temp = this.toMutableList()
-    Collections.shuffle(temp)
+    temp.shuffle()
 
     return temp
 }

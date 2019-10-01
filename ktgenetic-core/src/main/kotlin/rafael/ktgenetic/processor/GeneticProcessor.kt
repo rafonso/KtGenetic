@@ -14,7 +14,7 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(val environment: Environme
     var continueProcessing = true
 
     private fun notifyEvent(event: ProcessorEvent<*>) {
-        listeners.parallelStream().forEach({ it.onEvent(event) })
+        listeners.parallelStream().forEach { it.onEvent(event) }
     }
 
     protected fun basicCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): List<C> = listOf(

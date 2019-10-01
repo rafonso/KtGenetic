@@ -52,7 +52,6 @@ fun main(args: Array<String>) = executeMain(
         ::validateParameters,
         ::getEnvironment,
         GeneticProcessorChoice.ORDERED,
-        ::showEnvironmentDetails,
-        { p, e -> p.addListener(e as PalleteEnvironment) }
-)
+        ::showEnvironmentDetails
+) { p, e -> p.addListener(e as PalleteEnvironment) }
 

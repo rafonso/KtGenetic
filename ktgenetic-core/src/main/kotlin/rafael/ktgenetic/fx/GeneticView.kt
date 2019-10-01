@@ -26,14 +26,14 @@ import rafael.ktgenetic.selection.SelectionOperatorChoice
 import tornadofx.*
 import java.time.Instant
 
-abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorChoice: GeneticProcessorChoice) : View(title), ProcessorListener {
+abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val processorChoice: GeneticProcessorChoice) : View(title), ProcessorListener {
     override val root: BorderPane by fxml("/view/Genetic.fxml")
 
     private val values: ObservableList<Int> = FXCollections.observableArrayList(1, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000)
     private val mutationFactors: ObservableList<Double> = FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
     private val maxColumns = 5
 
-    private val pnlInput: GridPane                                    by fxid()
+    private val pnlInput: GridPane                                      by fxid()
     private val pnlOutput: GridPane                                     by fxid()
     private val pnlButtons: GridPane                                    by fxid()
     private val cmbGenerations: ComboBox<Int>                           by fxid()
@@ -149,7 +149,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, val processorCho
 
     protected abstract fun fillOwnComponent(genome: List<C>)
 
-    protected abstract fun resetComponents(): Unit
+    protected abstract fun resetComponents()
 
     protected fun addComponent(title: String, component: Node, colspan: Int = 1) {
         assert(colspan <= 5) // , () -> {"Colspan must be at least 5. It was $colspan"})

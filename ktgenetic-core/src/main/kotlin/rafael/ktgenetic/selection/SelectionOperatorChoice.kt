@@ -8,18 +8,18 @@ import kotlin.reflect.full.primaryConstructor
 enum class SelectionOperatorChoice(val code: String, val description: String) {
     TRUNCATE("t", "Truncation") {
         override fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C> =
-                TruncateSelectionOperator<C>(environment.generationSize)
+                TruncateSelectionOperator(environment.generationSize)
     },
     ROULETTE_ELITISM("r", "Roulette with Elitism") {
         override fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C> =
-                ElitismDelegateSelectionOperator<C>(
+                ElitismDelegateSelectionOperator(
                         RouletteSelectionOperator::class.primaryConstructor!! as KFunction<*>,
                         environment.generationSize
                 )
     },
     TOURNAMENT_ELITISM("o", "Tournament with Elitism") {
         override fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C> =
-                ElitismDelegateSelectionOperator<C>(
+                ElitismDelegateSelectionOperator(
                         TournamentSelectionOperator::class.primaryConstructor!! as KFunction<*>,
                         environment.generationSize
                 )

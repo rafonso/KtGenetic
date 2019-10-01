@@ -50,7 +50,7 @@ internal class GeneticTask<C : Chromosome<*>>(private val processor: GeneticProc
                 timeProperty.value = formatter.format(dt)
 
                 generationProperty.value = event.generation.toString()
-                if (!event.population.isEmpty()) {
+                if (event.population.isNotEmpty()) {
                     val (best, average, deviation) = getBestAverageDeviationFitness(event.population)
                     bestFitnessProperty.value = "%.4f".format(best)
                     averageFitnessProperty.value = "%.4f (%.4f)".format(average, deviation)

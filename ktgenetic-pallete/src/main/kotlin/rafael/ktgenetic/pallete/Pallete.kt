@@ -64,9 +64,9 @@ data class Pallete(override val content: Boxes, private val dimensions: PalleteD
 
     private fun boxesToString(rowSeparator: String): String {
         return (0 until dimensions.rows).joinToString(separator = rowSeparator) { r ->
-            (0 until dimensions.cols).map { c ->
+            (0 until dimensions.cols).joinToString(separator = " ") { c ->
                 "%3d".format(content[r * dimensions.cols + c].value)
-            }.joinToString(separator = " ")
+            }
         }
     }
 

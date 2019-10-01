@@ -1,7 +1,8 @@
 package rafael.ktgenetic
 
-import java.util.*
 import kotlin.math.pow
+import kotlin.math.sqrt
+import kotlin.random.*
 
 fun createRandomPositions(maxPos: Int, initialPos: Int = 0): Pair<Int, Int> {
     val pos1 = initialPos + geneticRandom.nextInt(maxPos - 2)
@@ -13,7 +14,7 @@ fun createRandomPositions(maxPos: Int, initialPos: Int = 0): Pair<Int, Int> {
     return Pair(pos1, pos2)
 }
 
-val geneticRandom = Random()
+val geneticRandom = Random.asJavaRandom()
 
 fun createCutPositions(maxPos: Int): Pair<Int, Int> = createRandomPositions(maxPos, 1)
 
@@ -36,7 +37,7 @@ fun getBestAverageDeviationFitness(chromosomes: List<Chromosome<*>>): Triple<Dou
 
     val bestFitness = fitnesses.max()
     val averageFitness = fitnesses.sum() / fitnesses.size
-    val averageFitnessDeviation = Math.sqrt(
+    val averageFitnessDeviation = sqrt(
             fitnesses.map { (it - averageFitness).pow(2.0) }.sum() /
                     (fitnesses.size * (fitnesses.size - 1))
     )

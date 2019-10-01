@@ -1,13 +1,14 @@
 package rafael.ktgenetic.selection
 
 import rafael.ktgenetic.Chromosome
+import kotlin.math.max
 import kotlin.reflect.KFunction
 
 internal class ElitismDelegateSelectionOperator<C : Chromosome<*>>(delegatedClass: KFunction<*>,
                                                                    override val generationSize: Int) :
         SelectionOperator<C> {
 
-    private val eliteChildrenSize: Int = Math.max ((0.1 * generationSize).toInt(), 1)
+    private val eliteChildrenSize: Int = max ((0.1 * generationSize).toInt(), 1)
     private val delegatedSelector: SelectionOperator<C>
 
     init {

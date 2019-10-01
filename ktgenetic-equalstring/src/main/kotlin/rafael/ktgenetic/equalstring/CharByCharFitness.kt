@@ -1,5 +1,7 @@
 package rafael.ktgenetic.equalstring
 
+import kotlin.math.abs
+
 abstract class CharByCharFitness : StringFitness {
 
     abstract fun calculateDiff(ch1: Char, ch2: Char): Int
@@ -11,6 +13,6 @@ abstract class CharByCharFitness : StringFitness {
 
         val diff = (str1.indices).sumBy { calculateDiff(str1[it], str2[it]) }
 
-        return Math.abs(1.0 / (1.0 + diff))
+        return abs(1.0 / (1.0 + diff))
     }
 }
