@@ -13,7 +13,12 @@ fun <T> List<T>.shuffle(): List<T> {
     return temp
 }
 
+/**
+ * Swaps the values
+ */
 fun <T> List<T>.swap(index1: Int, index2: Int): List<T> {
+    if(index1 == index2) return this
+
     val copy = this.toMutableList()
     val temp = copy[index1]
     copy[index1] = copy[index2]
@@ -23,8 +28,8 @@ fun <T> List<T>.swap(index1: Int, index2: Int): List<T> {
 }
 
 fun <T> List<T>.randomSwap(): List<T> {
-    if (this.isEmpty()) return listOf()
-    if (this.size == 1) return listOf(this[0])
+    if (this.isEmpty()) return this
+    if (this.size == 1) return this
     if (this.size == 2) return listOf(this[1], this[0])
 
     val positions = createCutPositions(this.size)

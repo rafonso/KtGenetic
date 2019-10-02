@@ -33,13 +33,13 @@ fun <G> makeCuttingIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>):
  * @return A [Triple] compound by the best [Chromosome.fitness], the average fitness and the deviation of this average.
  */
 fun getBestAverageDeviationFitness(chromosomes: List<Chromosome<*>>): Triple<Double, Double, Double> {
-    val fitnesses = chromosomes.map { it.fitness }
+    val finesses = chromosomes.map { it.fitness }
 
-    val bestFitness = fitnesses.max()
-    val averageFitness = fitnesses.sum() / fitnesses.size
+    val bestFitness = finesses.max()
+    val averageFitness = finesses.sum() / finesses.size
     val averageFitnessDeviation = sqrt(
-            fitnesses.map { (it - averageFitness).pow(2.0) }.sum() /
-                    (fitnesses.size * (fitnesses.size - 1))
+            finesses.map { (it - averageFitness).pow(2.0) }.sum() /
+                    (finesses.size * (finesses.size - 1))
     )
 
     return Triple(bestFitness!!, averageFitness, averageFitnessDeviation)
