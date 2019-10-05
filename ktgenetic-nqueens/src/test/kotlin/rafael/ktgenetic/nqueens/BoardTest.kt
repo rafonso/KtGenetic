@@ -5,24 +5,32 @@ import org.junit.jupiter.api.Test
 
 internal class BoardTest {
 
-//    @Test
-//    fun repeatedValues() {
-//        val l = listOf(0, 1, 1)
-//        assertThrows(IllegalArgumentException::class.java) {
-//            val b = Board(l)
-//
-//            fail(b.toString())
-//        }
-//    }
-
-    @Test
-    fun valuesOutOfRange() {
-        val l = listOf(0, 10, 1)
+    private fun testIrregularBoards(vararg values: Int) {
         assertThrows(IllegalArgumentException::class.java) {
-            val b = Board(l)
+            val b = Board(values.toList())
 
             fail(b.toString())
         }
+    }
+
+    @Test
+    fun repeatedValues1() {
+        testIrregularBoards(0, 1, 1)
+    }
+
+    @Test
+    fun repeatedValues2() {
+        testIrregularBoards(0, 1, 2, 5, 4, 3, 2)
+    }
+
+    @Test
+    fun valuesOutOfRange1() {
+        testIrregularBoards(0, 10, 1)
+    }
+
+    @Test
+    fun valuesOutOfRange2() {
+        testIrregularBoards(0, -2, 1)
     }
 
 }
