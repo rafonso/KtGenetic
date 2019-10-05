@@ -43,15 +43,15 @@ class BoardEnvironment(val boardSize: Int,
             }
         }
 
-        val collisions = IntRange(0, boardSize - 1)
+        chromosome.collisions = IntRange(0, boardSize - 1)
                 .map { row ->
                     verifyCollision(row, chromosome.content[row], 1) + verifyCollision(row, chromosome.content[row], -1)
                 }
                 .sum()
 
-        return 1.0 / (1 + collisions)
+        return 1.0 / (1 + chromosome.collisions)
     }
 
-    override fun resultFound(genotypes: List<Board>): Boolean = (genotypes[0].fitness == 1.0)
+    override fun resultFound(genotypes: List<Board>): Boolean = (genotypes[0].collisions == 0)
 
 }

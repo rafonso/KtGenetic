@@ -40,13 +40,15 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
         addComponent("Board Size", numberOfRowsSelector)
 
         val classes = listOf("mono")
+        val rowNumberFormat = "%${numberOfRowsSelector.value.toString().length}d"
         val fitnessColumn = fitnessToTableColumn<Int, Board>(50.0, classes)
-        val boardColumn = chromosomeToTableColumn<Int, Board>("Board", { it.content.toString() },
-                100.0,
-                classes)
+        val collisionsColumn = chromosomeToTableColumn<Int, Board>("Collisions",
+                { it.collisions.toString() }, 100.0, classes)
+        val boardColumn = chromosomeToTableColumn<Int, Board>("Board",
+                { it.content.joinToString(separator = " ", transform = { col -> rowNumberFormat.format(col) }) }, 500.0, classes)
 
         boardTable.prefWidth = Control.USE_COMPUTED_SIZE
-        boardTable.columns.addAll(fitnessColumn, boardColumn)
+        boardTable.columns.addAll(fitnessColumn, collisionsColumn, boardColumn)
         val pnlBest = BorderPane()
         pnlBest.padding = Insets(10.0, 10.0, 10.0, 10.0)
         pnlBest.center = boardTable
