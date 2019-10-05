@@ -56,11 +56,7 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
             val row = TableRow<Board>()
             row.onMouseClicked = EventHandler { evt ->
                 if (evt.clickCount == 2 && !row.isEmpty) {
-                    println("-".repeat(20))
-                    println(row.item)
-                    Board.printBoard(row.item)
-                    println("-".repeat(20))
-                    println()
+                    showBoard(row.item)
                 }
             }
             row
@@ -73,8 +69,15 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
         root.center = pnlBest
     }
 
-    override fun validate() {
+    private fun showBoard(board: Board) {
+        println("-".repeat(20))
+        println(board)
+        Board.printBoard(board)
+        println("-".repeat(20))
+        println()
+    }
 
+    override fun validate() {
     }
 
     override fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<Int, Board> {

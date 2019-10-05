@@ -6,6 +6,8 @@ data class Board(override val content: List<Int>, private var _collisions: Int =
 
     companion object BoardUtils {
 
+        private val oddColors = arrayOf(' ', '\u2592')
+        private val evenColors = oddColors.reversedArray()
         private const val queen = 'Q'
 
         internal fun validateContent(content: List<Int>) {
@@ -18,9 +20,8 @@ data class Board(override val content: List<Int>, private var _collisions: Int =
         }
 
         private fun boardToStringRows(finalBoard: Board): List<String> {
-            val colors = arrayOf(' ', '\u2592')
-            val oddHouses = IntRange(0, finalBoard.content.size - 1).map { colors[it % 2] }.joinToString("")
-            val evenHouses = oddHouses.reversed()
+            val oddHouses = IntRange(0, finalBoard.content.size - 1).map { oddColors[it % 2] }.joinToString("")
+            val evenHouses = IntRange(0, finalBoard.content.size - 1).map { evenColors[it % 2] }.joinToString("")
             val rowNumberFormat = "%${finalBoard.content.size.toString().length}d \u2016"
 
             return finalBoard.content.mapIndexed { row, filledColumn ->
