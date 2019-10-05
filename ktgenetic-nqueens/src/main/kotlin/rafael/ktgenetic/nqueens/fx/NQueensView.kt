@@ -5,9 +5,11 @@ import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.scene.control.Control
 import javafx.scene.control.Spinner
+import javafx.scene.control.TableRow
 import javafx.scene.control.TableView
 import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.BorderPane
+import javafx.util.Callback
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.chromosomeToTableColumn
@@ -29,6 +31,8 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
 
     private val boardTable: TableView<Board> = TableView()
 
+    private var rowNumberFormat: String = ""
+
 
     init {
         numberOfRowsSelector.onScroll = EventHandler<ScrollEvent> { event ->
@@ -40,7 +44,6 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
         addComponent("Board Size", numberOfRowsSelector)
 
         val classes = listOf("mono")
-        val rowNumberFormat = "%${numberOfRowsSelector.value.toString().length}d"
         val fitnessColumn = fitnessToTableColumn<Int, Board>(50.0, classes)
         val collisionsColumn = chromosomeToTableColumn<Int, Board>("Collisions",
                 { it.collisions.toString() }, 100.0, classes)
@@ -49,6 +52,20 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
 
         boardTable.prefWidth = Control.USE_COMPUTED_SIZE
         boardTable.columns.addAll(fitnessColumn, collisionsColumn, boardColumn)
+        boardTable.rowFactory = Callback { _ ->
+            val row = TableRow<Board>()
+            row.onMouseClicked = EventHandler { evt ->
+                if (evt.clickCount == 2 && !row.isEmpty) {
+                    println("-".repeat(20))
+                    println(row.item)
+                    Board.printBoard(row.item)
+                    println("-".repeat(20))
+                    println()
+                }
+            }
+            row
+        }
+
         val pnlBest = BorderPane()
         pnlBest.padding = Insets(10.0, 10.0, 10.0, 10.0)
         pnlBest.center = boardTable
@@ -61,6 +78,8 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
     }
 
     override fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<Int, Board> {
+        rowNumberFormat = "%${numberOfRowsSelector.value.toString().length}d"
+
         return BoardEnvironment(numberOfRowsSelector.value.toInt(), maxGenerations, generationSize, mutationFactor)
     }
 

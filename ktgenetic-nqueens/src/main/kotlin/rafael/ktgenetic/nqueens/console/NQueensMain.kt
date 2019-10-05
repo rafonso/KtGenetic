@@ -32,25 +32,16 @@ private fun showEnvironmentDetails(environment: Environment<Int, Board>): String
 
 class FinalBoardListener : ProcessorListener {
 
-    private val colors = arrayOf(' ', '\u2592')
-    private val queen = 'Q'
-
     override fun onEvent(event: ProcessorEvent<*>) {
         if (event.eventType == TypeProcessorEvent.ENDED_BY_FITNESS) {
             val finalBoard = event.population[0] as Board
-            val oddHouses = IntRange(0, finalBoard.content.size - 1).map { colors[it % 2] }.joinToString("")
-            val evenHouses = oddHouses.reversed()
-            val rowNumberFormat = "%${finalBoard.content.size.toString().length}d \u2016"
 
             println("================== FINAL BOARD ==================")
-            finalBoard.content.forEachIndexed { row, filledColumn ->
-                val rowColors = (if (row % 2 == 0) oddHouses else evenHouses).toCharArray()
-                rowColors[filledColumn] = queen
-                println(rowColors.joinToString(separator = "|", prefix = rowNumberFormat.format(row), postfix = "‖"))
-            }
+            Board.printBoard(finalBoard)
             println("=================================================")
         }
     }
+
 }
 
 
