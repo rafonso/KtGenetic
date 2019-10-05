@@ -103,5 +103,6 @@
 		<module>ktgenetic-equalstring</module>
 		<module>ktgenetic-balancedtable</module>
 		<module>ktgenetic-pallete</module>
+        <module>ktgenetic-nqueens</module>
     </modules>
 </project>
