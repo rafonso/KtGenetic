@@ -19,12 +19,12 @@ data class Board(override val content: List<Int>, private var _collisions: Int =
             }
         }
 
-        private fun boardToStringRows(finalBoard: Board): List<String> {
-            val oddHouses = IntRange(0, finalBoard.content.size - 1).map { oddColors[it % 2] }.joinToString("")
-            val evenHouses = IntRange(0, finalBoard.content.size - 1).map { evenColors[it % 2] }.joinToString("")
-            val rowNumberFormat = "%${finalBoard.content.size.toString().length}d \u2016"
+        private fun boardToStringRows(board: Board): List<String> {
+            val oddHouses =  board.content.indices.map { oddColors[it % 2] }.joinToString("")
+            val evenHouses = board.content.indices.map { evenColors[it % 2] }.joinToString("")
+            val rowNumberFormat = "%${board.content.size.toString().length}d \u2016"
 
-            return finalBoard.content.mapIndexed { row, filledColumn ->
+            return board.content.mapIndexed { row, filledColumn ->
                 val rowColors = (if (row % 2 == 0) oddHouses else evenHouses).toCharArray()
                 rowColors[filledColumn] = queen
                 rowColors.joinToString(separator = "|", prefix = rowNumberFormat.format(row), postfix = "‖")

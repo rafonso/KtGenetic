@@ -52,7 +52,7 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
 
         boardTable.prefWidth = Control.USE_COMPUTED_SIZE
         boardTable.columns.addAll(fitnessColumn, collisionsColumn, boardColumn)
-        boardTable.rowFactory = Callback { _ ->
+        boardTable.rowFactory = Callback {
             val row = TableRow<Board>()
             row.onMouseClicked = EventHandler { evt ->
                 if (evt.clickCount == 2 && !row.isEmpty) {
@@ -70,11 +70,7 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
     }
 
     private fun showBoard(board: Board) {
-        println("-".repeat(20))
-        println(board)
-        Board.printBoard(board)
-        println("-".repeat(20))
-        println()
+        ShowBoardDialog(board).showAndWait()
     }
 
     override fun validate() {
