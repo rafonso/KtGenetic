@@ -20,7 +20,7 @@ data class Board(override val content: List<Int>, private var _collisions: Int =
         }
 
         private fun boardToStringRows(board: Board): List<String> {
-            val oddHouses =  board.content.indices.map { oddColors[it % 2] }.joinToString("")
+            val oddHouses = board.content.indices.map { oddColors[it % 2] }.joinToString("")
             val evenHouses = board.content.indices.map { evenColors[it % 2] }.joinToString("")
             val rowNumberFormat = "%${board.content.size.toString().length}d \u2016"
 
@@ -43,6 +43,9 @@ data class Board(override val content: List<Int>, private var _collisions: Int =
         internal set(value) {
             this._collisions = value
         }
+
+    val size: Int
+        get() = content.size
 
     init {
         // Validation
