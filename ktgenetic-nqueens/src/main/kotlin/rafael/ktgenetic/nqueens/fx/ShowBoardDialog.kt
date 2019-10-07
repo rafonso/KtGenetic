@@ -6,25 +6,26 @@ import javafx.scene.Node
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Dialog
+import javafx.scene.layout.BorderStrokeStyle
 import javafx.scene.layout.GridPane
+import javafx.scene.text.TextAlignment
 import rafael.ktgenetic.nqueens.Board
 import tornadofx.*
 
 private const val idHouseFormat = "house_%d_%d"
 private const val sharpIdHouseFormat = "#$idHouseFormat"
+private val idHousePattern = "house_(\\d+)_(\\d+)".toPattern()
 
 private const val queen = "\u2655"
 
 private const val whiteHouseColor = "lightyellow"
 private const val blackHouseColor = "lightgreen"
+private val colors = arrayOf(
+        arrayOf(blackHouseColor, whiteHouseColor),
+        arrayOf(whiteHouseColor, blackHouseColor)
+)
 
 private const val houseSide = 20
-
-private const val houseStyle = "-fx-pref-width : ${houseSide}px; -fx-pref-height: ${houseSide}px; " +
-        "-fx-text-alignment: center; -fx-background-color: %s; "
-
-private const val houseHover     = " -fx-border-style: solid ; -fx-border-width: 1px;"
-private const val houseNeighbour = " -fx-border-style: dashed; -fx-border-width: 1px;"
 
 class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
 
@@ -51,33 +52,45 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
         super.getDialogPane().buttonTypes += btnClose
     }
 
-    private fun fillRow(boardPane: GridPane, row: Int, queenPos: Int) {
-        val colors = if (row % 2 == 0) arrayOf(blackHouseColor, whiteHouseColor) else arrayOf(whiteHouseColor, blackHouseColor)
-        (this.board.content.indices)
-                .map { col ->
-                    label {
-                        val baseStyle = houseStyle.format(colors[col % 2])
-                        id = idHouseFormat.format(row, col)
-                        style = baseStyle
-                        text = if (col == queenPos) queen else ""
-                        alignment = Pos.CENTER
-                        onMouseEntered = EventHandler {
-                            style = baseStyle + houseHover
-                            changeHouse(row, col, true)
-                        }
-                        onMouseExited = EventHandler {
-                            style = style.removeSuffix(houseHover)
-                            changeHouse(row, col, false)
-                        }
+    private fun fillRow(boardPane: GridPane, row: Int, queenPos: Int) = (this.board.content.indices)
+            .map { col ->
+                label {
+                    id = idHouseFormat.format(row, col)
+                    style {
+                        fillCss(row, col)
                     }
-                }.forEachIndexed { col, label ->
-                    boardPane.add(label, col, row)
+                    text = if (col == queenPos) queen else ""
+                    alignment = Pos.CENTER
+                    onMouseEntered = EventHandler {
+                        style {
+                            fillCss(row, col, BorderStrokeStyle.SOLID, 1)
+                        }
+                        changeHouse(row, col, true)
+                    }
+                    onMouseExited = EventHandler {
+                        style {
+                            fillCss(row, col)
+                        }
+                        changeHouse(row, col, false)
+                    }
                 }
-    }
+            }.forEachIndexed { col, label ->
+                boardPane.add(label, col, row)
+            }
 
     private fun changeHouse(row: Int, col: Int, highlight: Boolean) {
         val idTarget = sharpIdHouseFormat.format(row, col)
-        val styleAction = if (highlight) { n: Node -> n.style = n.style + houseNeighbour } else { n: Node -> n.style = n.style.removeSuffix(houseNeighbour) }
+        val styleAction = if (highlight) { n: Node ->
+            val (r, c) = nodeToCoordinate(n)
+            n.style {
+                fillCss(r, c, BorderStrokeStyle.DASHED, 1, "red")
+            }
+        } else { n: Node ->
+            val (r, c) = nodeToCoordinate(n)
+            n.style {
+                fillCss(r, c)
+            }
+        }
 
         fun changeStyles(ids: List<String>) = ids.filterNot { it == idTarget }
                 .map { id -> super.getDialogPane().lookup(id) }
@@ -101,6 +114,26 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
         changeStyles(getDiagonals(row, col, +1, -1).map { (r, c) -> sharpIdHouseFormat.format(r, c) })
         changeStyles(getDiagonals(row, col, -1, +1).map { (r, c) -> sharpIdHouseFormat.format(r, c) })
         changeStyles(getDiagonals(row, col, +1, +1).map { (r, c) -> sharpIdHouseFormat.format(r, c) })
+    }
+
+    private fun nodeToCoordinate(n: Node): Pair<Int, Int> {
+        val idMatcher = idHousePattern.matcher(n.id)
+        idMatcher.find()
+        val r = idMatcher.group(1).toInt()
+        val c = idMatcher.group(2).toInt()
+        return Pair(r, c)
+    }
+
+    private fun InlineCss.fillCss(r: Int, c: Int,
+                                  borderStroke: BorderStrokeStyle = BorderStrokeStyle.NONE,
+                                  bWidth: Int = 0, textColor: String = "black") {
+        prefWidth = houseSide.px
+        prefHeight = prefWidth
+        textAlignment = TextAlignment.CENTER
+        backgroundColor = multi(c(colors[r % 2][c % 2]))
+        borderStyle = multi(borderStroke)
+        borderWidth = multi(box(bWidth.px))
+        textFill = c(textColor)
     }
 
 }
