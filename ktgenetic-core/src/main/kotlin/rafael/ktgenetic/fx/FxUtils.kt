@@ -4,15 +4,16 @@ import javafx.scene.control.Control
 import javafx.scene.control.TableColumn
 import rafael.ktgenetic.Chromosome
 
+@JvmOverloads
 fun <G, C : Chromosome<G>> chromosomeToTableColumn(title: String,
-                                                   chromosomeToString: (C) -> String,
                                                    prefWidth: Double = Control.USE_COMPUTED_SIZE,
                                                    classes: List<String> = listOf(),
-                                                   style: String = ""):
+                                                   style: String = "",
+                                                   chromosomeToString: (C) -> String = { c -> c.toString() }):
         TableColumn<C, String> {
     val balanceColumn = TableColumn<C, String>(title)
 
-    @Suppress("UNCHECKED_CAST") val converter = chromosomeToString as (@kotlin.Suppress("UNCHECKED_CAST") Chromosome<G>) -> String
+    @Suppress("UNCHECKED_CAST") val converter = chromosomeToString as (@Suppress("UNCHECKED_CAST") Chromosome<G>) -> String
     balanceColumn.cellValueFactory = ChromosomeToCellString(converter)
     balanceColumn.prefWidth = prefWidth
     balanceColumn.styleClass.addAll(classes)
@@ -27,9 +28,4 @@ fun <G, C : Chromosome<G>> chromosomeToTableColumn(title: String,
 fun <G, C : Chromosome<G>> fitnessToTableColumn(prefWidth: Double = 50.0,
                                                 classes: List<String> = listOf(),
                                                 style: String = ""):
-        TableColumn<C, String> =
-        chromosomeToTableColumn("Fitness",
-                { c -> "%.4f".format(c.fitness) },
-                prefWidth,
-                classes,
-                style)
+        TableColumn<C, String> = chromosomeToTableColumn("Fitness", prefWidth, classes, style) { c -> "%.4f".format(c.fitness) }

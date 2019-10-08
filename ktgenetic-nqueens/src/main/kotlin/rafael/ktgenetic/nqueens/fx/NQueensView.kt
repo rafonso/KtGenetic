@@ -35,9 +35,9 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
             val classes = listOf("mono")
             val fitnessColumn = fitnessToTableColumn<Int, Board>(50.0, classes)
             val collisionsColumn = chromosomeToTableColumn<Int, Board>("Collisions",
-                    { it.collisions.toString() }, 100.0, classes)
+                    100.0, classes, chromosomeToString = { it.collisions.toString() })
             val boardColumn = chromosomeToTableColumn<Int, Board>("Board",
-                    { it.content.joinToString(separator = " ", transform = { col -> rowNumberFormat.format(col) }) }, 600.0, classes)
+                    600.0, classes, chromosomeToString = { it.content.joinToString(separator = " ", transform = { col -> rowNumberFormat.format(col) }) })
 
             onUserSelect { selectedBoard ->  ShowBoardDialog(selectedBoard).showAndWait() }
             prefWidth = Control.USE_COMPUTED_SIZE

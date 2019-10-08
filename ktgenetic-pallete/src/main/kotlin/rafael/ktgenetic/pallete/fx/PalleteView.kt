@@ -87,31 +87,31 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
         val fitnessColumn = fitnessToTableColumn<Box, Pallete>(50.0, classes)
 
         val cmColumn = chromosomeToTableColumn<Box, Pallete>("CM",
-                { it.centerOfMass.toString() },
                 100.0,
-                classes)
+                classes,
+                chromosomeToString = { it.centerOfMass.toString() })
 
         val miColumn = chromosomeToTableColumn<Box, Pallete>("MI",
-                { "%.0f".format(it.momentOfInertia) },
                 50.0,
-                classes)
+                classes,
+                chromosomeToString = { "%.0f".format(it.momentOfInertia) })
 
         val fbhmColumn = chromosomeToTableColumn<Box, Pallete>("FBHM",
-                { it.frontBackHalfMasses.toString() },
                 100.0,
-                classes)
+                classes,
+                chromosomeToString = { it.frontBackHalfMasses.toString() })
 
         val rlhmColumn = chromosomeToTableColumn<Box, Pallete>("RLHM",
-                { it.rightLeftHalfMasses.toString() },
                 100.0,
-                classes)
+                classes,
+                chromosomeToString = { it.rightLeftHalfMasses.toString() })
 
         val palleteColumn = chromosomeToTableColumn<Box, Pallete>("Pallete",
-                { c ->
-                    c.content.map { it.value }.joinToString(separator = " ", transform = { "%3d".format(it) })
-                },
                 500.0,
-                classes)
+                classes,
+                chromosomeToString = { c ->
+                    c.content.map { it.value }.joinToString(separator = " ", transform = { "%3d".format(it) })
+                })
 
         balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
         balanceTable.columns.addAll(fitnessColumn, cmColumn, miColumn, fbhmColumn, rlhmColumn, palleteColumn)
