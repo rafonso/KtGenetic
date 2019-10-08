@@ -75,23 +75,23 @@ class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.
 
         val balanceColumn = chromosomeToTableColumn<Box, Balance>("Balance",
                 500.0,
-                classes,
-                chromosomeToString = { c -> c.content.map { it.value }.joinToString(separator = " ", transform = { "%3d".format(it) }) })
+                classes
+        ) { c -> c.content.map { it.value }.joinToString(separator = " ", transform = { "%3d".format(it) }) }
 
         val cmColumn = chromosomeToTableColumn<Box, Balance>("CM",
                 50.0,
-                classes,
-                chromosomeToString = { c -> "%.3f".format(c.centerOfMass) })
+                classes
+        ) { c -> "%.3f".format(c.centerOfMass) }
 
         val miColumn = chromosomeToTableColumn<Box, Balance>("MI",
                 75.0,
-                classes,
-                chromosomeToString = { c -> "%2.3f".format(c.momentOfInertia) })
+                classes
+        ) { c -> "%2.3f".format(c.momentOfInertia) }
 
         val hmColumn = chromosomeToTableColumn<Box, Balance>("HM",
                 100.0,
-                classes,
-                chromosomeToString = { c -> c.halfMasses.toString() })
+                classes
+        ) { c -> c.halfMasses.toString() }
 
         balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
         balanceTable.columns.addAll(fitnessColumn, cmColumn, miColumn, hmColumn, balanceColumn)

@@ -1,11 +1,8 @@
 package rafael.ktgenetic.pallete.fx
 
 import javafx.collections.FXCollections
-import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.control.*
-import javafx.scene.layout.BorderPane
-import javafx.scene.layout.FlowPane
 import javafx.scene.layout.GridPane
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.fx.GeneticView
@@ -40,97 +37,85 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.
 
     private val numbers = FXCollections.observableArrayList((0..20).toMutableList())
 
-    private val cmbRows: ComboBox<Int> = ComboBox(numbers)
+    private val cmbRows: ComboBox<Int> = combobox {
+        items = numbers
+        value = 0
+    }
 
-    private val cmbCols: ComboBox<Int> = ComboBox(numbers)
+    private val cmbCols: ComboBox<Int> = combobox {
+        items = numbers
+        value = 0
+    }
 
-    private val txfPallete: TextField = TextField()
+    private val txfPallete: TextField = textfield {
+        prefWidth = 600.0
+    }
 
     // OUTPUT COMPONENTS
 
     private val colorsByBox: MutableMap<Int, Pair<String, String>> = mutableMapOf()
 
-    private val balanceTable: TableView<Pallete> = TableView()
+    private val balanceTable: TableView<Pallete> = tableview {
+        val classes = listOf("mono")
+        val fitnessColumn = fitnessToTableColumn<Box, Pallete>(50.0, classes)
+        val cmColumn = chromosomeToTableColumn<Box, Pallete>("CM", 100.0, classes) {
+            it.centerOfMass.toString()
+        }
+        val miColumn = chromosomeToTableColumn<Box, Pallete>("MI", 50.0, classes) {
+            "%.0f".format(it.momentOfInertia)
+        }
+        val fbhmColumn = chromosomeToTableColumn<Box, Pallete>("FBHM", 100.0, classes) {
+            it.frontBackHalfMasses.toString()
+        }
+        val rlhmColumn = chromosomeToTableColumn<Box, Pallete>("RLHM", 100.0, classes) {
+            it.rightLeftHalfMasses.toString()
+        }
+        val palleteColumn = chromosomeToTableColumn<Box, Pallete>("Pallete", 500.0, classes) { c ->
+            c.content.map { it.value }.joinToString(separator = " ", transform = { "%3d".format(it) })
+        }
+
+        prefWidth = Control.USE_COMPUTED_SIZE
+        columns.addAll(fitnessColumn, cmColumn, miColumn, fbhmColumn, rlhmColumn, palleteColumn)
+    }
 
     private val gridBestPallete = GridPane()
 
     private lateinit var dimensions: PalleteDimensions
 
     init {
-        cmbRows.value = 0
         addComponent("Rows", cmbRows)
-
-        cmbCols.value = 0
         addComponent("Columns", cmbCols)
-
-        txfPallete.prefWidth = 600.0
         addComponent("Initial Configuration", txfPallete, 3)
 
-        val pnlBestPalleteGrid = FlowPane()
-        pnlBestPalleteGrid.alignment = Pos.TOP_CENTER
-        pnlBestPalleteGrid.minHeight = 100.0
-        pnlBestPalleteGrid.add(gridBestPallete)
-
-        fillBalanceTable()
-
-        val pnlBest = BorderPane()
-        pnlBest.padding = Insets(10.0, 10.0, 10.0, 10.0)
-        pnlBest.top = pnlBestPalleteGrid
-        pnlBest.center = balanceTable
-
-        root.center = pnlBest
-    }
-
-    private fun fillBalanceTable() {
-        val classes = listOf("mono")
-
-        val fitnessColumn = fitnessToTableColumn<Box, Pallete>(50.0, classes)
-
-        val cmColumn = chromosomeToTableColumn<Box, Pallete>("CM",
-                100.0,
-                classes,
-                chromosomeToString = { it.centerOfMass.toString() })
-
-        val miColumn = chromosomeToTableColumn<Box, Pallete>("MI",
-                50.0,
-                classes,
-                chromosomeToString = { "%.0f".format(it.momentOfInertia) })
-
-        val fbhmColumn = chromosomeToTableColumn<Box, Pallete>("FBHM",
-                100.0,
-                classes,
-                chromosomeToString = { it.frontBackHalfMasses.toString() })
-
-        val rlhmColumn = chromosomeToTableColumn<Box, Pallete>("RLHM",
-                100.0,
-                classes,
-                chromosomeToString = { it.rightLeftHalfMasses.toString() })
-
-        val palleteColumn = chromosomeToTableColumn<Box, Pallete>("Pallete",
-                500.0,
-                classes,
-                chromosomeToString = { c ->
-                    c.content.map { it.value }.joinToString(separator = " ", transform = { "%3d".format(it) })
-                })
-
-        balanceTable.prefWidth = Control.USE_COMPUTED_SIZE
-        balanceTable.columns.addAll(fitnessColumn, cmColumn, miColumn, fbhmColumn, rlhmColumn, palleteColumn)
+        root.center = borderpane {
+            paddingAll = 10.0
+            top = flowpane {
+                alignment = Pos.TOP_CENTER
+                minHeight = 100.0
+                add(gridBestPallete)
+            }
+            center = balanceTable
+        }
     }
 
     private fun handleBestPallete(bestPallete: Pallete) {
 
-        fun addBoxToGrid(index: Int, box: Box) {
-            val label = Label("%3d".format(box.value))
-            val (back, front) = colorsByBox[box.value]!!
-            label.style = "-fx-background-color: #$back; -fx-text-fill: #$front;"
-            label.styleClass.add("mono-right")
+        fun addBoxToGrid(index: Int, box: Box): Triple<Label, Int, Int> {
+            val label = label {
+                val (back, front) = colorsByBox[box.value]!!
 
+                text = "%3d".format(box.value)
+                style = "-fx-background-color: #$back; -fx-text-fill: #$front;"
+                styleClass += "mono-right"
+            }
             val (row, col) = dimensions.indexToPosition(index)
 
-            gridBestPallete.add(label, col, row)
+            return Triple(label, col, row)
         }
 
-        bestPallete.content.forEachIndexed(::addBoxToGrid)
+        bestPallete.content.mapIndexed(::addBoxToGrid).forEach { (label, col, row) ->
+            gridBestPallete.add(label, col, row)
+        }
     }
 
     private fun fillColorsByBox(weights: List<Int>) {

@@ -22,34 +22,32 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcess
 
     // INPUT COMPONENTS
 
-    private val cmbStringFitness = ComboBox<StringFitnessChoice>()
+    private val cmbStringFitness: ComboBox<StringFitnessChoice> = combobox {
+        items = FXCollections.observableArrayList(StringFitnessChoice.values().toList())
+        value = StringFitnessChoice.EQUAL_CHARS
+        converter = StringFitnessChoiceConverter()
+    }
 
-    private val txfTarget: TextField = TextField()
+    private val txfTarget: TextField = textfield {
+        prefWidth = 400.0
+    }
 
     // OUTPUT COMPONENTS
 
-    private val wordsTable: TableView<Word> = TableView()
+    private val wordsTable: TableView<Word> = tableview {
+        val classes = listOf("mono")
+        val fitnessColumn = fitnessToTableColumn<Char, Word>(50.0, classes)
+        val wordColumn = chromosomeToTableColumn<Char, Word>("Word", 500.0, classes) { (content) ->
+            String(content.toCharArray())
+        }
+
+        prefWidth = Control.USE_COMPUTED_SIZE
+        columns.addAll(fitnessColumn, wordColumn)
+    }
 
     init {
-        cmbStringFitness.items = FXCollections.observableArrayList(StringFitnessChoice.values().toList())
-        cmbStringFitness.value = StringFitnessChoice.EQUAL_CHARS
-        cmbStringFitness.converter = StringFitnessChoiceConverter()
         addComponent("Fitness Method", cmbStringFitness)
-
-        txfTarget.prefWidth = 400.0
         addComponent("Target", txfTarget, 3)
-
-        val classes = listOf("mono")
-
-        val fitnessColumn = fitnessToTableColumn<Char, Word>(50.0, classes)
-
-        val wordColumn = chromosomeToTableColumn<Char, Word>("Word",
-                500.0,
-                classes,
-                chromosomeToString = { (content) -> String(content.toCharArray()) })
-
-        wordsTable.prefWidth = Control.USE_COMPUTED_SIZE
-        wordsTable.columns.addAll(fitnessColumn, wordColumn)
 
         root.center = wordsTable
     }
