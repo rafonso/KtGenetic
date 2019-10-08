@@ -1,15 +1,9 @@
 package rafael.ktgenetic.nqueens.fx
 
 import javafx.collections.FXCollections
-import javafx.event.EventHandler
-import javafx.geometry.Insets
 import javafx.scene.control.Control
 import javafx.scene.control.Spinner
-import javafx.scene.control.TableRow
 import javafx.scene.control.TableView
-import javafx.scene.input.ScrollEvent
-import javafx.scene.layout.BorderPane
-import javafx.util.Callback
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.chromosomeToTableColumn
@@ -25,52 +19,35 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
 
     // INPUT COMPONENTS
 
-    private val numberOfRowsSelector = Spinner<Int>(5, 200, 8)
+    private val numberOfRowsSelector: Spinner<Int> = spinner(min = 5, max = 200, initialValue = 8, enableScroll = true)
 
     // OUTPUT COMPONENTS
 
-    private val boardTable: TableView<Board> = TableView()
+    private val boardTable: TableView<Board>
 
     private var rowNumberFormat: String = ""
 
 
     init {
-        numberOfRowsSelector.onScroll = EventHandler<ScrollEvent> { event ->
-            val delta = if (event.deltaY > 0) 1 else -1
-            val step = if (event.isControlDown) 10 else 1
-
-            numberOfRowsSelector.increment(delta * step)
-        }
         addComponent("Board Size", numberOfRowsSelector)
 
-        val classes = listOf("mono")
-        val fitnessColumn = fitnessToTableColumn<Int, Board>(50.0, classes)
-        val collisionsColumn = chromosomeToTableColumn<Int, Board>("Collisions",
-                { it.collisions.toString() }, 100.0, classes)
-        val boardColumn = chromosomeToTableColumn<Int, Board>("Board",
-                { it.content.joinToString(separator = " ", transform = { col -> rowNumberFormat.format(col) }) }, 500.0, classes)
+        boardTable = tableview {
+            val classes = listOf("mono")
+            val fitnessColumn = fitnessToTableColumn<Int, Board>(50.0, classes)
+            val collisionsColumn = chromosomeToTableColumn<Int, Board>("Collisions",
+                    { it.collisions.toString() }, 100.0, classes)
+            val boardColumn = chromosomeToTableColumn<Int, Board>("Board",
+                    { it.content.joinToString(separator = " ", transform = { col -> rowNumberFormat.format(col) }) }, 600.0, classes)
 
-        boardTable.prefWidth = Control.USE_COMPUTED_SIZE
-        boardTable.columns.addAll(fitnessColumn, collisionsColumn, boardColumn)
-        boardTable.rowFactory = Callback {
-            val row = TableRow<Board>()
-            row.onMouseClicked = EventHandler { evt ->
-                if (evt.clickCount == 2 && !row.isEmpty) {
-                    showBoard(row.item)
-                }
-            }
-            row
+            onUserSelect { selectedBoard ->  ShowBoardDialog(selectedBoard).showAndWait() }
+            prefWidth = Control.USE_COMPUTED_SIZE
+            columns.addAll(fitnessColumn, collisionsColumn, boardColumn)
         }
 
-        val pnlBest = BorderPane()
-        pnlBest.padding = Insets(10.0, 10.0, 10.0, 10.0)
-        pnlBest.center = boardTable
-
-        root.center = pnlBest
-    }
-
-    private fun showBoard(board: Board) {
-        ShowBoardDialog(board).showAndWait()
+        root.center = borderpane {
+            paddingAll = 10.0
+            center = boardTable
+        }
     }
 
     override fun validate() {
@@ -90,4 +67,5 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
         numberOfRowsSelector.valueFactory.value = 8
         boardTable.items = FXCollections.emptyObservableList()
     }
+
 }
