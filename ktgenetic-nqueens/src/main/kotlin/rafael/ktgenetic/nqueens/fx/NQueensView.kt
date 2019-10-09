@@ -27,7 +27,7 @@ class NQueensView : GeneticView<Int, Board>("N Queens", GeneticProcessorChoice.O
         val classes = listOf("mono")
         val fitnessColumn = fitnessToTableColumn<Int, Board>(50.0, classes)
         val collisionsColumn = chromosomeToTableColumn<Int, Board>("Collisions", 100.0, classes) { board ->
-            board.collisions.toString()
+            board.numOfCollisions.toString()
         }
         val boardColumn = chromosomeToTableColumn<Int, Board>("Board", 600.0, classes) { board ->
             board.content.joinToString(separator = " ", transform = { col -> rowNumberFormat.format(col) })

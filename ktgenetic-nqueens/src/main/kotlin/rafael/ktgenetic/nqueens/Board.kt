@@ -2,7 +2,12 @@ package rafael.ktgenetic.nqueens
 
 import rafael.ktgenetic.Chromosome
 
-data class Board(override val content: List<Int>, private var _collisions: Int = -1) : Chromosome<Int>() {
+typealias Collision = Pair<Int, Int>
+
+/**
+ *
+ */
+data class Board(override val content: List<Int>, private var _collisions: List<Collision> = listOf(), private var _numOfCollisions: Int = Int.MAX_VALUE) : Chromosome<Int>() {
 
     companion object BoardUtils {
 
@@ -38,11 +43,15 @@ data class Board(override val content: List<Int>, private var _collisions: Int =
 
     }
 
-    var collisions: Int
+    var collisions: List<Collision>
         get() = this._collisions
         internal set(value) {
             this._collisions = value
+            _numOfCollisions = this._collisions.size
         }
+
+    val numOfCollisions: Int
+        get() = _numOfCollisions
 
     val size: Int
         get() = content.size
@@ -52,5 +61,5 @@ data class Board(override val content: List<Int>, private var _collisions: Int =
         validateContent(this.content)
     }
 
-    override fun toString(): String = content.joinToString(separator = "|")
+    override fun toString(): String = """(${content.joinToString(separator = "|")}${if (collisions.isEmpty()) "" else ", Collisions: $collisions"})"""
 }

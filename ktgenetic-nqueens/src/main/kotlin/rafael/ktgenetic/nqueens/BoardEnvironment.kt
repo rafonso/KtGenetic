@@ -32,26 +32,27 @@ class BoardEnvironment(val boardSize: Int,
 
     override fun calculateFitness(chromosome: Board): Double {
 
-        tailrec fun verifyCollision(priorRow: Int, priorDiagonal: Int, deltaColumn: Int): Int {
+        tailrec fun verifyCollision(initialRow: Int, priorRow: Int, priorDiagonal: Int, deltaColumn: Int): List<Collision> {
             val currentRow = priorRow + 1
             val currentDiagonal = priorDiagonal + deltaColumn
+            val ended = currentRow >= boardSize || currentDiagonal < 0 || currentDiagonal >= boardSize
 
             return when {
-                currentRow >= boardSize || currentDiagonal < 0 || currentDiagonal >= boardSize -> 0
-                chromosome.content[currentRow] == currentDiagonal                              -> 1
-                else                                                                           -> verifyCollision(currentRow, currentDiagonal, deltaColumn)
+                ended                                             -> emptyList()
+                chromosome.content[currentRow] == currentDiagonal -> listOf(Collision(initialRow, currentRow))
+                else                                              -> verifyCollision(initialRow, currentRow, currentDiagonal, deltaColumn)
             }
         }
 
         chromosome.collisions = IntRange(0, boardSize - 1)
-                .map { row ->
-                    verifyCollision(row, chromosome.content[row], 1) + verifyCollision(row, chromosome.content[row], -1)
+                .flatMap { row ->
+                    verifyCollision(row, row, chromosome.content[row], 1) +
+                            verifyCollision(row, row, chromosome.content[row], -1)
                 }
-                .sum()
 
-        return 1.0 / (1 + chromosome.collisions)
+        return 1.0 / (1 + chromosome.collisions.size)
     }
 
-    override fun resultFound(genotypes: List<Board>): Boolean = (genotypes[0].collisions == 0)
+    override fun resultFound(genotypes: List<Board>): Boolean = (genotypes[0].numOfCollisions == 0)
 
 }

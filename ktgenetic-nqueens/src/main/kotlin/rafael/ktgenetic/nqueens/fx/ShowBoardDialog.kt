@@ -20,6 +20,9 @@ private const val sharpIdHouseFormat = "#$idHouseFormat"
 
 private const val queen = "\u2655"
 
+private const val queenColorNormal = "black"
+private const val queenColorCollision = "red"
+
 private const val whiteHouseColor = "lightyellow"
 private const val blackHouseColor = "lightgreen"
 private val colors = arrayOf(
@@ -88,7 +91,7 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
         val idTarget = sharpIdHouseFormat.format(row, col)
         val styleAction = if (highlight) { n: Node ->
             n.style {
-                fillCss(BorderStrokeStyle.DASHED, 1, "red")
+                fillCss(BorderStrokeStyle.DASHED, 1, queenColorCollision)
             }
         } else { n: Node ->
             n.style {
@@ -121,7 +124,7 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
     }
 
     private fun InlineCss.fillCss(borderStroke: BorderStrokeStyle = BorderStrokeStyle.NONE, bWidth: Int = 0,
-                                  textColor: String = "black") {
+                                  textColor: String = queenColorNormal) {
         borderStyle = multi(borderStroke)
         borderWidth = multi(box(bWidth.px))
         textFill = c(textColor)
