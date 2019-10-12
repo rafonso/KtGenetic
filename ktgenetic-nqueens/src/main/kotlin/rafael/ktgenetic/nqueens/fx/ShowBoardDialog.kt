@@ -32,6 +32,11 @@ private val colors = arrayOf(
 
 private const val houseSide = 20.0
 
+private val deltas = listOf(-1, 0, 1)
+private val deltaPaths = deltas
+        .flatMap { dr -> deltas.map { dc -> listOf(dr, dc) } }
+        .filterNot { (deltaR, deltaC) -> deltaR == 0 && deltaC == 0 }
+
 class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
 
     init {
@@ -88,7 +93,6 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
             }
 
     private fun changeHouse(row: Int, col: Int, highlight: Boolean) {
-        val idTarget = sharpIdHouseFormat.format(row, col)
         val styleAction = if (highlight) { n: Node ->
             n.style {
                 fillCss(BorderStrokeStyle.DASHED, 1, queenColorCollision)
@@ -99,28 +103,22 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
             }
         }
 
-        fun changeStyles(ids: List<String>) = ids.filterNot { it == idTarget }
-                .map { id -> super.getDialogPane().lookup(id) }
-                .forEach(styleAction)
-
         tailrec fun getDiagonals(priorRow: Int, priorColumn: Int, deltaRow: Int, deltaColumn: Int, diagonals: List<Pair<Int, Int>> = listOf()): List<Pair<Int, Int>> {
             val currentRow = priorRow + deltaRow
             val currentColumn = priorColumn + deltaColumn
-            return if ((currentRow < 0) || (currentRow >= this.board.size) || (currentColumn < 0) || (currentColumn >= this.board.size))
+            val limit = (currentRow < 0) || (currentRow >= this.board.size) || (currentColumn < 0) || (currentColumn >= this.board.size)
+
+            return if (limit)
                 diagonals
             else
                 getDiagonals(currentRow, currentColumn, deltaRow, deltaColumn, diagonals + Pair(currentRow, currentColumn))
         }
 
-        // Horizontal
-        changeStyles(this.board.content.indices.map { currCol -> sharpIdHouseFormat.format(row, currCol) })
-        // Vertical
-        changeStyles(this.board.content.indices.map { currRow -> sharpIdHouseFormat.format(currRow, col) })
-        // Diagonals
-        changeStyles(getDiagonals(row, col, -1, -1).map { (r, c) -> sharpIdHouseFormat.format(r, c) })
-        changeStyles(getDiagonals(row, col, +1, -1).map { (r, c) -> sharpIdHouseFormat.format(r, c) })
-        changeStyles(getDiagonals(row, col, -1, +1).map { (r, c) -> sharpIdHouseFormat.format(r, c) })
-        changeStyles(getDiagonals(row, col, +1, +1).map { (r, c) -> sharpIdHouseFormat.format(r, c) })
+        deltaPaths
+                .flatMap { (deltaRow, deltaCol) -> getDiagonals(row, col, deltaRow, deltaCol) }
+                .map { (r, c) -> sharpIdHouseFormat.format(r, c) }
+                .map { id -> super.getDialogPane().lookup(id) }
+                .forEach(styleAction)
     }
 
     private fun InlineCss.fillCss(borderStroke: BorderStrokeStyle = BorderStrokeStyle.NONE, bWidth: Int = 0,
