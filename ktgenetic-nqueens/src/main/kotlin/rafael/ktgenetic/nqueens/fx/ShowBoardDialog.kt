@@ -93,15 +93,6 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
             }
 
     private fun changeHouse(row: Int, col: Int, highlight: Boolean) {
-        val styleAction = if (highlight) { n: Node ->
-            n.style {
-                fillCss(BorderStrokeStyle.DASHED, 1, queenColorCollision)
-            }
-        } else { n: Node ->
-            n.style {
-                fillCss()
-            }
-        }
 
         tailrec fun getDiagonals(priorRow: Int, priorColumn: Int, deltaRow: Int, deltaColumn: Int, diagonals: List<Pair<Int, Int>> = listOf()): List<Pair<Int, Int>> {
             val currentRow = priorRow + deltaRow
@@ -114,11 +105,20 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
                 getDiagonals(currentRow, currentColumn, deltaRow, deltaColumn, diagonals + Pair(currentRow, currentColumn))
         }
 
+        val (borderStroke, bWidth, queenColor) = if (highlight)
+            Triple(BorderStrokeStyle.DASHED, 1, queenColorCollision)
+        else
+            Triple(BorderStrokeStyle.NONE, 0, queenColorNormal)
+
         deltaPaths
                 .flatMap { (deltaRow, deltaCol) -> getDiagonals(row, col, deltaRow, deltaCol) }
                 .map { (r, c) -> sharpIdHouseFormat.format(r, c) }
                 .map { id -> super.getDialogPane().lookup(id) }
-                .forEach(styleAction)
+                .forEach { label ->
+                    label.style {
+                        fillCss(borderStroke, bWidth, queenColor)
+                    }
+                }
     }
 
     private fun InlineCss.fillCss(borderStroke: BorderStrokeStyle = BorderStrokeStyle.NONE, bWidth: Int = 0,
