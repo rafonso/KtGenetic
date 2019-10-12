@@ -2,7 +2,6 @@ package rafael.ktgenetic.nqueens.fx
 
 import javafx.event.EventHandler
 import javafx.geometry.Pos
-import javafx.scene.Node
 import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Dialog
@@ -39,6 +38,8 @@ private val deltaPaths = deltas
 
 class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
 
+    private val textFillColors: List<String>
+
     init {
         Board.printBoard(board)
         super.setTitle("Board")
@@ -54,6 +55,8 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
             maxHeight = maxWidth
             alignment = Pos.CENTER
         }
+        val rowsWithCollisions = board.collisions.flatMap { it.toList() }.toSet()
+        textFillColors = this.board.content.indices.map { row -> if (rowsWithCollisions.contains(row)) queenColorCollision else queenColorNormal }
         (this.board.content).forEachIndexed { row, queenPos -> fillRow(boardPane, row, queenPos) }
 
         super.getDialogPane().content = boardPane
@@ -67,7 +70,7 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
                 label {
                     id = idHouseFormat.format(row, col)
                     style {
-                        fillCss()
+                        fillCss(row)
                     }
                     prefWidth = houseSide
                     prefHeight = prefWidth
@@ -77,13 +80,13 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
                     background = Background(BackgroundFill(Color.valueOf(colors[row % 2][col % 2]), null, null))
                     onMouseEntered = EventHandler {
                         style {
-                            fillCss(BorderStrokeStyle.SOLID, 1)
+                            fillCss(row, BorderStrokeStyle.SOLID, 1)
                         }
                         changeHouse(row, col, true)
                     }
                     onMouseExited = EventHandler {
                         style {
-                            fillCss()
+                            fillCss(row)
                         }
                         changeHouse(row, col, false)
                     }
@@ -105,27 +108,23 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
                 getDiagonals(currentRow, currentColumn, deltaRow, deltaColumn, diagonals + Pair(currentRow, currentColumn))
         }
 
-        val (borderStroke, bWidth, queenColor) = if (highlight)
-            Triple(BorderStrokeStyle.DASHED, 1, queenColorCollision)
-        else
-            Triple(BorderStrokeStyle.NONE, 0, queenColorNormal)
+        val (borderStroke, bWidth) = if (highlight) Pair(BorderStrokeStyle.DASHED, 1) else Pair(BorderStrokeStyle.NONE, 0)
 
         deltaPaths
                 .flatMap { (deltaRow, deltaCol) -> getDiagonals(row, col, deltaRow, deltaCol) }
-                .map { (r, c) -> sharpIdHouseFormat.format(r, c) }
-                .map { id -> super.getDialogPane().lookup(id) }
-                .forEach { label ->
+                .map { (r, c) -> Pair(r, sharpIdHouseFormat.format(r, c)) }
+                .map { (r, id) -> Pair(r, super.getDialogPane().lookup(id)) }
+                .forEach { (r, label) ->
                     label.style {
-                        fillCss(borderStroke, bWidth, queenColor)
+                        fillCss(r, borderStroke, bWidth)
                     }
                 }
     }
 
-    private fun InlineCss.fillCss(borderStroke: BorderStrokeStyle = BorderStrokeStyle.NONE, bWidth: Int = 0,
-                                  textColor: String = queenColorNormal) {
+    private fun InlineCss.fillCss(row: Int, borderStroke: BorderStrokeStyle = BorderStrokeStyle.NONE, bWidth: Int = 0) {
         borderStyle = multi(borderStroke)
         borderWidth = multi(box(bWidth.px))
-        textFill = c(textColor)
+        textFill = c(textFillColors[row])
     }
 
 }
