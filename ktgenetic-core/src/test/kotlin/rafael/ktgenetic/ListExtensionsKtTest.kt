@@ -61,4 +61,66 @@ internal class ListExtensionsKtTest {
         assertNotSame(l, swapped)
     }
 
+    @Test
+    fun replaceNegativeIndex() {
+        val l = listOf(1, 2, 3, 4)
+        assertThrows(IndexOutOfBoundsException::class.java) {
+            l.replace(-2, 10)
+        }
+    }
+
+    @Test
+    fun replaceOutOfBoundIndex() {
+        val l = listOf(1, 2, 3, 4)
+        assertThrows(IndexOutOfBoundsException::class.java) {
+            l.replace(20, 10)
+        }
+    }
+
+    @Test
+    fun replaceValidIndexWithNull() {
+        val original = listOf(1, 2, 3, 4)
+        val copy = original.replace(2, null)
+
+        assertNotSame(original, copy)
+        assertSame(original[0], copy[0])
+        assertSame(original[1], copy[1])
+        assertNull(copy[2])
+        assertSame(original[3], copy[3])
+    }
+
+    @Test
+    fun replaceValidIndexWithValue() {
+        val original = listOf(1, 2, 3, 4)
+        val copy = original.replace(2, 10)
+
+        assertNotSame(original, copy)
+        assertSame(original[0], copy[0])
+        assertSame(original[1], copy[1])
+        assertEquals(10, copy[2])
+        assertSame(original[3], copy[3])
+    }
+
+    @Test
+    fun testPMap() {
+        val original = listOf(1, 2, 3, 4)
+        val copy = original.pMap { it * 2 }
+
+        original.indices.forEach {
+            assertEquals(original[it] * 2, copy[it])
+        }
+    }
+
+    @Test
+    fun testPFlatMap() {
+        val original = listOf(1, 2, 3, 4)
+        val copy = original.pFlatMap { listOf(it * 2, it * 3) }
+
+        assertEquals(original.size * 2, copy.size)
+        original.indices.forEach {
+            assertEquals(original[it] * 2, copy[it * 2])
+            assertEquals(original[it] * 3, copy[it * 2 + 1])
+        }
+    }
+
 }
