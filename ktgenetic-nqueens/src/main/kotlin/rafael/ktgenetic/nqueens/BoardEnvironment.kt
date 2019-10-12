@@ -50,7 +50,7 @@ class BoardEnvironment(val boardSize: Int,
                             verifyCollision(row, row, chromosome.content[row], -1)
                 }
 
-        return 1.0 / (1 + chromosome.collisions.size)
+        return (boardSize - 1 - chromosome.collisions.size).toDouble() / (boardSize - 1)
     }
 
     override fun resultFound(genotypes: List<Board>): Boolean = (genotypes[0].numOfCollisions == 0)
