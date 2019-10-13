@@ -107,5 +107,6 @@
         <module>ktgenetic-balancedtable</module>
         <module>ktgenetic-pallete</module>
         <module>ktgenetic-nqueens</module>
+        <module>ktgenetic-pictures_comparsion</module>
     </modules>
 </project>
