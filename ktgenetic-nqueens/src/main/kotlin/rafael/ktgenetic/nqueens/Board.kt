@@ -7,22 +7,12 @@ typealias Collision = Pair<Int, Int>
 /**
  *
  */
-data class Board(override val content: List<Int>, private var _collisions: List<Collision> = listOf(), private var _numOfCollisions: Int = Int.MAX_VALUE) : Chromosome<Int>() {
+data class Board(override val content: List<Int>, val piece: Piece, private var _collisions: List<Collision> = listOf(), private var _numOfCollisions: Int = Int.MAX_VALUE) : Chromosome<Int>() {
 
     companion object BoardUtils {
 
         private val oddColors = arrayOf(' ', '\u2592')
         private val evenColors = oddColors.reversedArray()
-        private const val queen = 'Q'
-
-        internal fun validateContent(content: List<Int>) {
-            val values = mutableSetOf<Int>()
-            content.forEach {
-                require(it >= 0 && it < content.size) { "Irregular Value: $it. It should be between 0 and ${content.size}" }
-                require(!values.contains(it)) { "Repeated Value: $it" }
-                values.add(it)
-            }
-        }
 
         private fun boardToStringRows(board: Board): List<String> {
             val oddHouses = board.content.indices.map { oddColors[it % 2] }.joinToString("")
@@ -31,7 +21,7 @@ data class Board(override val content: List<Int>, private var _collisions: List<
 
             return board.content.mapIndexed { row, filledColumn ->
                 val rowColors = (if (row % 2 == 0) oddHouses else evenHouses).toCharArray()
-                rowColors[filledColumn] = queen
+                rowColors[filledColumn] = board.piece.code
                 rowColors.joinToString(separator = "|", prefix = rowNumberFormat.format(row), postfix = "‖")
             }
         }
@@ -57,8 +47,7 @@ data class Board(override val content: List<Int>, private var _collisions: List<
         get() = content.size
 
     init {
-        // Validation
-        validateContent(this.content)
+        this.piece.validateBoard(this)
     }
 
     override fun toString(): String = """(${content.joinToString(separator = "|")}${if (collisions.isEmpty()) "" else ", Collisions: $collisions"})"""

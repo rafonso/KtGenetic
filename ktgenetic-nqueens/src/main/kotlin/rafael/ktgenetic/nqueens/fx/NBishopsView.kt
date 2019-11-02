@@ -4,6 +4,6 @@ import rafael.ktgenetic.nqueens.Piece
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
 
-class NQueensApp : App(NQueensView::class)
+class NBishopsApp : App(NBishopsView::class)
 
-class NQueensView : NPiecesView(Piece.QUEEN, "N Queens", GeneticProcessorChoice.ORDERED)
+class NBishopsView : NPiecesView(Piece.BISHOP, "N Bishops", GeneticProcessorChoice.SIMPLE)

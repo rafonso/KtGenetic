@@ -17,8 +17,6 @@ import tornadofx.*
 private const val idHouseFormat = "house_%d_%d"
 private const val sharpIdHouseFormat = "#$idHouseFormat"
 
-private const val queen = "\u2655"
-
 private const val queenColorNormal = "black"
 private const val queenColorCollision = "red"
 
@@ -41,7 +39,6 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
     private val textFillColors: List<String>
 
     init {
-        Board.printBoard(board)
         super.setTitle("Board")
         super.setHeaderText("Collisions: ${board.collisions}")
 
@@ -74,7 +71,7 @@ class ShowBoardDialog(private val board: Board) : Dialog<Unit>() {
                     }
                     prefWidth = houseSide
                     prefHeight = prefWidth
-                    text = if (col == queenPos) queen else ""
+                    text = if (col == queenPos) board.piece.symbol else ""
                     textAlignment = TextAlignment.CENTER
                     alignment = Pos.CENTER
                     background = Background(BackgroundFill(Color.valueOf(colors[row % 2][col % 2]), null, null))

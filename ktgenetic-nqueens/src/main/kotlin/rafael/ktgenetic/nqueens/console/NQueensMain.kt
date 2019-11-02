@@ -8,12 +8,19 @@ import rafael.ktgenetic.console.getMaxGenerations
 import rafael.ktgenetic.console.getPopulationByGeneration
 import rafael.ktgenetic.nqueens.Board
 import rafael.ktgenetic.nqueens.BoardEnvironment
+import rafael.ktgenetic.nqueens.Piece
 import rafael.ktgenetic.processor.GeneticProcessorChoice
+import java.lang.Exception
 
 private const val SIZE_PARAMETER = "size"
 
+private const val PIECE_PARAMETER = "piece"
+
+private var isQueens: Boolean = true
+
 private fun addOptions(options: Options) {
     options.addOption(SIZE_PARAMETER, true, "Board Size")
+    options.addOption(PIECE_PARAMETER, true, "Piece (QUEEN or BISHOP)")
 }
 
 private fun validateParameters(line: CommandLine) {
@@ -21,10 +28,18 @@ private fun validateParameters(line: CommandLine) {
     require(line.getOptionValue(SIZE_PARAMETER).matches(Regex("^\\d+$"))) {
         "Board Size incorrect: \"${line.getOptionValue(SIZE_PARAMETER)}\"; Please provide a positive Number"
     }
+
+    require(line.hasOption(PIECE_PARAMETER)) { "Please provide the Piece (QUEEN or BISHOP)" }
+    require(Piece.values().map { p -> p.toString() }.contains(line.getOptionValue(PIECE_PARAMETER))) {
+        "Piece must be QUEEN or BISHOP"
+    }
+    isQueens = line.getOptionValue(PIECE_PARAMETER) == Piece.QUEEN.toString()
 }
 
 private fun getEnvironment(line: CommandLine): BoardEnvironment =
-        BoardEnvironment(line.getOptionValue(SIZE_PARAMETER).toInt(), line.getMaxGenerations(),
+        BoardEnvironment(line.getOptionValue(SIZE_PARAMETER).toInt(),
+                Piece.valueOf(line.getOptionValue(PIECE_PARAMETER)),
+                line.getMaxGenerations(),
                 line.getPopulationByGeneration())
 
 private fun showEnvironmentDetails(environment: Environment<Int, Board>): String =
@@ -44,13 +59,29 @@ class FinalBoardListener : ProcessorListener {
 
 }
 
+fun getProcessorChoice(args: Array<String>): GeneticProcessorChoice {
+    var result = GeneticProcessorChoice.SIMPLE
+    val idx = args.indexOf("-$PIECE_PARAMETER")
+    if (idx >= 0) {
+        try {
+            when {
+                Piece.valueOf(args[idx + 1]) == Piece.QUEEN -> result = GeneticProcessorChoice.ORDERED
+            }
+        } catch (e: Exception) {
+        }
+    }
 
-fun main(args: Array<String>) = executeMain(
-        args,
-        ::addOptions,
-        ::validateParameters,
-        ::getEnvironment,
-        GeneticProcessorChoice.ORDERED,
-        ::showEnvironmentDetails
-) { p, _ -> p.addListener(FinalBoardListener()) }
+    return result
+}
+
+fun main(args: Array<String>) =
+        executeMain(
+                args,
+                ::addOptions,
+                ::validateParameters,
+                ::getEnvironment,
+                getProcessorChoice(args),
+                ::showEnvironmentDetails
+        ) { p, _ -> p.addListener(FinalBoardListener()) }
+
 

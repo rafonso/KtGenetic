@@ -16,11 +16,11 @@ internal class BoardEnvironmentTest {
     @Test
     fun calculateFitnessCollisionDiagonalLesserToGreater() {
         // 2
-        val board = Board(listOf(2, 0, 4, 1, 3))
-        val environment = BoardEnvironment(5)
+        val board = Board(listOf(2, 0, 4, 1, 3), piece = Piece.QUEEN)
+        val environment = BoardEnvironment(5, Piece.QUEEN)
         val fitness = environment.calculateFitness(board)
 
-        assertEquals(1.0 / 3.0, fitness)
+        assertEquals(2.0 / 4.0, fitness)
     }
 
     /**
@@ -33,11 +33,11 @@ internal class BoardEnvironmentTest {
     @Test
     fun calculateFitnessCollisionDiagonalGreaterToLesser() {
         // 2
-        val board = Board(listOf(4,3,1,0,2))
-        val environment = BoardEnvironment(5)
+        val board = Board(listOf(4,3,1,0,2), piece = Piece.QUEEN)
+        val environment = BoardEnvironment(5, Piece.QUEEN)
         val fitness = environment.calculateFitness(board)
 
-        assertEquals(1.0 / 3.0, fitness)
+        assertEquals(2.0 / 4.0, fitness)
     }
 
     /**
@@ -50,11 +50,11 @@ internal class BoardEnvironmentTest {
     @Test
     fun calculateFitnessCollisionBothDiagonals() {
         // 2
-        val board = Board(listOf(2, 3, 1, 4, 0))
-        val environment = BoardEnvironment(5)
+        val board = Board(listOf(2, 3, 1, 4, 0), piece = Piece.QUEEN)
+        val environment = BoardEnvironment(5, Piece.QUEEN)
         val fitness = environment.calculateFitness(board)
 
-        assertEquals(1.0 / 3.0, fitness)
+        assertEquals(2.0 / 4.0, fitness)
     }
 
     /**
@@ -66,8 +66,8 @@ internal class BoardEnvironmentTest {
      */
     @Test
     fun calculateFitnessNoCollisions() {
-        val board = Board(listOf(3, 1, 4, 2, 0))
-        val environment = BoardEnvironment(5)
+        val board = Board(listOf(3, 1, 4, 2, 0), piece = Piece.QUEEN)
+        val environment = BoardEnvironment(5, Piece.QUEEN)
         val fitness = environment.calculateFitness(board)
 
         assertEquals(1.0, fitness)

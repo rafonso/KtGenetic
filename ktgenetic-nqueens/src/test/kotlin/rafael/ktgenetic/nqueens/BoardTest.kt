@@ -7,7 +7,7 @@ internal class BoardTest {
 
     private fun testIrregularBoards(vararg values: Int) {
         assertThrows(IllegalArgumentException::class.java) {
-            val b = Board(values.toList())
+            val b = Board(values.toList(), Piece.QUEEN)
 
             fail(b.toString())
         }
