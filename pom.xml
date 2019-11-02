@@ -12,9 +12,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.3.50</kotlin.version>
         <junit.version>5.5.2</junit.version>
+        <kotlin.version>1.3.50</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+        <kotlin.code.style>official</kotlin.code.style>
     </properties>
 
     <dependencies>
@@ -108,5 +109,6 @@
         <module>ktgenetic-pallete</module>
         <module>ktgenetic-nqueens</module>
         <module>ktgenetic-pictures_comparsion</module>
+        <module>ktgenetic-sudoku</module>
     </modules>
 </project>
