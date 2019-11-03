@@ -42,6 +42,13 @@ enum class TypeConflict {
     COLUMN, BOX
 }
 
-data class Position(val row: Int, val col: Int)
+data class Position(val row: Int, val col: Int) {
+    override fun toString(): String = "($row, $col)"
+}
 
-data class Conflict(val pos1: Position, val pos2: Position, val typeConflict: TypeConflict)
+data class Conflict(val pos1: Position, val pos2: Position, val value: Element, val typeConflict: TypeConflict) {
+
+    constructor(row1: Int, col1: Int, row2: Int, col2: Int, value: Element, typeConflict: TypeConflict) :
+            this(Position(row1, col1), Position(row2, col2), value, typeConflict)
+
+}
