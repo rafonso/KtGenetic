@@ -1,6 +1,7 @@
 package rafael.ktgenetic.sudoku
 
 import rafael.ktgenetic.Chromosome
+import java.lang.StringBuilder
 
 data class Grid(
     override val content: List<Row>,
@@ -26,6 +27,32 @@ data class Grid(
             }
         }
 
+
+        fun formatGrid(grid: Grid): String {
+            val gridSize = grid.size
+            val boxSize = getBoxSizeBySize(gridSize)
+            val elementSize = if (gridSize > 10) 3 else 2
+            val format = " %${elementSize - 1}d"
+            val boxSeparator =
+                (("+" + "-".repeat(elementSize).repeat(boxSize)).repeat(boxSize)).replaceFirst('+', '|') + "|\n"
+
+            val sbGrid = StringBuilder()
+            grid.rows.forEachIndexed { index, row ->
+                if (index % boxSize == 0) {
+                    sbGrid.append(boxSeparator)
+                }
+                row.forEachIndexed { col, value ->
+                    if (col % boxSize == 0) {
+                        sbGrid.append("|")
+                    }
+                    sbGrid.append(format.format(value))
+                }
+                sbGrid.append("|\n")
+            }
+            sbGrid.append(boxSeparator)
+
+            return sbGrid.toString()
+        }
 
     }
 

@@ -4,13 +4,12 @@ import kotlin.math.sqrt
 
 private val boxesBySize = mutableMapOf<Int, List<List<Position>>>()
 
-private fun calculateBoxPositions(size: Int): List<List<Position>> {
-    val boxSize = sqrt(size.toDouble()).toInt()
+private val boxSizeBySize = mutableMapOf<Int, Int>()
 
-    // Validation
-    require((boxSize * boxSize) == size) {
-        "Size $size is not a perfect square"
-    }
+private val maxConflictsBySize = mutableMapOf<Int, Int>()
+
+private fun calculateBoxPositions(size: Int): List<List<Position>> {
+    val boxSize = getBoxSizeBySize(size)
 
     return (0 until size).map { box ->
         val boxRow = box / boxSize
@@ -30,6 +29,25 @@ private fun calculateBoxPositions(size: Int): List<List<Position>> {
 fun getBoxesPositions(size: Int): List<List<Position>> =
     boxesBySize.computeIfAbsent(size) {
         calculateBoxPositions(size)
+    }
+
+fun getMaxConflictsBySize(size: Int): Int =
+    maxConflictsBySize.computeIfAbsent(size) {
+        val boxSize = getBoxSizeBySize(size)
+
+        return@computeIfAbsent size * ((size - 1) + boxSize * (boxSize - 1))
+    }
+
+fun getBoxSizeBySize(size: Int): Int =
+    boxSizeBySize.computeIfAbsent(size) {
+        val result = sqrt(size.toDouble()).toInt()
+
+        // Validation
+        require((result * result) == size) {
+            "Size $size is not a perfect square"
+        }
+
+        return@computeIfAbsent result
     }
 
 fun rowToString(row: Row) = row.joinToString(separator = ",", prefix = "", postfix = "")
