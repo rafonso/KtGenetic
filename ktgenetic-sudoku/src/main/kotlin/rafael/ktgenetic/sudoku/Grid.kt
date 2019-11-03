@@ -11,7 +11,9 @@ enum class TypeCollision {
     ROW, COLUMN, BOX
 }
 
-data class Collision(val cell1: Pair<Int, Int>, val cell2: Int, val typeCollision: TypeCollision)
+data class Position(val row: Int, val col: Int)
+
+data class Collision(val pos1: Position, val pos2: Position, val typeCollision: TypeCollision)
 
 data class Grid(
     override val content: List<Row>,
@@ -20,6 +22,26 @@ data class Grid(
 ) : Chromosome<Row>() {
 
     companion object GridUtils {
+
+        private val boxesBySize = mutableMapOf<Int, List<List<Position>>>()
+
+        private fun calculateBoxPositions(size: Int): List<List<Position>> {
+            val boxSize = sqrt(size.toDouble()).toInt()
+
+            return (0 until size).map { box ->
+                val boxRow = box / boxSize
+                val boxCol = box % boxSize
+
+                val row0 = boxRow * boxSize
+                val row1 = row0 + boxSize
+                val col0 = boxCol * boxSize
+                val col1 = col0 + boxSize
+
+                (row0 until row1).flatMap { row ->
+                    (col0 until col1).map { col -> Position(row, col) }
+                }
+            }
+        }
 
         fun validate(grid: Grid) {
             grid.content.forEachIndexed { index, row ->
@@ -38,6 +60,12 @@ data class Grid(
         }
 
         fun rowToString(row: Row) = row.joinToString(separator = ",", prefix = "", postfix = "")
+
+        fun getBoxesPositions(size: Int): List<List<Position>> =
+            boxesBySize.computeIfAbsent(size) {
+                calculateBoxPositions(size)
+            }
+
     }
 
     var collisions: List<Collision>
@@ -62,19 +90,8 @@ data class Grid(
     }
 
     val boxes: List<List<Element>> by lazy {
-        val boxSize = sqrt(size.toDouble()).toInt()
-        this.rows.indices.map { box ->
-            val boxRow = box / boxSize
-            val boxCol = box % boxSize
-
-            val row0 = boxRow * boxSize
-            val row1 = row0 + boxSize
-            val col0 = boxCol * boxSize
-            val col1 = col0 + boxSize
-
-            (row0 until row1).flatMap { row ->
-                (col0 until col1).map { col -> rows[row][col] }
-            }
+        getBoxesPositions(size).map { boxPositions ->
+            boxPositions.map { pos -> rows[pos.row][pos.col] }
         }
     }
 
@@ -83,6 +100,9 @@ data class Grid(
     }
 
     override fun toString(): String =
-        """(${content.joinToString(separator = "|", transform = ::rowToString)}${if (collisions.isEmpty()) "" else ", Collisions: $collisions"})"""
+        """(${content.joinToString(
+            separator = "|",
+            transform = ::rowToString
+        )}${if (collisions.isEmpty()) "" else ", Collisions: $collisions"})"""
 
 }
