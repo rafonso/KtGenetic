@@ -64,8 +64,19 @@ data class Position(val row: Int, val col: Int) {
     override fun toString(): String = "($row, $col)"
 }
 
+/**
+ * Indicates the positions where
+ *
+ * @property pos1 First Position
+ * @property pos2 Second Position
+ * @property value repeated value
+ * @property typeConflict
+ */
 data class Conflict(val pos1: Position, val pos2: Position, val value: Element, val typeConflict: TypeConflict) {
 
+    /**
+     *
+     */
     constructor(row1: Int, col1: Int, row2: Int, col2: Int, value: Element, typeConflict: TypeConflict) :
             this(Position(row1, col1), Position(row2, col2), value, typeConflict)
 

@@ -1,5 +1,6 @@
 package rafael.ktgenetic.sudoku
 
+// TODO: Create a interface
 class BasicConflictCounter {
 
     private fun calculateColumnConflicts(grid: Grid, col: Int): List<Conflict> {

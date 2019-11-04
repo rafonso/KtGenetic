@@ -14,13 +14,13 @@ data class Grid(
         fun validate(grid: Grid) {
             grid.content.forEachIndexed { index, row ->
                 require(row.size == grid.size) {
-                    "Row $index should have size ${grid.size}: ${rowToString(row)}"
+                    "Row $index should have size ${grid.size}: $grid"
                 }
 
                 val rowValues = mutableSetOf<Element>()
                 row.forEach { value ->
                     require(!rowValues.contains(value)) {
-                        "Row $index contains repeated value ($value): ${rowToString(row)}"
+                        "Row $index contains repeated value ($value): $grid"
                     }
                     rowValues.add(value)
                 }
