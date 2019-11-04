@@ -1,29 +1,43 @@
 package rafael.ktgenetic
 
+import org.apache.logging.log4j.util.Supplier
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class MutationTuner<C: Chromosome<*>>(val environment: Environment<*, C>): ProcessorListener {
+class MutationTuner<C : Chromosome<*>>(val environment: Environment<*, C>) : ProcessorListener {
 
     private val minimunVariation = 0.01
 
     private val maximumVariation = 0.05
 
     private fun calculateVariationProportion(chromosomes: List<Chromosome<*>>): Double {
-        val averageFitness = chromosomes.pMap { it.fitness }.sum() / chromosomes.size
+        val averageFitness = chromosomes.pMap { it.fitness }.average()
         val averageFitnessDeviation = sqrt(
-                chromosomes.pMap { (it.fitness - averageFitness).pow(2.0) }.sum() /
-                        (chromosomes.size * (chromosomes.size - 1))
+            chromosomes.pMap { (it.fitness - averageFitness).pow(2.0) }.sum() /
+                    (chromosomes.size * (chromosomes.size - 1))
         )
 
         return averageFitnessDeviation / averageFitness
     }
 
     private fun adjustMutationFactor(proportion: Double) {
-        if (proportion < minimunVariation && (environment.mutationFactor <= 0.99)) {
-            environment.mutationFactor += 0.01
+        val delta = if ((proportion < minimunVariation) && (environment.mutationFactor <= 0.99)) {
+            1
         } else if ((proportion > maximumVariation) && (environment.mutationFactor >= 0.01)) {
-            environment.mutationFactor = (environment.mutationFactor - 0.01).coerceAtLeast(0.01)
+            -1
+        } else {
+            0
+        }
+
+        if (delta != 0) {
+            val oldValue = environment.mutationFactor
+            environment.mutationFactor = (environment.mutationFactor + (delta * 0.01)).coerceAtLeast(0.01)
+            mainLogger.debug(Supplier {
+                "Mutation Factor changed from %.2f to %.2f".format(
+                    oldValue,
+                    environment.mutationFactor
+                )
+            })
         }
     }
 
