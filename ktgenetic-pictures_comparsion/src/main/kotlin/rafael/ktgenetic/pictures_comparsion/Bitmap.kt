@@ -1,6 +1,6 @@
 package rafael.ktgenetic.pictures_comparsion
 
-data class Bitmap(val x: Int, val y: Int, val r: Int, val g: Int, val b: Int, private var _distance: Double = -1.0) {
+data class Bitmap(val x: Int, val y: Int, val r: Int, val g: Int, val b: Int, private var _distance: Double = -1.0)  {
 
 //    val color: Color by lazy { Color.rgb(r, g, b) }
 
@@ -25,5 +25,7 @@ data class Bitmap(val x: Int, val y: Int, val r: Int, val g: Int, val b: Int, pr
         internal set(value) {
             _distance = value
         }
+
+    override fun toString(): String = "[(%4d,%4d)=(%3d,%3d,%3d)]".format(x, y, r, g, b)
 
 }

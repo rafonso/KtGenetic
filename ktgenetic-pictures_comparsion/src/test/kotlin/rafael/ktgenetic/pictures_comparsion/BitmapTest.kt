@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Assertions.*
 
 internal class BitmapTest {
 
+    private val  legalBitmap = Bitmap(1, 1, 1, 1, 1)
+
     private fun testIllegalBitmap(x: Int = 1, y: Int = 1, r: Int = 1, g: Int = 1, b: Int = 1) {
         assertThrows(IllegalArgumentException::class.java) {
-            Bitmap(x, y, r, g, b)
+            legalBitmap.copy(x, y, r, g, b)
         }
     }
-
-    private fun legalBitmap(x: Int = 1, y: Int = 1, r: Int = 1, g: Int = 1, b: Int = 1) = Bitmap(x, y, r, g, b)
 
     @Test
     fun xNegative() {
@@ -20,12 +20,12 @@ internal class BitmapTest {
 
     @Test
     fun x0() {
-        assertEquals(0, legalBitmap(x = 0).x)
+        assertEquals(0, legalBitmap.copy(x = 0).x)
     }
 
     @Test
     fun xValid() {
-        assertEquals(Int.MAX_VALUE, legalBitmap(x = Int.MAX_VALUE).x)
+        assertEquals(Int.MAX_VALUE, legalBitmap.copy(x = Int.MAX_VALUE).x)
     }
 
     @Test
@@ -35,12 +35,12 @@ internal class BitmapTest {
 
     @Test
      fun y0() {
-        assertEquals(0, legalBitmap(y = 0).y)
+        assertEquals(0, legalBitmap.copy(y = 0).y)
     }
 
     @Test
     fun yValid() {
-        assertEquals(Int.MAX_VALUE, legalBitmap(y = Int.MAX_VALUE).y)
+        assertEquals(Int.MAX_VALUE, legalBitmap.copy(y = Int.MAX_VALUE).y)
     }
 
     @Test
@@ -50,17 +50,17 @@ internal class BitmapTest {
 
     @Test
     fun r0() {
-        assertEquals(0, legalBitmap(r = 0).r)
+        assertEquals(0, legalBitmap.copy(r = 0).r)
     }
 
     @Test
     fun rValid() {
-        assertEquals(125, legalBitmap(r = 125).r)
+        assertEquals(125, legalBitmap.copy(r = 125).r)
     }
 
     @Test
     fun rMax() {
-        assertEquals(255, legalBitmap(r = 255).r)
+        assertEquals(255, legalBitmap.copy(r = 255).r)
     }
 
     @Test
@@ -75,17 +75,17 @@ internal class BitmapTest {
 
     @Test
     fun g0() {
-        assertEquals(0, legalBitmap(g = 0).g)
+        assertEquals(0, legalBitmap.copy(g = 0).g)
     }
 
     @Test
     fun gValid() {
-        assertEquals(125, legalBitmap(g = 125).g)
+        assertEquals(125, legalBitmap.copy(g = 125).g)
     }
 
     @Test
     fun gMax() {
-        assertEquals(255, legalBitmap(g = 255).g)
+        assertEquals(255, legalBitmap.copy(g = 255).g)
     }
 
     @Test
@@ -100,17 +100,17 @@ internal class BitmapTest {
 
     @Test
     fun b0() {
-        assertEquals(0, legalBitmap(b = 0).b)
+        assertEquals(0, legalBitmap.copy(b = 0).b)
     }
 
     @Test
     fun bValid() {
-        assertEquals(125, legalBitmap(b = 125).b)
+        assertEquals(125, legalBitmap.copy(b = 125).b)
     }
 
     @Test
     fun bMax() {
-        assertEquals(255, legalBitmap(b = 255).b)
+        assertEquals(255, legalBitmap.copy(b = 255).b)
     }
 
     @Test
