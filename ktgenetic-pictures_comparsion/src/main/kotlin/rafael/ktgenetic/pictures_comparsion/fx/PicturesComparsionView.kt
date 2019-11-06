@@ -26,6 +26,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.prefs.Preferences
 
+val noCanvas = Canvas(0.0, 0.0)
 
 class PicturesComparsionViewApp : App(PicturesComparsionView::class)
 
@@ -50,7 +51,7 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
     }
 
     private val cmbCoverage = combobox<Int> {
-        items = FXCollections.observableArrayList(IntProgression.fromClosedRange(10, 90, 5).toList())
+        items = FXCollections.observableArrayList(arrayOf(2, 4, 5, 10, 20, 25, 50, 100).toList())
     }
 
     // OUTPUT COMPONENTS
@@ -73,7 +74,7 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
         }
     }
 
-    var canvas: Canvas = Canvas(0.0, 0.0)
+    private var canvas: Canvas = noCanvas
 
     init {
         super.currentStage!!.isResizable = false
@@ -95,16 +96,10 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
         with(pnlOriginalImage) {
             prefWidthProperty().bind(imagesPanes.prefWidthProperty().divide(2))
             prefHeightProperty().bind(imagesPanes.prefHeightProperty())
-//            onMouseMoved = EventHandler { ev ->
-//                println("pnlOriginalImage: ${ev.x}, ${ev.y}")
-//            }
         }
         with(pnlGeneratedImage) {
             prefWidthProperty().bind(imagesPanes.prefWidthProperty().divide(2))
             prefHeightProperty().bind(imagesPanes.prefHeightProperty())
-//            onMouseMoved = EventHandler { ev ->
-//                println("pnlGeneratedImage: ${ev.x}, ${ev.y}")
-//            }
         }
 
         with(originalImageView) {
@@ -119,11 +114,9 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
             onMouseClicked = EventHandler { ev ->
                 val color = generatedImageView.image.pixelReader.getColor(ev.x.toInt(), ev.y.toInt())
                 println("%3d %3d".format(ev.x.toInt(), ev.y.toInt(), color))
-//                generatedImageView.
             }
 
         }
-//        pnlGeneratedImage.add(generatedImageView)
         pnlGeneratedImage.onMouseClicked = EventHandler { ev ->
             if (originalImageView.image != null && ev.clickCount == 2 && cmbCoverage.value != null) {
                 fillGeneratedImage()
@@ -137,28 +130,23 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
     }
 
     private fun fillGeneratedImage() {
+        val generator = PixelsGenerator(canvas.width.toInt(), canvas.height.toInt(), cmbCoverage.value.toDouble() / 100)
+        val bitmaps = generator.createBitmaps()
+        println("bitmaps.size=" + bitmaps.size)
+
         val gc = canvas.graphicsContext2D
         gc.clearRect(0.0, 0.0, canvas.width, canvas.height)
         val pixelWriter = gc.pixelWriter
 
-        val generator = PixelsGenerator(canvas.width.toInt(), canvas.height.toInt(), cmbCoverage.value.toDouble() / 100)
-        val t0 = Instant.now()
-        val bitmaps = generator.createBitmaps()
-        val t1 = Instant.now()
-        println("Bytes: " + Duration.between(t0, t1))
         bitmaps.forEach { bitmap ->
             pixelWriter.setColor(bitmap.x, bitmap.y, Color.rgb(bitmap.r, bitmap.g, bitmap.b))
         }
-        val t2 = Instant.now()
-        println("Pixels: " + Duration.between(t1, t2))
-
-        val t3 = Instant.now()
-        println("Reload: " + Duration.between(t2, t3))
     }
 
     private fun selectOriginalImage() {
         val prefs = Preferences.userRoot().node(this.javaClass.name)
         val pathImage = prefs.get("imageDir", System.getProperty("user.home"))
+
         chooseImageFile(pathImage)?.let { fileImage ->
             loadOriginalImage(fileImage)
             prefs.put("imageDir", fileImage.parent)
@@ -202,15 +190,21 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
     }
 
     private fun chooseImageFile(pathImage: String): File? {
-        val imageFileChooser = FileChooser()
-        imageFileChooser.initialDirectory = File(pathImage)
-        imageFileChooser.extensionFilters += FileChooser.ExtensionFilter("JPG / PNG Images", "*.jpg", "*.png")
+        val imageFileChooser = FileChooser().apply {
+            initialDirectory = File(pathImage)
+            extensionFilters += FileChooser.ExtensionFilter("JPG / PNG Images", "*.jpg", "*.png")
+        }
 
         return imageFileChooser.showOpenDialog(super.currentWindow)
     }
 
     override fun validate() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkNotNull(originalImageView.image) {
+            "Please, choose an Image"
+        }
+        checkNotNull(cmbCoverage.value) {
+            "Please, choose a coverage"
+        }
     }
 
     override fun getEnvironment(
@@ -231,6 +225,6 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
         lblImageDimensions.text = null
         cmbCoverage.value = null
         pnlGeneratedImage.clear()
-        canvas = Canvas(0.0, 0.0)
+        canvas = noCanvas
     }
 }
