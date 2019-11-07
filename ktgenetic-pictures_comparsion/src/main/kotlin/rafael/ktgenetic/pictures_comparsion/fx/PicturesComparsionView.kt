@@ -22,8 +22,6 @@ import tornadofx.*
 import java.io.File
 import java.io.FileInputStream
 import java.lang.Double.min
-import java.time.Duration
-import java.time.Instant
 import java.util.prefs.Preferences
 
 val noCanvas = Canvas(0.0, 0.0)
@@ -139,7 +137,11 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
         val pixelWriter = gc.pixelWriter
 
         bitmaps.forEach { bitmap ->
-            pixelWriter.setColor(bitmap.x, bitmap.y, Color.rgb(bitmap.r, bitmap.g, bitmap.b))
+            pixelWriter.setColor(
+                bitmap.position.x,
+                bitmap.position.y,
+                Color.rgb(bitmap.kolor.r, bitmap.kolor.g, bitmap.kolor.b)
+            )
         }
     }
 
@@ -154,7 +156,13 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
     }
 
     private fun loadOriginalImage(fileImage: File) {
-        originalImageView.image = Image(FileInputStream(fileImage))
+        originalImageView.image = Image(FileInputStream(fileImage)).apply {
+
+        }
+        originalImageView.setOnMouseMoved { event ->
+            val color = originalImageView.image.pixelReader.getColor(event.x.toInt(), event.y.toInt())
+            println("${event.x}, ${event.y}: $color")
+        }
 
         val data =
             if (originalImageView.image.width > pnlOriginalImage.prefWidth || originalImageView.image.height > pnlOriginalImage.prefWidth) {
@@ -212,6 +220,11 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
         generationSize: Int,
         mutationFactor: Double
     ): Environment<Bitmap, Screen> {
+//        val originalBitmaps = (0 until canvas.width.toInt()).forEach { x ->
+//            (0 until canvas.height.toInt()) { y ->
+//
+//            }
+//        }
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

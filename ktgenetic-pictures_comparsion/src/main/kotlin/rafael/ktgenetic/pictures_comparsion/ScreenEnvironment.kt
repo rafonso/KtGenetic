@@ -1,11 +1,9 @@
 package rafael.ktgenetic.pictures_comparsion
 
-import rafael.ktgenetic.Environment
 import rafael.ktgenetic.*
-import kotlin.math.sqrt
 
 class ScreenEnvironment(
-    private val originalBitmaps: Array<Array<Triple<Int, Int, Int>>>,
+    private val originalBitmaps: Array<Array<Kolor>>,
     coverage: Double,
     override val maxGenerations: Int = Int.MAX_VALUE,
     override val generationSize: Int = 10,
@@ -23,7 +21,7 @@ class ScreenEnvironment(
 
     override fun executeMutation(sequence: List<Bitmap>): List<Bitmap> {
         val mutationPos = geneticRandom.nextInt(sequence.size)
-        val mutationPixel = sequence[mutationPos].copy(r = randomByte(), g = randomByte(), b = randomByte())
+        val mutationPixel = sequence[mutationPos].copy(kolor = Kolor(randomByte(), randomByte(), randomByte()))
 
         return sequence.replace(mutationPos, mutationPixel)
     }
@@ -33,14 +31,9 @@ class ScreenEnvironment(
     override fun calculateFitness(chromosome: Screen): Double {
 
         fun calculateBitmapDistance(bitmap: Bitmap) {
-            val pixel = originalBitmaps[bitmap.x][bitmap.y]
+            val pixelColor = originalBitmaps[bitmap.position.x][bitmap.position.y]
 
-            val deltaR = bitmap.r - pixel.first
-            val deltaG = bitmap.g - pixel.second
-            val deltaB = bitmap.b - pixel.third
-
-            val distanceSquare = (deltaR * deltaR) + (deltaG * deltaG) + (deltaB * deltaB)
-            bitmap.distance = sqrt(distanceSquare.toDouble())
+            bitmap.distance = pixelColor.distanceTo(bitmap.kolor)
         }
 
         chromosome.content.forEach(::calculateBitmapDistance)

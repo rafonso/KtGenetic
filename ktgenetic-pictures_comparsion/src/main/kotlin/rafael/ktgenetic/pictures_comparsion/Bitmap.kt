@@ -1,22 +1,14 @@
 package rafael.ktgenetic.pictures_comparsion
 
-data class Bitmap(val x: Int, val y: Int, val r: Int, val g: Int, val b: Int, private var _distance: Double = -1.0)  {
+/**
+ * Indicates a [Kolor] in a specific [Position].
+ *
+ * @param position Color Position
+ * @param kolor Color Value
+ */
+data class Bitmap(val position: Position, val kolor: Kolor, private var _distance: Double = -1.0) {
 
-    init {
-        fun validateCoord(pos: Int, name: String) {
-            require(pos >= 0) { "$name coordinate must not be lesser than 0" }
-        }
-
-        fun validateColor(x: Int, name: String) {
-            require(x in 0..255) { "$name must be between 0 and 255" }
-        }
-
-        validateCoord(x, "X")
-        validateCoord(y, "Y")
-        validateColor(r, "R")
-        validateColor(g, "G")
-        validateColor(b, "B")
-    }
+    constructor(x: Int, y: Int, r: Int, g: Int, b: Int) : this(Position(x, y), Kolor(r, g, b))
 
     var distance: Double
         get() = _distance
@@ -24,6 +16,6 @@ data class Bitmap(val x: Int, val y: Int, val r: Int, val g: Int, val b: Int, pr
             _distance = value
         }
 
-    override fun toString(): String = "[(%4d,%4d)=(%3d,%3d,%3d)]".format(x, y, r, g, b)
+    override fun toString(): String = "[%s=%s]".format(position, kolor)
 
 }
