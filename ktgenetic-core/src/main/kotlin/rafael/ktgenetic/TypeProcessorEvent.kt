@@ -64,5 +64,9 @@ enum class TypeProcessorEvent(val ended: Boolean = false) {
      * Processing ended because the desired criteria indicated by [Environment.resultFound] was reached.
      * Companion: The last Generation.
      */
-    ENDED_BY_GENERATIONS(true)
+    ENDED_BY_GENERATIONS(true),
+    /**
+     * There was a error that throws an Exception
+     */
+    ERROR(true)
 }

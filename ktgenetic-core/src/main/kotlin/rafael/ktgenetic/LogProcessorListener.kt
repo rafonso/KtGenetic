@@ -15,8 +15,6 @@ class LogProcessorListener : ProcessorListener {
 
     private val log: Logger = LogManager.getLogger("LOG")
 
-    private var maxGenerations: Int = 0
-
     private fun populationToConsole(population: List<Chromosome<*>>): String {
 
         val genotypesByLine =
@@ -89,6 +87,11 @@ class LogProcessorListener : ProcessorListener {
                 log.debug(Supplier { "Value found: ${event.population}" })
             TypeProcessorEvent.ENDED_BY_INTERRUPTION ->
                 log.debug(Supplier { "Interrupted: ${event.population}" })
+            TypeProcessorEvent.ERROR ->
+                log.error(
+                    "Generation ${event.generation} - ${event.error!!.message} : ${populationToConsole(event.population)}"
+                    , event.error
+                )
         }
     }
 

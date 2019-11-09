@@ -25,30 +25,34 @@ import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.selection.SelectionOperatorChoice
 import tornadofx.*
 import java.time.Instant
+import java.util.*
 
-abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val processorChoice: GeneticProcessorChoice) : View(title), ProcessorListener {
+abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val processorChoice: GeneticProcessorChoice) :
+    View(title), ProcessorListener {
     final override val root: BorderPane by fxml("/view/Genetic.fxml")
 
-    private val values: ObservableList<Int> = FXCollections.observableArrayList(1, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000)
-    private val mutationFactors: ObservableList<Double> = FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+    private val values: ObservableList<Int> =
+        FXCollections.observableArrayList(1, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000)
+    private val mutationFactors: ObservableList<Double> =
+        FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
     private val maxColumns = 5
 
-    private val pnlInput: GridPane                                      by fxid()
-    private val pnlOutput: GridPane                                     by fxid()
-    private val pnlButtons: GridPane                                    by fxid()
-    private val cmbGenerations: ComboBox<Int>                           by fxid()
-    private val cmbPopulation: ComboBox<Int>                            by fxid()
-    private val cmbMutationFactor: ComboBox<Double>                     by fxid()
+    private val pnlInput: GridPane by fxid()
+    private val pnlOutput: GridPane by fxid()
+    private val pnlButtons: GridPane by fxid()
+    private val cmbGenerations: ComboBox<Int> by fxid()
+    private val cmbPopulation: ComboBox<Int> by fxid()
+    private val cmbMutationFactor: ComboBox<Double> by fxid()
     private val cmbSelectionOperator: ComboBox<SelectionOperatorChoice> by fxid()
-    private val btnStop: Button                                         by fxid()
-    private val btnReset: Button                                        by fxid()
-    private val btnStart: Button                                        by fxid()
-    private val lblGeneration: Label                                    by fxid()
-    private val lblBestFitness: Label                                   by fxid()
-    private val lblAverageFitness: Label                                by fxid()
-    private val lblTime: Label                                          by fxid()
-    private val lineChartFitness: LineChart<Int, Double>                by fxid()
-    private val yAxisChartFitness: NumberAxis                           by fxid()
+    private val btnStop: Button by fxid()
+    private val btnReset: Button by fxid()
+    private val btnStart: Button by fxid()
+    private val lblGeneration: Label by fxid()
+    private val lblBestFitness: Label by fxid()
+    private val lblAverageFitness: Label by fxid()
+    private val lblTime: Label by fxid()
+    private val lineChartFitness: LineChart<Int, Double> by fxid()
+    private val yAxisChartFitness: NumberAxis by fxid()
 
     private var lastRow = 1
     private var lastColumn = 0
@@ -85,7 +89,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
 
         fun adjust(signal: Int) {
             val newLowerBound = yAxisChartFitness.lowerBound + signal * 0.1
-            if(newLowerBound >= 0.0 && newLowerBound < 1.0 ) {
+            if (newLowerBound >= 0.0 && newLowerBound < 1.0) {
                 yAxisChartFitness.lowerBound = newLowerBound
                 yAxisChartFitness.tickUnit = (yAxisChartFitness.upperBound - yAxisChartFitness.lowerBound) / 10
             }
@@ -134,7 +138,11 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
         return Pair(averageSeries, bestSeries)
     }
 
-    private fun makeBind(task: GeneticTask<C>, averageSeries: XYChart.Series<Int, Double>, bestSeries: XYChart.Series<Int, Double>) {
+    private fun makeBind(
+        task: GeneticTask<C>,
+        averageSeries: XYChart.Series<Int, Double>,
+        bestSeries: XYChart.Series<Int, Double>
+    ) {
         lblGeneration.textProperty().bind(task.generationProperty)
         lblBestFitness.textProperty().bind(task.bestFitnessProperty)
         lblTime.textProperty().bind(task.timeProperty)
@@ -145,7 +153,11 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
 
     protected abstract fun validate()
 
-    protected abstract fun getEnvironment(maxGenerations: Int, generationSize: Int, mutationFactor: Double): Environment<G, C>
+    protected abstract fun getEnvironment(
+        maxGenerations: Int,
+        generationSize: Int,
+        mutationFactor: Double
+    ): Environment<G, C>
 
     protected abstract fun fillOwnComponent(genome: List<C>)
 
@@ -171,6 +183,12 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
     override fun onEvent(event: ProcessorEvent<*>) {
         if (event.eventType.ended) {
             disableInputComponents(false)
+        } else if (event.eventType == TypeProcessorEvent.ERROR) {
+            val alert = Alert(Alert.AlertType.ERROR)
+            alert.title = "Execution Error!"
+            alert.headerText = event.error!!.message
+            alert.contentText = event.error.message
+            alert.showAndWait()
         }
     }
 
@@ -178,7 +196,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
         try {
             validate()
 
-            val environment: Environment<G, C> = getEnvironment(cmbGenerations.value, cmbPopulation.value, cmbMutationFactor.value)
+            val environment: Environment<G, C> =
+                getEnvironment(cmbGenerations.value, cmbPopulation.value, cmbMutationFactor.value)
             disableInputComponents(true)
             val operatorChoice = cmbSelectionOperator.value
             val selectionOperator = operatorChoice.chooseSelectionOperator(environment)
@@ -191,7 +210,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
 
             makeBind(task, averageSeries, bestSeries)
 
-            Thread(task).start()
+            Thread(task, "%s-%tT".format(environment.javaClass.simpleName, Date())).start()
         } catch (e: IllegalStateException) {
             showError(e)
         }
@@ -229,6 +248,7 @@ class SelectionOperatorConverter : StringConverter<SelectionOperatorChoice>() {
 
     override fun toString(choice: SelectionOperatorChoice?): String = choice!!.description
 
-    override fun fromString(string: String?): SelectionOperatorChoice = SelectionOperatorChoice.values().first { it.description == string }
+    override fun fromString(string: String?): SelectionOperatorChoice =
+        SelectionOperatorChoice.values().first { it.description == string }
 
 }
