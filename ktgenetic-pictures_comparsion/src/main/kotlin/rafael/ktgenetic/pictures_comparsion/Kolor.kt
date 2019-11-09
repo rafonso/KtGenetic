@@ -6,6 +6,12 @@ fun validateColor(x: Int, name: String) {
     require(x in 0..255) { "$name must be between 0 and 255" }
 }
 
+//const val MAX_COLOR_DISTANCE = 0xFFFFFF
+
+const val MAX_COLOR_VALUE = 255
+
+//const val MAX_COLOR_DISTANCE: Int = 3 * 255 * 255
+
 /**
  * Represents the color in a pixel. Named as 'Kolor" to avoid confusing with JavaFX `Color`.
  *
@@ -15,6 +21,10 @@ fun validateColor(x: Int, name: String) {
  */
 data class Kolor(val r: Int, val g: Int, val b: Int) {
 
+//    val longValue: Int by lazy {
+//        r.shl(16) + g.shl(8) + b
+//    }
+
     init {
         validateColor(r, "R")
         validateColor(g, "G")
@@ -23,18 +33,12 @@ data class Kolor(val r: Int, val g: Int, val b: Int) {
 
     override fun toString(): String = "(%3d,%3d,%3d)".format(r, g, b)
 
-    /**
-     * Calculate the distance between 2 [Kolor]s, using pythagoras equation.
-     *
-     * @param other the Other Color
-     * @return the distance to the other color
-     */
     fun distanceTo(other: Kolor): Double {
-        val deltaR = (this.r - other.r)
-        val deltaG = (this.g - other.g)
-        val deltaB = (this.b - other.b)
+        val deltaR = (this.r - other.r).toDouble()
+        val deltaG = (this.g - other.g).toDouble()
+        val deltaB = (this.b - other.b).toDouble()
 
-        return sqrt(((deltaR * deltaR) + (deltaG * deltaG) + (deltaB * deltaB)).toDouble())
+        return sqrt((deltaR * deltaR) + (deltaG * deltaG) + (deltaB * deltaB))
     }
 
 }

@@ -1,6 +1,7 @@
 package rafael.ktgenetic.pictures_comparsion
 
 import rafael.ktgenetic.*
+import kotlin.math.max
 
 class ScreenEnvironment(
     private val originalBitmaps: Array<Array<Kolor>>,
@@ -12,7 +13,9 @@ class ScreenEnvironment(
 
     private val generator = PixelsGenerator(originalBitmaps.size, originalBitmaps[0].size, coverage)
 
-    private fun randomByte() = randomIntInclusive(255)
+    private val quantMutationPositions = max(1.0, 0.01 * generator.bitmapsSize).toInt()
+
+    private fun randomByte() = randomIntInclusive(MAX_COLOR_VALUE)
 
     override fun getFirstGeneration(): List<Screen> =
         (0..generationSize).map { Screen(generator.createBitmaps()) }
@@ -20,25 +23,31 @@ class ScreenEnvironment(
     override fun getCutPositions(): Pair<Int, Int> = createCutPositions(generator.bitmapsSize)
 
     override fun executeMutation(sequence: List<Bitmap>): List<Bitmap> {
-        val mutationPos = geneticRandom.nextInt(sequence.size)
-        val mutationPixel = sequence[mutationPos].copy(kolor = Kolor(randomByte(), randomByte(), randomByte()))
+        val seq = sequence.toMutableList()
 
-        return sequence.replace(mutationPos, mutationPixel)
+        (1 until quantMutationPositions + 1)
+            .map { geneticRandom.nextInt(sequence.size) }
+            .map { seq[it] = sequence[it].copy(kolor = Kolor(randomByte(), randomByte(), randomByte())) }
+
+        return seq
     }
 
     override fun createNewChromosome(sequence: List<Bitmap>): Screen = Screen(sequence)
 
     override fun calculateFitness(chromosome: Screen): Double {
 
+        var distanceSum = 0.0
+
         fun calculateBitmapDistance(bitmap: Bitmap) {
             val pixelColor = originalBitmaps[bitmap.position.x][bitmap.position.y]
 
             bitmap.distance = pixelColor.distanceTo(bitmap.kolor)
+            distanceSum += bitmap.distance
         }
 
         chromosome.content.forEach(::calculateBitmapDistance)
 
-        return (255.0 - chromosome.distance) / 255
+        return (MAX_COLOR_VALUE - (distanceSum / chromosome.content.size)) / MAX_COLOR_VALUE
     }
 
 }

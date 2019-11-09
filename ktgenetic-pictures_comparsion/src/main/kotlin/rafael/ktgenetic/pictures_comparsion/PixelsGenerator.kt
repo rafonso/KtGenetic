@@ -2,6 +2,7 @@ package rafael.ktgenetic.pictures_comparsion
 
 import rafael.ktgenetic.randomIntExclusive
 import rafael.ktgenetic.randomIntInclusive
+import kotlin.math.min
 import kotlin.system.measureTimeMillis
 
 private interface Generator {
@@ -40,8 +41,8 @@ private class IntervalPixelGenerator(private val width: Int, private val height:
     override fun createBitmaps(): List<Bitmap> = (0 until height step delta).flatMap { y ->
         (0 until width step delta).map { x ->
             Bitmap(
-                x + randomIntExclusive(delta),
-                y + randomIntExclusive(delta),
+                min(x + randomIntExclusive(delta), width - 1),
+                min(y + randomIntExclusive(delta), height - 1),
                 randomIntInclusive(255),
                 randomIntInclusive(255),
                 randomIntInclusive(255)

@@ -14,9 +14,7 @@ import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.fx.GeneticView
-import rafael.ktgenetic.pictures_comparsion.Bitmap
-import rafael.ktgenetic.pictures_comparsion.PixelsGenerator
-import rafael.ktgenetic.pictures_comparsion.Screen
+import rafael.ktgenetic.pictures_comparsion.*
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
 import java.io.File
@@ -26,9 +24,15 @@ import java.util.prefs.Preferences
 
 val noCanvas = Canvas(0.0, 0.0)
 
+fun Color.toKolor(): Kolor = Kolor((255 * this.red).toInt(), (255 * this.green).toInt(), (255 * this.blue).toInt())
+
+fun Kolor.toColor(): Color = Color.rgb(r, g, b)
+
 class PicturesComparsionViewApp : App(PicturesComparsionView::class)
 
 class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion", GeneticProcessorChoice.SIMPLE) {
+
+    private var positionConversor: PositionConversor = SimplePositionConversor()
 
     // INPUT COMPONENTS
 
@@ -109,10 +113,14 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
         with(generatedImageView) {
             isPreserveRatio = true
             isSmooth = true
-            onMouseClicked = EventHandler { ev ->
-                val color = generatedImageView.image.pixelReader.getColor(ev.x.toInt(), ev.y.toInt())
-                println("%3d %3d".format(ev.x.toInt(), ev.y.toInt(), color))
-            }
+//            onMouseClicked = EventHandler { ev ->
+//                val pos = positionConversor.toRealPicturePosition(ev.x.toInt(), ev.y.toInt())
+//                val color = generatedImageView.image.pixelReader.getColor(pos.x, pos.y)
+//
+//                val b = Bitmap(ev.x.toInt(), ev.y.toInt(), color.red.toInt(), color.green.toInt(), color.blue.toInt())
+//
+//                println(b)
+//            }
 
         }
         pnlGeneratedImage.onMouseClicked = EventHandler { ev ->
@@ -156,13 +164,16 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
     }
 
     private fun loadOriginalImage(fileImage: File) {
-        originalImageView.image = Image(FileInputStream(fileImage)).apply {
-
-        }
-        originalImageView.setOnMouseMoved { event ->
-            val color = originalImageView.image.pixelReader.getColor(event.x.toInt(), event.y.toInt())
-            println("${event.x}, ${event.y}: $color")
-        }
+        originalImageView.image = Image(FileInputStream(fileImage))
+//        originalImageView.setOnMouseMoved { ev ->
+//            val pos = Position(ev.x.toInt(), ev.y.toInt())
+//            val realImagePosition = positionConversor.toRealPicturePosition(pos)
+//            val kolor = originalImageView.image.pixelReader.getColor(realImagePosition.x, realImagePosition.y).toKolor()
+//
+//            val b = Bitmap(pos, kolor)
+//
+//            println(b)
+//        }
 
         val data =
             if (originalImageView.image.width > pnlOriginalImage.prefWidth || originalImageView.image.height > pnlOriginalImage.prefWidth) {
@@ -174,10 +185,15 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
                 val w = min(originalImageView.fitWidth, originalImageView.fitHeight * aspectRatio)
                 val h = min(originalImageView.fitHeight, originalImageView.fitWidth / aspectRatio)
 
+                positionConversor =
+                    ProportionalPositionConversor(originalImageView.image.width / w, originalImageView.image.height / h)
+
                 Triple(w, h, "redimensioned")
             } else {
                 originalImageView.fitHeight = 0.0
                 originalImageView.fitWidth = 0.0
+
+                positionConversor = SimplePositionConversor()
 
                 Triple(originalImageView.image.width, originalImageView.image.height, "original")
             }
@@ -200,6 +216,7 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
     private fun chooseImageFile(pathImage: String): File? {
         val imageFileChooser = FileChooser().apply {
             initialDirectory = File(pathImage)
+            title = "Choose an Image File"
             extensionFilters += FileChooser.ExtensionFilter("JPG / PNG Images", "*.jpg", "*.png")
         }
 
@@ -220,16 +237,31 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
         generationSize: Int,
         mutationFactor: Double
     ): Environment<Bitmap, Screen> {
-//        val originalBitmaps = (0 until canvas.width.toInt()).forEach { x ->
-//            (0 until canvas.height.toInt()) { y ->
-//
-//            }
-//        }
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val originalBitmaps: Array<Array<Kolor>> = (0 until canvas.height.toInt()).map { row ->
+            (0 until canvas.width.toInt()).map { col ->
+                originalImageView.image.pixelReader.getColor(col, row).toKolor()
+            }.toTypedArray()
+        }.toTypedArray()
+
+        return ScreenEnvironment(
+            originalBitmaps,
+            cmbCoverage.value / 100.0,
+            maxGenerations,
+            generationSize,
+            mutationFactor
+        )
     }
 
     override fun fillOwnComponent(genome: List<Screen>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val bestScreen = genome[0]
+
+        val gc = canvas.graphicsContext2D
+        gc.clearRect(0.0, 0.0, canvas.width, canvas.height)
+        val pixelWriter = gc.pixelWriter
+
+        bestScreen.content.forEach { bitmap ->
+            pixelWriter.setColor(bitmap.position.y, bitmap.position.x, bitmap.kolor.toColor())
+        }
     }
 
     override fun resetComponents() {
@@ -240,4 +272,5 @@ class PicturesComparsionView : GeneticView<Bitmap, Screen>("Pictures Comparsion"
         pnlGeneratedImage.clear()
         canvas = noCanvas
     }
+
 }
