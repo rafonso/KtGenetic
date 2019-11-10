@@ -13,7 +13,7 @@ class ScreenEnvironment(
 
     private val generator = PixelsGenerator(originalBitmaps.size, originalBitmaps[0].size, coverage)
 
-    private val quantMutationPositions = max(1.0, 0.01 * generator.bitmapsSize).toInt()
+    private val quantMutationPositions = max(1.0, 0.02 * generator.bitmapsSize).toInt()
 
     private fun randomByte() = randomIntInclusive(MAX_COLOR_VALUE)
 
