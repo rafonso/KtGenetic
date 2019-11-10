@@ -32,7 +32,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
     final override val root: BorderPane by fxml("/view/Genetic.fxml")
 
     private val values: ObservableList<Int> =
-            FXCollections.observableArrayList(1, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000)
+            FXCollections.observableArrayList(1, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000)
     private val mutationFactors: ObservableList<Double> =
             FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
     private val maxColumns = 5
