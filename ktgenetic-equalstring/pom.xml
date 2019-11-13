@@ -1,91 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>rafael.ktgenetic</groupId>
-		<artifactId>ktgenetic</artifactId>
-		<version>0.0.1</version>
-	</parent>
+    <parent>
+        <groupId>rafael.ktgenetic</groupId>
+        <artifactId>ktgenetic</artifactId>
+        <version>0.0.1</version>
+    </parent>
 
     <artifactId>ktgenetic-equalstring</artifactId>
     <packaging>jar</packaging>
     <name>KTgenetic - Equal String</name>
 
     <properties>
+        <executable.mainclass>rafael.ktgenetic.equalstring.fx.EqualStringsViewApp</executable.mainclass>
+        <executable.name>ktgenetic-equalstring</executable.name>
     </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>rafael.ktgenetic</groupId>
-			<artifactId>ktgenetic-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>rafael.ktgenetic</groupId>
+            <artifactId>ktgenetic-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
-<!--
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
--->
-		<plugins>
-			<!-- Maven Shade Plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.1</version>
-				<executions>
-					<!-- Run shade goal on package phase -->
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<finalName>ktgenetic-equalstring</finalName>
-							<transformers>
-								<!-- add Main-Class to manifest file -->
-								<transformer
-										implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>rafael.ktgenetic.equalstring.fx.EqualStringsViewApp</mainClass>
-								</transformer>
-							</transformers>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 
-			<plugin>
-				<!-- http://launch4j.sourceforge.net/docs.html -->
-				<groupId>com.akathist.maven.plugins.launch4j</groupId>
-				<artifactId>launch4j-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>l4j-clui</id>
-						<phase>package</phase>
-						<goals>
-							<goal>launch4j</goal>
-						</goals>
-						<configuration>
-							<headerType>gui</headerType>
-							<jar>${project.build.directory}/ktgenetic-equalstring.jar</jar>
-							<outfile>${project.build.directory}/ktgenetic-equalstring.exe</outfile>
-							<classPath>
-								<mainClass>rafael.ktgenetic.equalstring.fx.EqualStringsViewApp</mainClass>
-								<preCp>anything</preCp>
-							</classPath>
-							<jre>
-								<minVersion>1.8</minVersion>
-								<jdkPreference>preferJre</jdkPreference>
-							</jre>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+        <plugins>
+            <!-- Maven Shade Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <!-- Run shade goal on package phase -->
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>${executable.name}</finalName>
+                            <transformers>
+                                <!-- add Main-Class to manifest file -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${executable.mainclass}</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-		</plugins>
+            <plugin>
+                <!-- http://launch4j.sourceforge.net/docs.html -->
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <jar>${project.build.directory}/${executable.name}.jar</jar>
+                            <outfile>${project.build.directory}/${executable.name}.exe</outfile>
+                            <classPath>
+                                <mainClass>${executable.mainclass}</mainClass>
+                                <preCp>anything</preCp>
+                            </classPath>
+                            <jre>
+                                <minVersion>1.8</minVersion>
+                                <jdkPreference>preferJre</jdkPreference>
+                            </jre>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
     </build>
 
 </project>
