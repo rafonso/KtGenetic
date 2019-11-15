@@ -111,5 +111,6 @@
         <module>ktgenetic-pictures_comparsion</module>
         <module>ktgenetic-sudoku</module>
         <module>ktgenetic-pictures_comparsion-rectangles</module>
+        <module>ktgenetic-salesman</module>
     </modules>
 </project>
