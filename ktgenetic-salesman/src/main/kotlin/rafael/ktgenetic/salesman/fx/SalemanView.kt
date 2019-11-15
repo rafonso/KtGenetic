@@ -1,6 +1,8 @@
 package rafael.ktgenetic.salesman.fx
 
-import javafx.beans.property.*
+import javafx.beans.property.IntegerProperty
+import javafx.beans.property.SimpleIntegerProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.FXCollections
 import javafx.event.EventHandler
 import javafx.geometry.Pos
@@ -15,15 +17,17 @@ import javafx.scene.shape.Line
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
-import rafael.ktgenetic.salesman.Direction
 import rafael.ktgenetic.salesman.Path
-import rafael.ktgenetic.salesman.TrackEnvironment
-import tornadofx.*
+import rafael.ktgenetic.salesman.Point
+import rafael.ktgenetic.salesman.SalesmanEnvironment
+import tornadofx.App
+import tornadofx.button
+import tornadofx.pane
 
 
 class SalemanViewApp : App(SalemanView::class)
 
-class SalemanView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice.SIMPLE) {
+class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.ORDERED) {
 
     private val distanceFactors = FXCollections.observableArrayList((1..10).toList())
 
@@ -67,7 +71,7 @@ class SalemanView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice
 
     private val distanceFactor: IntegerProperty = SimpleIntegerProperty(this, "distanceFactor")
 
-    val canvasPane = pane {
+    private val canvasPane = pane {
         border = Border(
             BorderStroke(
                 Color.BLACK,
@@ -79,7 +83,7 @@ class SalemanView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice
             mouseCanvasYPosition.value = height.toInt() - event.y.toInt()
         }
 
-        onMouseExited = EventHandler { event ->
+        onMouseExited = EventHandler {
             mouseCanvasXPosition.value = Integer.MIN_VALUE
             mouseCanvasYPosition.value = Integer.MIN_VALUE
         }
@@ -135,30 +139,12 @@ class SalemanView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice
 
         root.center = borderPane
 
-        draw(canvas)
+//        draw1(canvas)
     }
 
 //    private inline fun yToYCanvas(y: Int) = canvas.height.toInt() - y
 
 
-
-    private fun configureCanvas(wrapperPane: Pane) {
-        // Bind the width/height property so that the size of the Canvas will be
-        // resized as the window is resized
-        canvas.widthProperty().bind(wrapperPane.widthProperty())
-        canvas.heightProperty().bind(wrapperPane.heightProperty())
-        canvas.setOnMouseMoved { event ->
-            mouseCanvasXPosition.value = event.x.toInt()
-//            mouseCanvasYPosition.value = yToYCanvas(event.y.toInt())
-        }
-        canvas.setOnMouseExited { _ ->
-            mouseCanvasXPosition.value = Integer.MIN_VALUE
-            mouseCanvasYPosition.value = Integer.MIN_VALUE
-        }
-        // redraw when resized
-        canvas.widthProperty().addListener { _ -> draw(canvas) }
-        canvas.heightProperty().addListener { _ -> draw(canvas) }
-    }
 
     private fun onCanvasMousePositionChanged() {
         lblMouseCanvasPosition.text =
@@ -181,36 +167,6 @@ class SalemanView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice
         canvasPane.add(p)
     }
 
-    /**
-     * https://stackoverflow.com/questions/37678704/how-to-embed-javafx-canvas-into-borderpane
-     * Draw crossed red lines which each each end is at the corner of window,
-     * and 4 blue circles whose each center is at the corner of the window,
-     * so that make it possible to know where is the extent the Canvas draws
-     */
-    private fun draw(canvas: Canvas) {
-        val width = canvas.width.toInt()
-        val height = canvas.height.toInt()
-        println("$width X $height")
-        val gc = canvas.graphicsContext2D
-
-        // JVM property: -Dshowgrid
-        if (System.getProperty("showgrid") == null) {
-            canvas.style = "-fx-background-color: black;"
-        } else {
-            val radio = 30.0
-            val radio2 = 2 * radio
-            gc.clearRect(0.0, 0.0, width.toDouble(), height.toDouble())
-            gc.stroke = Color.RED
-            gc.strokeLine(0.0, 0.0, width.toDouble(), height.toDouble())
-            gc.strokeLine(0.0, height.toDouble(), width.toDouble(), 0.0)
-            gc.fill = Color.BLUE
-            gc.fillOval(-radio, -radio, radio2, radio2)
-            gc.fillOval((-radio + width), -radio, radio2, radio2)
-            gc.fillOval(-radio, (-radio + height), radio2, radio2)
-            gc.fillOval((-radio + width), (-radio + height), radio2, radio2)
-        }
-    }
-
     override fun validate() {
     }
 
@@ -218,11 +174,9 @@ class SalemanView : GeneticView<Direction, Path>("Track", GeneticProcessorChoice
         maxGenerations: Int,
         generationSize: Int,
         mutationFactor: Double
-    ): Environment<Direction, Path> {
-        return TrackEnvironment(
-            canvas.width.toInt(),
-            canvas.height.toInt(),
-            trackLenght.intValue(),
+    ): Environment<Point, Path> {
+        return SalesmanEnvironment(
+            listOf(),
             maxGenerations,
             generationSize,
             mutationFactor
