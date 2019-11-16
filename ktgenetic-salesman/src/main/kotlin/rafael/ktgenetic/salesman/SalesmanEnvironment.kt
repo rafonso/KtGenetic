@@ -24,6 +24,10 @@ class SalesmanEnvironment(
         sqrt(deltaX * deltaX + deltaY * deltaY) * (points.size - 1)
     }
 
+    init {
+        DistanceRepository.clear()
+    }
+
     override fun getFirstGeneration(): List<Path> {
 
         tailrec fun generatePath(paths: Set<Path>): Set<Path> =

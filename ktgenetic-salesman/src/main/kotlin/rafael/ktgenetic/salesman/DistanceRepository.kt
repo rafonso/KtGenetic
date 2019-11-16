@@ -19,9 +19,6 @@ object DistanceRepository {
 
     fun clear() = distances.clear()
 
-    fun getDistance(p1: Point, p2: Point): Double = distances.computeIfAbsent(setOf(p1, p2)) {
-        calculate(it)
-    }
-
+    fun getDistance(p1: Point, p2: Point): Double = distances.computeIfAbsent(setOf(p1, p2), this::calculate)
 
 }

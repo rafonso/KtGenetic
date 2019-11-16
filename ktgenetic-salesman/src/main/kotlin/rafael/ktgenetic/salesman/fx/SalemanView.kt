@@ -120,7 +120,6 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
         primaryStage.isResizable = false
 
         val bestPath = genome.first()
-        println(bestPath.width)
 
         canvasPane.children.removeIf {
             it is Line
