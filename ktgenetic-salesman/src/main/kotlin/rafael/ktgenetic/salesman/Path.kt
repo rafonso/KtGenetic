@@ -2,12 +2,12 @@ package rafael.ktgenetic.salesman
 
 import rafael.ktgenetic.Chromosome
 
-data class Path(override val content: List<Point>) : Chromosome<Point>() {
+data class Path(override val content: List<Point>, val pathType: PathType) : Chromosome<Point>() {
 
-    constructor(vararg points: Point) : this(points.toList())
+    constructor(vararg points: Point, pathType: PathType = PathType.OPEN) : this(points.toList(), pathType)
 
-    val pathPoints: List<Pair<Point, Point>> by lazy {
-        (0 until content.size - 1).map { Pair(content[it], content[it + 1]) }
+    val pathPoints: List<Segment> by lazy {
+        (0 until content.size - 1).map { Pair(content[it], content[it + 1]) } + pathType.endPath(content)
     }
 
     val width: Double by lazy {

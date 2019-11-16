@@ -7,6 +7,7 @@ import kotlin.math.sqrt
 
 class SalesmanEnvironment(
     private val points: List<Point>,
+    private val pathType: PathType,
     override val maxGenerations: Int,
     override val generationSize: Int,
     override var mutationFactor: Double
@@ -21,7 +22,7 @@ class SalesmanEnvironment(
         val deltaX = (maxX - minX).toDouble()
         val deltaY = (maxY - minY).toDouble()
 
-        sqrt(deltaX * deltaX + deltaY * deltaY) * (points.size - 1)
+        sqrt(deltaX * deltaX + deltaY * deltaY) * (points.size - pathType.delta)
     }
 
     init {
@@ -33,7 +34,7 @@ class SalesmanEnvironment(
         tailrec fun generatePath(paths: Set<Path>): Set<Path> =
                 when (generationSize) {
                     paths.size -> paths
-                    else       -> generatePath(paths + Path(points.shuffled()))
+                    else       -> generatePath(paths + Path(points.shuffled(), pathType))
                 }
 
         return generatePath(emptySet()).toList()
@@ -43,7 +44,7 @@ class SalesmanEnvironment(
 
     override fun executeMutation(sequence: List<Point>): List<Point> = sequence.randomSwap()
 
-    override fun createNewChromosome(sequence: List<Point>): Path = Path(sequence)
+    override fun createNewChromosome(sequence: List<Point>): Path = Path(sequence, pathType)
 
     override fun calculateFitness(chromosome: Path): Double = (maxDistance - chromosome.width) / maxDistance
 

@@ -12,6 +12,7 @@ import rafael.ktgenetic.Environment
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.salesman.Path
+import rafael.ktgenetic.salesman.PathType
 import rafael.ktgenetic.salesman.Point
 import rafael.ktgenetic.salesman.SalesmanEnvironment
 import tornadofx.*
@@ -20,6 +21,10 @@ import tornadofx.*
 class SalemanViewApp : App(SalemanView::class)
 
 class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.ORDERED) {
+
+    private val cmbTypeGroup = combobox<PathType>(values = PathType.values().toList()) {
+        tooltip = tooltip("Specifies if the produced Path must be open or closed.")
+    }
 
     private val canvasPane = pane {
         border = Border(
@@ -51,6 +56,8 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
     private val lblDistance = label {
     }
 
+    private val lblNumberOfPoints = label {}
+
     private val mouseCanvasXPosition: IntegerProperty = SimpleIntegerProperty(canvasPane, "xCanvas")
 
     private val mouseCanvasYPosition: IntegerProperty = SimpleIntegerProperty(canvasPane, "yCanvas")
@@ -61,6 +68,9 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
 
 
     init {
+
+        addComponent("Path Type", cmbTypeGroup)
+
         mouseCanvasXPosition.addListener { _ -> onCanvasMousePositionChanged() }
         mouseCanvasYPosition.addListener { _ -> onCanvasMousePositionChanged() }
 
@@ -68,7 +78,9 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
             center = canvasPane
             bottom = flowpane {
                 add(lblMouseCanvasPosition)
+                add(lblNumberOfPoints)
                 add(lblDistance)
+                hgap = 10.0
             }
         }
 
@@ -95,12 +107,14 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
 
         circles += p
         canvasPane.add(p)
+        lblNumberOfPoints.text = "Number of Points: ${circles.size}"
     }
 
     override fun validate() {
         check(circles.size > 4) {
             "You need at least 4 points"
         }
+        checkNotNull(cmbTypeGroup.value)
     }
 
     override fun getEnvironment(
@@ -110,6 +124,7 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
     ): Environment<Point, Path> {
         return SalesmanEnvironment(
             circles.map { c -> Point(c.centerX.toInt(), c.centerY.toInt()) },
+            cmbTypeGroup.value,
             maxGenerations,
             generationSize,
             mutationFactor
@@ -141,6 +156,7 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
         canvasPane.children.clear()
         circles.clear()
         lblDistance.text = ""
+        lblNumberOfPoints.text = ""
     }
 
 }
