@@ -29,7 +29,7 @@ class SalesmanEnvironment(
         tailrec fun generatePath(paths: Set<Path>): Set<Path> =
                 when (generationSize) {
                     paths.size -> paths
-                    else       -> generatePath(paths + Path(points.randomSwap()))
+                    else       -> generatePath(paths + Path(points.shuffled()))
                 }
 
         return generatePath(emptySet()).toList()

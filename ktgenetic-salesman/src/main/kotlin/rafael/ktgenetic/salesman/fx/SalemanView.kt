@@ -2,13 +2,7 @@ package rafael.ktgenetic.salesman.fx
 
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleObjectProperty
-import javafx.collections.FXCollections
 import javafx.event.EventHandler
-import javafx.geometry.Pos
-import javafx.scene.canvas.Canvas
-import javafx.scene.control.ComboBox
-import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
@@ -20,56 +14,12 @@ import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.salesman.Path
 import rafael.ktgenetic.salesman.Point
 import rafael.ktgenetic.salesman.SalesmanEnvironment
-import tornadofx.App
-import tornadofx.button
-import tornadofx.pane
+import tornadofx.*
 
 
 class SalemanViewApp : App(SalemanView::class)
 
 class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.ORDERED) {
-
-    private val distanceFactors = FXCollections.observableArrayList((1..10).toList())
-
-    private val lblCanvasWidth = Label("width")
-
-    private val cmbDistanceFactor = ComboBox<Int>(distanceFactors)
-
-    private val lblCanvasHeight = Label("height")
-
-    private val lblTrackLength = Label("Length")
-
-    private val lblMouseCanvasPosition = Label("")
-
-    private val btnLines = button("Lines") {
-        onAction = EventHandler {
-            lines.clear()
-            (0 until circles.size - 1).forEach { idx1 ->
-                (idx1 + 1 until circles.size).forEach { idx2 ->
-                    val l = Line(
-                        circles[idx1].centerX,
-                        circles[idx1].centerY,
-                        circles[idx2].centerX,
-                        circles[idx2].centerY
-                    )
-                    l.strokeWidth = 1.0
-                    lines.add(l)
-                    canvasPane.add(l)
-                }
-            }
-            println()
-        }
-    }
-
-    private val canvas = Canvas()
-
-    private val trackLenght: IntegerProperty = SimpleIntegerProperty(this, "Track Length")
-
-    private val mouseCanvasXPosition: IntegerProperty = SimpleIntegerProperty(canvas, "xCanvas")
-
-    private val mouseCanvasYPosition: IntegerProperty = SimpleIntegerProperty(canvas, "yCanvas")
-
-    private val distanceFactor: IntegerProperty = SimpleIntegerProperty(this, "distanceFactor")
 
     private val canvasPane = pane {
         border = Border(
@@ -80,7 +30,7 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
         )
         onMouseMoved = EventHandler { event ->
             mouseCanvasXPosition.value = event.x.toInt()
-            mouseCanvasYPosition.value = height.toInt() - event.y.toInt()
+            mouseCanvasYPosition.value = event.y.toInt()
         }
 
         onMouseExited = EventHandler {
@@ -94,6 +44,17 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
         }
     }
 
+    private val lblMouseCanvasPosition = label {
+        prefWidth = 100.0
+    }
+
+    private val lblDistance = label {
+    }
+
+    private val mouseCanvasXPosition: IntegerProperty = SimpleIntegerProperty(canvasPane, "xCanvas")
+
+    private val mouseCanvasYPosition: IntegerProperty = SimpleIntegerProperty(canvasPane, "yCanvas")
+
     private val circles = mutableListOf<Circle>()
 
     private val lines = mutableListOf<Line>()
@@ -103,48 +64,16 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
         mouseCanvasXPosition.addListener { _ -> onCanvasMousePositionChanged() }
         mouseCanvasYPosition.addListener { _ -> onCanvasMousePositionChanged() }
 
-        trackLenght.bind(distanceFactor.multiply(canvas.widthProperty().add(canvas.heightProperty())))
-
-        lblCanvasWidth.textProperty().bind(canvas.widthProperty().asString("%4.0f"))
-        addComponent("Width", lblCanvasWidth)
-
-        lblCanvasHeight.textProperty().bind(canvas.heightProperty().asString("%4.0f"))
-        addComponent("Height", lblCanvasHeight)
-
-        cmbDistanceFactor.valueProperty().addListener { event ->
-            if (event is SimpleObjectProperty<*>) {
-                distanceFactor.value = (event.value as Int)
+        val borderPane = borderpane {
+            center = canvasPane
+            bottom = flowpane {
+                add(lblMouseCanvasPosition)
+                add(lblDistance)
             }
         }
-        cmbDistanceFactor.value = 2
-        addComponent("Track Lenght Factor", cmbDistanceFactor)
-
-        lblTrackLength.textProperty().bind(trackLenght.asString("%5d"))
-        lblTrackLength.alignment = Pos.BOTTOM_LEFT
-        addComponent("Distance To Go", lblTrackLength)
-
-        addComponent("", btnLines)
-
-//        wrapperPane.border = Border(BorderStroke(Color.BLACK,
-//                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT))
-
-//        configureCanvas(wrapperPane)
-//        // Put canvas in the center of the window (*)
-//        wrapperPane.children.add(canvas)
-
-        val borderPane = BorderPane()
-        // Create a wrapper Pane first
-        borderPane.center = canvasPane
-        borderPane.bottom = lblMouseCanvasPosition
 
         root.center = borderPane
-
-//        draw1(canvas)
     }
-
-//    private inline fun yToYCanvas(y: Int) = canvas.height.toInt() - y
-
-
 
     private fun onCanvasMousePositionChanged() {
         lblMouseCanvasPosition.text =
@@ -156,18 +85,22 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
     }
 
     private fun addPoint(event: MouseEvent) {
-        val p = CirclePoint(event.x, event.y)
+        val p = CirclePoint(event.x, event.y).also {
+            it.id = "pt${System.currentTimeMillis()}"
+        }
         p.addEventHandler(MouseEvent.MOUSE_DRAGGED) {
             canvasPane.children.removeAll(lines.toTypedArray())
             lines.clear()
         }
 
-        println("Point added: $p")
         circles += p
         canvasPane.add(p)
     }
 
     override fun validate() {
+        check(circles.size > 4) {
+            "You need at least 4 points"
+        }
     }
 
     override fun getEnvironment(
@@ -176,7 +109,7 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
         mutationFactor: Double
     ): Environment<Point, Path> {
         return SalesmanEnvironment(
-            listOf(),
+            circles.map { c -> Point(c.centerX.toInt(), c.centerY.toInt()) },
             maxGenerations,
             generationSize,
             mutationFactor
@@ -186,13 +119,29 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
     override fun fillOwnComponent(genome: List<Path>) {
         primaryStage.isResizable = false
 
+        val bestPath = genome.first()
+        println(bestPath.width)
 
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        canvasPane.children.removeIf {
+            it is Line
+        }
+
+        bestPath.pathPoints.map {
+            Line(
+                it.first.x.toDouble(),
+                it.first.y.toDouble(),
+                it.second.x.toDouble(),
+                it.second.y.toDouble()
+            )
+        }.forEach { canvasPane.add(it) }
+        lblDistance.text = "Length = %6.0f".format(bestPath.width)
     }
 
     override fun resetComponents() {
-        // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         primaryStage.isResizable = true
+        canvasPane.children.clear()
+        circles.clear()
+        lblDistance.text = ""
     }
 
 }
