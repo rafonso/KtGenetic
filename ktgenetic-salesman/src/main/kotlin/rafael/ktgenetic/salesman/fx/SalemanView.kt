@@ -9,6 +9,8 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Line
 import rafael.ktgenetic.Environment
+import rafael.ktgenetic.ProcessorEvent
+import rafael.ktgenetic.TypeProcessorEvent
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.salesman.Path
@@ -22,7 +24,7 @@ class SalemanViewApp : App(SalemanView::class)
 
 class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.ORDERED) {
 
-    private val cmbTypeGroup = combobox<PathType>(values = PathType.values().toList()) {
+    private val cmbTypeGroup = combobox(values = PathType.values().toList()) {
         tooltip = tooltip("Specifies if the produced Path must be open or closed.")
     }
 
@@ -54,9 +56,12 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
     }
 
     private val lblDistance = label {
+        prefWidth = 100.0
     }
 
-    private val lblNumberOfPoints = label {}
+    private val lblNumberOfPoints = label {
+        prefWidth = 200.0
+    }
 
     private val mouseCanvasXPosition: IntegerProperty = SimpleIntegerProperty(canvasPane, "xCanvas")
 
@@ -68,7 +73,6 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
 
 
     init {
-
         addComponent("Path Type", cmbTypeGroup)
 
         mouseCanvasXPosition.addListener { _ -> onCanvasMousePositionChanged() }
@@ -122,6 +126,8 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
         generationSize: Int,
         mutationFactor: Double
     ): Environment<Point, Path> {
+
+
         return SalesmanEnvironment(
             circles.map { c -> Point(c.centerX.toInt(), c.centerY.toInt()) },
             cmbTypeGroup.value,
@@ -149,6 +155,19 @@ class SalemanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.
             )
         }.forEach { canvasPane.add(it) }
         lblDistance.text = "Length = %6.0f".format(bestPath.width)
+    }
+
+    override fun onEvent(event: ProcessorEvent<*>) {
+        super.onEvent(event)
+
+        when {
+            event.eventType == TypeProcessorEvent.STARTING -> circles.forEach {
+                it.removeEventHandler(MouseEvent.ANY, CirclePointMouseEventHandler)
+            }
+            event.eventType.ended                          -> circles.forEach {
+                it.addEventHandler(MouseEvent.ANY, CirclePointMouseEventHandler)
+            }
+        }
     }
 
     override fun resetComponents() {
