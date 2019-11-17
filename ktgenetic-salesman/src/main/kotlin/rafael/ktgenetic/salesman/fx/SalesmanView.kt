@@ -3,11 +3,16 @@ package rafael.ktgenetic.salesman.fx
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.event.EventHandler
+import javafx.geometry.VPos
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.shape.Line
+import javafx.scene.text.FontWeight
+import javafx.stage.FileChooser
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.ProcessorEvent
 import rafael.ktgenetic.TypeProcessorEvent
@@ -18,15 +23,35 @@ import rafael.ktgenetic.salesman.PathType
 import rafael.ktgenetic.salesman.Point
 import rafael.ktgenetic.salesman.SalesmanEnvironment
 import tornadofx.*
+import java.io.File
+import java.io.FileInputStream
+import java.util.prefs.Preferences
 
 
 class SalesmanViewApp : App(SalesmanView::class)
 
 class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.ORDERED) {
 
+    // INPUT COMPONENTS
+
     private val cmbPathType = combobox(values = PathType.values().toList()) {
         tooltip = tooltip("Specifies if the produced Path must be open or closed.")
     }
+
+    private val btnImage = button {
+        text = "Select"
+        tooltip = tooltip("Select an optional background Image. JPG or PNG formats.")
+    }
+
+    private val lblImage = label {
+        style {
+            fontWeight = FontWeight.BOLD
+            vAlignment = VPos.BOTTOM
+            vgrow = Priority.ALWAYS
+        }
+    }
+
+    // OUTPUT COMPONENTS
 
     private val canvasPane = pane {
         border = Border(
@@ -63,6 +88,8 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         prefWidth = 200.0
     }
 
+    // OTHER ATTRIBUTES
+
     private val mouseCanvasXPosition: IntegerProperty = SimpleIntegerProperty(canvasPane, "xCanvas")
 
     private val mouseCanvasYPosition: IntegerProperty = SimpleIntegerProperty(canvasPane, "yCanvas")
@@ -71,7 +98,12 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
 
     init {
         addComponent("Path Type", cmbPathType)
+        addComponent("Image", btnImage)
+        addComponent("Image Name", lblImage)
 
+        btnImage.onAction = EventHandler {
+            selectBackgroundImage()
+        }
         mouseCanvasXPosition.addListener { _ -> onCanvasMousePositionChanged() }
         mouseCanvasYPosition.addListener { _ -> onCanvasMousePositionChanged() }
 
@@ -83,6 +115,36 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
                 add(lblDistance)
                 hgap = 10.0
             }
+        }
+    }
+
+    private fun chooseImageFile(pathImage: String): File? {
+        val imageFileChooser = FileChooser().apply {
+            initialDirectory = File(pathImage)
+            title = "Choose an Image File"
+            extensionFilters += FileChooser.ExtensionFilter("JPG / PNG Images", "*.jpg", "*.png")
+        }
+
+        return imageFileChooser.showOpenDialog(super.currentWindow)
+    }
+
+    private fun loadBackgroundImage(fileImage: File) {
+        val backgroundImageView = ImageView(Image(FileInputStream(fileImage))).also {
+            it.fitWidthProperty().bind(canvasPane.widthProperty())
+            it.fitHeightProperty().bind(canvasPane.heightProperty())
+        }
+
+        canvasPane.add(backgroundImageView)
+        lblImage.text = fileImage.name
+    }
+
+    private fun selectBackgroundImage() {
+        val prefs = Preferences.userRoot().node(this.javaClass.name)
+        val pathImage = prefs.get("imageDir", System.getProperty("user.home"))
+
+        chooseImageFile(pathImage)?.let { fileImage ->
+            loadBackgroundImage(fileImage)
+            prefs.put("imageDir", fileImage.parent)
         }
     }
 
