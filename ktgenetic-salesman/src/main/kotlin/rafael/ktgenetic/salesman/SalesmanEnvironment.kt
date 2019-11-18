@@ -5,6 +5,8 @@ import rafael.ktgenetic.createCutPositions
 import rafael.ktgenetic.randomSwap
 import kotlin.math.sqrt
 
+//const val PENALITY_FACTOR = 0.95
+
 class SalesmanEnvironment(
     private val points: List<Point>,
     private val pathType: PathType,
@@ -14,6 +16,7 @@ class SalesmanEnvironment(
 ) : Environment<Point, Path> {
 
     private val maxDistance: Double by lazy {
+        // TODO: Change calculo, deve ser um ponto com (minX, minY) e outro com (maX, maxY)
         val minX = points.minBy { it.x }!!.x
         val minY = points.minBy { it.y }!!.y
         val maxX = points.maxBy { it.x }!!.x
@@ -25,6 +28,8 @@ class SalesmanEnvironment(
         sqrt(deltaX * deltaX + deltaY * deltaY) * (points.size - pathType.delta)
     }
 
+    private val pathHandler = pathType.createNewPathHandler(points, null, null)
+
     init {
         DistanceRepository.clear()
     }
@@ -34,7 +39,7 @@ class SalesmanEnvironment(
         tailrec fun generatePath(paths: Set<Path>): Set<Path> =
                 when (generationSize) {
                     paths.size -> paths
-                    else       -> generatePath(paths + Path(points.shuffled(), pathType))
+                    else       -> generatePath(paths + pathHandler.createNewPath())
                 }
 
         return generatePath(emptySet()).toList()
