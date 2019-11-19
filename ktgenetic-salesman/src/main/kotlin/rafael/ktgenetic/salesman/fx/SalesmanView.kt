@@ -25,6 +25,7 @@ import rafael.ktgenetic.salesman.SalesmanEnvironment
 import tornadofx.*
 import java.io.File
 import java.io.FileInputStream
+import java.math.BigInteger
 import java.util.prefs.Preferences
 
 
@@ -88,6 +89,10 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         prefWidth = 200.0
     }
 
+    private val lblNumberOfPossiblePaths = label {
+        prefWidth = 200.0
+    }
+
     // OTHER ATTRIBUTES
 
     private val mouseCanvasXPosition: IntegerProperty = SimpleIntegerProperty(canvasPane, "xCanvas")
@@ -112,6 +117,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
             bottom = flowpane {
                 add(lblMouseCanvasPosition)
                 add(lblNumberOfPoints)
+                add(lblNumberOfPossiblePaths)
                 add(lblDistance)
                 hgap = 10.0
             }
@@ -165,6 +171,12 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         circles += p
         canvasPane.add(p)
         lblNumberOfPoints.text = "Number of Points: ${circles.size}"
+        val numberOfPossiblePaths = (1..circles.size).fold(BigInteger.ONE) { prod, i -> prod * i.toBigInteger() }
+        lblNumberOfPossiblePaths.text = if (circles.size > 13) { // 13! = 6.227.020.800
+            "Possible Paths: %.2e".format(numberOfPossiblePaths.toBigDecimal())
+        } else {
+            "Possible Paths: %,d".format(numberOfPossiblePaths)
+        }
     }
 
     override fun validate() {
@@ -231,6 +243,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         circles.clear()
         lblDistance.text = ""
         lblNumberOfPoints.text = ""
+        lblNumberOfPossiblePaths.text = ""
     }
 
 }
