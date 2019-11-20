@@ -115,6 +115,11 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
                     "Possible Paths: %,d".format(numberOfPossiblePaths)
                 }
             }
+            while (change.next()) {
+                if (change.wasRemoved()) {
+                    canvasPane.children.removeAll(change.removed)
+                }
+            }
         })
     }
 
@@ -183,7 +188,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
     private fun addPoint(event: MouseEvent) {
         val p = CirclePoint(event.x, event.y).also {
             it.id = "pt${System.currentTimeMillis()}"
-//            addContextMenu(it)
+            addContextMenu(it)
         }
 
         circles += p
@@ -192,10 +197,9 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
 
     private fun addContextMenu(circle: Circle) = circle.contextmenu {
         item("Delete") {
-            println("Vai remover $circle")
-            circles.remove(circle)
-            canvasPane.children.removeIf { it == circle }
-            println("Removeu ...")
+            action {
+                circles.remove(circle)
+            }
         }
 //        separator()
     }
@@ -249,13 +253,13 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         when {
             event.eventType == TypeProcessorEvent.STARTING -> circles.forEach {
                 it.removeEventHandler(MouseEvent.ANY, CirclePointMouseEventHandler)
-//                it.contextmenu { }
+                it.contextmenu { }
             }
             event.eventType.ended                          ->
                 circles.forEach {
                     runLater {
                         it.addEventHandler(MouseEvent.ANY, CirclePointMouseEventHandler)
-//                        addContextMenu(it)
+                        addContextMenu(it)
                     }
                 }
         }
