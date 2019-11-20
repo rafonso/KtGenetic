@@ -2,6 +2,7 @@ package rafael.ktgenetic.salesman.fx
 
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.SimpleIntegerProperty
+import javafx.collections.ListChangeListener
 import javafx.event.EventHandler
 import javafx.geometry.VPos
 import javafx.scene.image.Image
@@ -99,7 +100,23 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
 
     private val mouseCanvasYPosition: IntegerProperty = SimpleIntegerProperty(canvasPane, "yCanvas")
 
-    private val circles = mutableListOf<Circle>()
+    private val circles = observableListOf<CirclePoint>().also {
+        it.addListener(ListChangeListener { change ->
+            if (change.list.isEmpty()) {
+                lblNumberOfPoints.text = ""
+                lblNumberOfPossiblePaths.text = ""
+            } else {
+                lblNumberOfPoints.text = "Number of Points: ${change.list.size}"
+                val numberOfPossiblePaths =
+                        (1..change.list.size).fold(BigInteger.ONE) { prod, i -> prod * i.toBigInteger() }
+                lblNumberOfPossiblePaths.text = if (change.list.size > 13) { // 13! = 6.227.020.800
+                    "Possible Paths: %.2e".format(numberOfPossiblePaths.toBigDecimal())
+                } else {
+                    "Possible Paths: %,d".format(numberOfPossiblePaths)
+                }
+            }
+        })
+    }
 
     init {
         addComponent("Path Type", cmbPathType)
@@ -166,17 +183,21 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
     private fun addPoint(event: MouseEvent) {
         val p = CirclePoint(event.x, event.y).also {
             it.id = "pt${System.currentTimeMillis()}"
+//            addContextMenu(it)
         }
 
         circles += p
         canvasPane.add(p)
-        lblNumberOfPoints.text = "Number of Points: ${circles.size}"
-        val numberOfPossiblePaths = (1..circles.size).fold(BigInteger.ONE) { prod, i -> prod * i.toBigInteger() }
-        lblNumberOfPossiblePaths.text = if (circles.size > 13) { // 13! = 6.227.020.800
-            "Possible Paths: %.2e".format(numberOfPossiblePaths.toBigDecimal())
-        } else {
-            "Possible Paths: %,d".format(numberOfPossiblePaths)
+    }
+
+    private fun addContextMenu(circle: Circle) = circle.contextmenu {
+        item("Delete") {
+            println("Vai remover $circle")
+            circles.remove(circle)
+            canvasPane.children.removeIf { it == circle }
+            println("Removeu ...")
         }
+//        separator()
     }
 
     override fun validate() {
@@ -192,17 +213,15 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         maxGenerations: Int,
         generationSize: Int,
         mutationFactor: Double
-    ): Environment<Point, Path> {
+    ): Environment<Point, Path> =
+            SalesmanEnvironment(
+                circles.map { c -> Point(c.centerX.toInt(), c.centerY.toInt()) },
+                cmbPathType.value,
+                maxGenerations,
+                generationSize,
+                mutationFactor
+            )
 
-
-        return SalesmanEnvironment(
-            circles.map { c -> Point(c.centerX.toInt(), c.centerY.toInt()) },
-            cmbPathType.value,
-            maxGenerations,
-            generationSize,
-            mutationFactor
-        )
-    }
 
     override fun fillOwnComponent(genome: List<Path>) {
         primaryStage.isResizable = false
@@ -230,10 +249,15 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         when {
             event.eventType == TypeProcessorEvent.STARTING -> circles.forEach {
                 it.removeEventHandler(MouseEvent.ANY, CirclePointMouseEventHandler)
+//                it.contextmenu { }
             }
-            event.eventType.ended                          -> circles.forEach {
-                it.addEventHandler(MouseEvent.ANY, CirclePointMouseEventHandler)
-            }
+            event.eventType.ended                          ->
+                circles.forEach {
+                    runLater {
+                        it.addEventHandler(MouseEvent.ANY, CirclePointMouseEventHandler)
+//                        addContextMenu(it)
+                    }
+                }
         }
     }
 
@@ -242,8 +266,6 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         canvasPane.children.clear()
         circles.clear()
         lblDistance.text = ""
-        lblNumberOfPoints.text = ""
-        lblNumberOfPossiblePaths.text = ""
     }
 
 }
