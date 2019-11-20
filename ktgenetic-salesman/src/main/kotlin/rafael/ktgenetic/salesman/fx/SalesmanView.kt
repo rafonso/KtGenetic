@@ -10,7 +10,6 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
-import javafx.scene.shape.Circle
 import javafx.scene.shape.Line
 import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
@@ -20,13 +19,11 @@ import rafael.ktgenetic.TypeProcessorEvent
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.salesman.Path
-import rafael.ktgenetic.salesman.PathType
 import rafael.ktgenetic.salesman.Point
 import rafael.ktgenetic.salesman.SalesmanEnvironment
 import tornadofx.*
 import java.io.File
 import java.io.FileInputStream
-import java.math.BigInteger
 import java.util.prefs.Preferences
 
 
@@ -36,13 +33,21 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
 
     // INPUT COMPONENTS
 
-    private val cmbPathType = combobox(values = PathType.values().toList()) {
+    private val cmbPathType = combobox(values = PathTypeOptions.values().toList()) {
         tooltip = tooltip("Specifies if the produced Path must be open or closed.")
+        value = PathTypeOptions.OPEN
+        converter = PathTypeOptionsStingConverter
+        onAction = EventHandler {
+            fillLblPossiblePaths(circles.size)
+        }
     }
 
     private val btnImage = button {
         text = "Select"
         tooltip = tooltip("Select an optional background Image. JPG or PNG formats.")
+        onAction = EventHandler {
+            selectBackgroundImage()
+        }
     }
 
     private val lblImage = label {
@@ -102,19 +107,9 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
 
     private val circles = observableListOf<CirclePoint>().also {
         it.addListener(ListChangeListener { change ->
-            if (change.list.isEmpty()) {
-                lblNumberOfPoints.text = ""
-                lblNumberOfPossiblePaths.text = ""
-            } else {
-                lblNumberOfPoints.text = "Number of Points: ${change.list.size}"
-                val numberOfPossiblePaths =
-                        (1..change.list.size).fold(BigInteger.ONE) { prod, i -> prod * i.toBigInteger() }
-                lblNumberOfPossiblePaths.text = if (change.list.size > 13) { // 13! = 6.227.020.800
-                    "Possible Paths: %.2e".format(numberOfPossiblePaths.toBigDecimal())
-                } else {
-                    "Possible Paths: %,d".format(numberOfPossiblePaths)
-                }
-            }
+            fillLblPossiblePaths(change.list.size)
+            lblNumberOfPoints.text = if (change.list.isEmpty()) "" else "Number of Points: ${change.list.size}"
+
             while (change.next()) {
                 if (change.wasRemoved()) {
                     canvasPane.children.removeAll(change.removed)
@@ -123,14 +118,24 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         })
     }
 
+    private fun fillLblPossiblePaths(size: Int) {
+        lblNumberOfPossiblePaths.text = if (size <= 1) {
+            ""
+        } else {
+            val numberOfPossiblePaths = cmbPathType.value.maxPossiblePaths(size)
+            if (size > 13) { // 13! = 6.227.020.800
+                "Possible Paths: %.2e".format(numberOfPossiblePaths.toBigDecimal())
+            } else {
+                "Possible Paths: %,d".format(numberOfPossiblePaths)
+            }
+        }
+    }
+
     init {
         addComponent("Path Type", cmbPathType)
         addComponent("Image", btnImage)
         addComponent("Image Name", lblImage)
 
-        btnImage.onAction = EventHandler {
-            selectBackgroundImage()
-        }
         mouseCanvasXPosition.addListener { _ -> onCanvasMousePositionChanged() }
         mouseCanvasYPosition.addListener { _ -> onCanvasMousePositionChanged() }
 
@@ -195,12 +200,13 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         canvasPane.add(p)
     }
 
-    private fun addContextMenu(circle: Circle) = circle.contextmenu {
+    private fun addContextMenu(circle: CirclePoint) = circle.contextmenu {
         item("Delete") {
             action {
                 circles.remove(circle)
             }
         }
+
 //        separator()
     }
 
@@ -220,7 +226,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
     ): Environment<Point, Path> =
             SalesmanEnvironment(
                 circles.map { c -> Point(c.centerX.toInt(), c.centerY.toInt()) },
-                cmbPathType.value,
+                cmbPathType.value!!.type,
                 maxGenerations,
                 generationSize,
                 mutationFactor
