@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty
 import javafx.collections.ListChangeListener
 import javafx.event.EventHandler
 import javafx.geometry.VPos
+import javafx.scene.control.ComboBox
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
@@ -39,6 +40,8 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         converter = PathTypeOptionsStingConverter
         onAction = EventHandler {
             fillLblPossiblePaths(circles.size)
+            circles.forEach(::addContextMenu)
+            (it.source as ComboBox<PathTypeOptions>).value.handleSelected(circles)
         }
     }
 
@@ -118,19 +121,6 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         })
     }
 
-    private fun fillLblPossiblePaths(size: Int) {
-        lblNumberOfPossiblePaths.text = if (size <= 1) {
-            ""
-        } else {
-            val numberOfPossiblePaths = cmbPathType.value.maxPossiblePaths(size)
-            if (size > 13) { // 13! = 6.227.020.800
-                "Possible Paths: %.2e".format(numberOfPossiblePaths.toBigDecimal())
-            } else {
-                "Possible Paths: %,d".format(numberOfPossiblePaths)
-            }
-        }
-    }
-
     init {
         addComponent("Path Type", cmbPathType)
         addComponent("Image", btnImage)
@@ -147,6 +137,21 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
                 add(lblNumberOfPossiblePaths)
                 add(lblDistance)
                 hgap = 10.0
+            }
+        }
+    }
+
+    private fun circlePointToPoint(c: CirclePoint) = Point(c.centerX.toInt(), c.centerY.toInt())
+
+    private fun fillLblPossiblePaths(size: Int) {
+        lblNumberOfPossiblePaths.text = if (size <= 1) {
+            ""
+        } else {
+            val numberOfPossiblePaths = cmbPathType.value.maxPossiblePaths(size)
+            if (size > 13) { // 13! = 6.227.020.800
+                "Possible Paths: %.2e".format(numberOfPossiblePaths.toBigDecimal())
+            } else {
+                "Possible Paths: %,d".format(numberOfPossiblePaths)
             }
         }
     }
@@ -200,23 +205,23 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         canvasPane.add(p)
     }
 
-    private fun addContextMenu(circle: CirclePoint) = circle.contextmenu {
-        item("Delete") {
-            action {
-                circles.remove(circle)
-            }
-        }
-
-//        separator()
+    private fun addContextMenu(circle: CirclePoint) {
+        cmbPathType.value.handleTypeChoice(circle,
+            { circles.toList() },
+            circle.contextmenu {
+                item("Delete") {
+                    action {
+                        circles.remove(circle)
+                    }
+                }
+            })
     }
 
     override fun validate() {
         check(circles.size > 4) {
             "You need at least 4 points"
         }
-        checkNotNull(cmbPathType.value) {
-            "Please, choose a Path Type"
-        }
+        cmbPathType.value.validateCircles(circles)
     }
 
     override fun getEnvironment(
@@ -225,8 +230,10 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         mutationFactor: Double
     ): Environment<Point, Path> =
             SalesmanEnvironment(
-                circles.map { c -> Point(c.centerX.toInt(), c.centerY.toInt()) },
+                circles.map(this::circlePointToPoint),
                 cmbPathType.value!!.type,
+                circles.filter(::selectStart).mapNotNull(this::circlePointToPoint).firstOrNull(),
+                circles.filter(::selectEnd).mapNotNull(this::circlePointToPoint).firstOrNull(),
                 maxGenerations,
                 generationSize,
                 mutationFactor
@@ -273,6 +280,8 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
 
     override fun resetComponents() {
         primaryStage.isResizable = true
+        cmbPathType.value = PathTypeOptions.OPEN
+        lblImage.text = ""
         canvasPane.children.clear()
         circles.clear()
         lblDistance.text = ""

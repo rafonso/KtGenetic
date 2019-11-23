@@ -15,7 +15,7 @@ data class Path(override val content: List<Point>, val pathType: PathType) : Chr
     constructor(vararg points: Point, pathType: PathType = PathType.OPEN) : this(points.toList(), pathType)
 
     val pathPoints: List<Vector> by lazy {
-        (0 until content.size - 1).map { Pair(content[it], content[it + 1]) } + pathType.endPath(content)
+        (0 until content.size - 1).map { Pair(content[it], content[it + 1]) }
     }
 
     val width: Double by lazy {

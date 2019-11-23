@@ -1,8 +1,6 @@
 package rafael.ktgenetic.salesman
 
 import rafael.ktgenetic.Environment
-import rafael.ktgenetic.createCutPositions
-import rafael.ktgenetic.randomSwap
 import kotlin.math.sqrt
 
 //const val PENALITY_FACTOR = 0.95
@@ -10,6 +8,8 @@ import kotlin.math.sqrt
 class SalesmanEnvironment(
     private val points: List<Point>,
     private val pathType: PathType,
+    startPoint: Point?,
+    endPoint: Point?,
     override val maxGenerations: Int,
     override val generationSize: Int,
     override var mutationFactor: Double
@@ -28,7 +28,7 @@ class SalesmanEnvironment(
         sqrt(deltaX * deltaX + deltaY * deltaY) * (points.size - pathType.delta)
     }
 
-    private val pathHandler = pathType.createNewPathHandler(points, null, null)
+    private val pathHandler = pathType.createNewPathHandler(points, startPoint, endPoint)
 
     init {
         DistanceRepository.clear()
@@ -45,9 +45,9 @@ class SalesmanEnvironment(
         return generatePath(emptySet()).toList()
     }
 
-    override fun getCutPositions(): Pair<Int, Int> = createCutPositions(points.size)
+    override fun getCutPositions(): Pair<Int, Int> = pathHandler.getCutPositions()
 
-    override fun executeMutation(sequence: List<Point>): List<Point> = sequence.randomSwap()
+    override fun executeMutation(sequence: List<Point>): List<Point> = pathHandler.executeMutation(sequence)
 
     override fun createNewChromosome(sequence: List<Point>): Path = Path(sequence, pathType)
 
