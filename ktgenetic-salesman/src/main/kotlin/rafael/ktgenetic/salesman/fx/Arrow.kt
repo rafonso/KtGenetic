@@ -13,7 +13,7 @@ import kotlin.math.sqrt
 const val defaultArrowHeadSize = 10.0
 
 val bestPaint: Paint = Color.BLACK
-val secondPaint: Paint = Color.rgb(120, 120, 120, 0.5)
+val secondPaint: Paint = Color.rgb(168, 168, 168, 0.66)
 
 // Code based on https://gist.github.com/kn0412/2086581e98a32c8dfa1f69772f14bca4
 class Arrow(startX: Double, startY: Double, endX: Double, endY: Double, arrowFill: Paint = bestPaint) : Path() {

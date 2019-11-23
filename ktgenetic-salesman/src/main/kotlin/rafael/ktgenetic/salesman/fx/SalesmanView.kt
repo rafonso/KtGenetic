@@ -27,6 +27,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.prefs.Preferences
 
+const val MIN_POINTS_TO_START = 5
 
 class SalesmanViewApp : App(SalesmanView::class)
 
@@ -218,8 +219,8 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
     }
 
     override fun validate() {
-        check(circles.size > 4) {
-            "You need at least 4 points"
+        check(circles.size >= MIN_POINTS_TO_START) {
+            "You need at least $MIN_POINTS_TO_START points"
         }
         cmbPathType.value.validateCircles(circles)
     }
