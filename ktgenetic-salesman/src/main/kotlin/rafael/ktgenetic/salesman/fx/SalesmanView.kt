@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
+import javafx.scene.paint.Paint
 import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
 import rafael.ktgenetic.Environment
@@ -240,23 +241,30 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
 
 
     override fun fillOwnComponent(genome: List<Path>) {
-        primaryStage.isResizable = false
 
-        val bestPath = genome.first()
+        fun paintPath(path: Path, pathFill: Paint) {
+            path.pathPoints.map {
+                Arrow(
+                    it.first.x.toDouble(),
+                    it.first.y.toDouble(),
+                    it.second.x.toDouble(),
+                    it.second.y.toDouble(),
+                    pathFill
+                )
+            }.forEach { canvasPane.add(it) }
+        }
+
+        primaryStage.isResizable = false
 
         canvasPane.children.removeIf {
             it !is CirclePoint
         }
 
-        bestPath.pathPoints.map {
-            Arrow(
-                it.first.x.toDouble(),
-                it.first.y.toDouble(),
-                it.second.x.toDouble(),
-                it.second.y.toDouble()
-            )
-        }.forEach { canvasPane.add(it) }
+        val bestPath = genome[0]
+        paintPath(bestPath, bestPaint)
         lblDistance.text = "Length = %6.0f".format(bestPath.width)
+
+        paintPath(genome[1], secondPaint)
     }
 
     override fun onEvent(event: ProcessorEvent<*>) {
