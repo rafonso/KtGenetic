@@ -11,7 +11,6 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
-import javafx.scene.shape.Line
 import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
 import rafael.ktgenetic.Environment
@@ -246,11 +245,11 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         val bestPath = genome.first()
 
         canvasPane.children.removeIf {
-            it is Line
+            it !is CirclePoint
         }
 
         bestPath.pathPoints.map {
-            Line(
+            Arrow(
                 it.first.x.toDouble(),
                 it.first.y.toDouble(),
                 it.second.x.toDouble(),
