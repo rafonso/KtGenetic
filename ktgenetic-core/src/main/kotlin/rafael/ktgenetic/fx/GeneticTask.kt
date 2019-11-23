@@ -76,7 +76,7 @@ internal class GeneticTask<C : Chromosome<*>>(
 
         Alert(Alert.AlertType.ERROR).also {
             it.title = "Execution Error at generation ${event.generation}"
-            it.headerText = error.message!!
+            it.headerText = if(error.message == null) "" else error.message
             it.initOwner(root)
             it.dialogPane.content = vbox {
                 label { text = "Stack Trace:" }
