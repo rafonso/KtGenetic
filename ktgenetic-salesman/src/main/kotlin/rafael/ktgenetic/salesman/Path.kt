@@ -6,7 +6,7 @@ typealias Segment = Set<Point>
 
 fun toSegment(p1: Point, p2: Point): Segment = setOf(p1, p2)
 
-//fun toSegment(x1: Int, y1: Int, x2: Int, y2: Int) = toSegment(Point(x1, y1), Point(x2, y2))
+fun toSegment(x1: Int, y1: Int, x2: Int, y2: Int) = Pair(Point(x1, y1), Point(x2, y2))
 
 typealias Vector = Pair<Point, Point>
 

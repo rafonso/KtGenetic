@@ -46,6 +46,8 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         }
     }
 
+    private val chbCrossings = checkbox("Avoid crossings")
+
     private val btnImage = button {
         text = "Select"
         tooltip = tooltip("Select an optional background Image. JPG or PNG formats.")
@@ -123,7 +125,10 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
     }
 
     init {
+        super.currentStage!!.isResizable = false
+
         addComponent("Path Type", cmbPathType)
+        addComponent("Crossings", chbCrossings)
         addComponent("Image", btnImage)
         addComponent("Image Name", lblImage)
 
@@ -143,6 +148,9 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
     }
 
     private fun circlePointToPoint(c: CirclePoint) = Point(c.centerX.toInt(), c.centerY.toInt())
+
+    private fun selectEdgePoint(selector: (CirclePoint) -> Boolean) =
+            circles.filter(selector).mapNotNull(this::circlePointToPoint).firstOrNull()
 
     private fun fillLblPossiblePaths(size: Int) {
         lblNumberOfPossiblePaths.text = if (size <= 1) {
@@ -173,7 +181,11 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
             it.fitHeightProperty().bind(canvasPane.heightProperty())
         }
 
-        canvasPane.add(backgroundImageView)
+        if (canvasPane.children[0] is ImageView) {
+            canvasPane.children[0] = backgroundImageView
+        } else {
+            canvasPane.children.add(0, backgroundImageView)
+        }
         lblImage.text = fileImage.name
     }
 
@@ -233,8 +245,9 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
             SalesmanEnvironment(
                 circles.map(this::circlePointToPoint),
                 cmbPathType.value!!.type,
-                circles.filter(::selectStart).mapNotNull(this::circlePointToPoint).firstOrNull(),
-                circles.filter(::selectEnd).mapNotNull(this::circlePointToPoint).firstOrNull(),
+                selectEdgePoint(::selectStart),
+                selectEdgePoint(::selectEnd),
+                chbCrossings.isSelected,
                 maxGenerations,
                 generationSize,
                 mutationFactor
@@ -258,7 +271,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         primaryStage.isResizable = false
 
         canvasPane.children.removeIf {
-            it !is CirclePoint
+            it is Arrow
         }
 
         val bestPath = genome[0]

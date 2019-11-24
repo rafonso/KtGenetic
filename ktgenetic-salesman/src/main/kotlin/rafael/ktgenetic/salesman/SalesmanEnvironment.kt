@@ -3,13 +3,12 @@ package rafael.ktgenetic.salesman
 import rafael.ktgenetic.Environment
 import kotlin.math.sqrt
 
-//const val PENALITY_FACTOR = 0.95
-
 class SalesmanEnvironment(
     private val points: List<Point>,
     private val pathType: PathType,
     startPoint: Point?,
     endPoint: Point?,
+    avoidCrossings: Boolean,
     override val maxGenerations: Int,
     override val generationSize: Int,
     override var mutationFactor: Double
@@ -30,8 +29,11 @@ class SalesmanEnvironment(
 
     private val pathHandler = pathType.createNewPathHandler(points, startPoint, endPoint)
 
+    private val crossingHandler = if (avoidCrossings) CrossingHandler.PENALIZE else CrossingHandler.ALLOW
+
     init {
         DistanceRepository.clear()
+        CrossingRepository.clear()
     }
 
     override fun getFirstGeneration(): List<Path> {
@@ -51,6 +53,12 @@ class SalesmanEnvironment(
 
     override fun createNewChromosome(sequence: List<Point>): Path = Path(sequence, pathType)
 
-    override fun calculateFitness(chromosome: Path): Double = (maxDistance - chromosome.width) / maxDistance
+    override fun calculateFitness(chromosome: Path): Double {
+        val basicFitness = (maxDistance - chromosome.width) / maxDistance
+        val crosssFactor = crossingHandler.calculateCrossFactor(chromosome)
+
+        return basicFitness * crosssFactor
+    }
+
 
 }
