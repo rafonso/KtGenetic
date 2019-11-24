@@ -66,6 +66,7 @@ class OpenPathHandlerWithStartAndEnd(points: List<Point>, startPoint: Point, pri
 
     override fun executeMutation(sequence: List<Point>): List<Point> =
             starPoint + sequence.subList(1, sequence.size - 1).randomSwap() + endPoint
+
 }
 
 class ClosedPathHandler(points: List<Point>) : PathHandler() {

@@ -39,7 +39,7 @@ private fun addStart(circlePoint: CirclePoint, otherCircles: () -> List<CirclePo
     }
 }
 
-fun selectStart(circlePoint: CirclePoint): Boolean = circlePoint.typeProperty.value == CirclePointType.START
+fun selectStart(circlePoint: CirclePoint): Boolean = (circlePoint.typeProperty.value == CirclePointType.START)
 
 private fun validateStartPresence(circles: List<CirclePoint>) {
     check(circles.any(::selectStart)) {
@@ -64,9 +64,9 @@ private fun validateEndPresence(circles: List<CirclePoint>) {
     }
 }
 
-fun selectEnd(circlePoint: CirclePoint): Boolean = circlePoint.typeProperty.value == CirclePointType.END
+fun selectEnd(circlePoint: CirclePoint): Boolean = (circlePoint.typeProperty.value == CirclePointType.END)
 
-private fun selectStartEnd(circlePoint: CirclePoint): Boolean = selectStart(circlePoint) || selectEnd(circlePoint)
+private fun selectStartEnd(circlePoint: CirclePoint): Boolean = (selectStart(circlePoint) || selectEnd(circlePoint))
 
 enum class PathTypeOptions(
     val type: PathType,
@@ -76,7 +76,6 @@ enum class PathTypeOptions(
     private val typeSelector: (CirclePoint) -> Boolean,
     val handleTypeChoice: (CirclePoint, () -> List<CirclePoint>, ContextMenu) -> Unit = { _, _, _ -> }
 ) {
-    // TODO: verificar melhor o cálculo de caminhos possíveis
     OPEN(PathType.OPEN, "Open", { n -> factorial(n - 1) }, { }, ::selectStartEnd),
     OPEN_START(PathType.OPEN_START, "Open With Start",
         { n -> factorial(n - 1) + BigInteger.ONE },
@@ -133,6 +132,6 @@ object PathTypeOptionsStingConverter : StringConverter<PathTypeOptions>() {
     override fun toString(option: PathTypeOptions?): String = option!!.title
 
     override fun fromString(string: String?): PathTypeOptions =
-            PathTypeOptions.values().first { it.title == string }
+            PathTypeOptions.values().first { (it.title == string) }
 
 }

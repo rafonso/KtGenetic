@@ -50,12 +50,8 @@ object CrossingRepository {
 //                } else {
 //                    !onSegment(p2, p1, q2) && !onSegment(q2, p1, p2)
 //                }
-            } else {
-                true
-            }
-        } else {
-            false
-        }
+            } else true
+        } else false
     }
 
     private fun doIntersect(p1: Point, q1: Point, p2: Point, q2: Point): Boolean {
@@ -117,7 +113,6 @@ object CrossingRepository {
         val segment1 = pair.first
         val segment2 = pair.second
 
-//        println("\tCalculating Crossings for $segments")
         return doIntersect(segment1.first, segment1.second, segment2.first, segment2.second)
     }
 
@@ -140,7 +135,7 @@ object CrossingRepository {
 
 }
 
-const val CROSSING_FACTOR = 0.95
+const val CROSSING_FACTOR = 0.9
 
 enum class CrossingHandler {
 
@@ -159,11 +154,9 @@ enum class CrossingHandler {
             }.sum()
 
             return if (totalCrossings == 0) 1.0 else {
-//                println("\t\t$totalCrossings Crossings for path $path")
                 CROSSING_FACTOR.pow(totalCrossings.toDouble())
             }
         }
-
     };
 
     abstract fun calculateCrossFactor(path: Path): Double

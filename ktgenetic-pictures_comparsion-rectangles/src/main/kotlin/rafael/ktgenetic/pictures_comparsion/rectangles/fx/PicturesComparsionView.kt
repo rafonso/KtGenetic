@@ -14,7 +14,6 @@ import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.fx.GeneticView
-import rafael.ktgenetic.pictures_comparsion.*
 import rafael.ktgenetic.pictures_comparsion.rectangles.*
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
