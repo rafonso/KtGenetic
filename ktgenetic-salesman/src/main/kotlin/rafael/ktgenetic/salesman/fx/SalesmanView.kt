@@ -6,6 +6,7 @@ import javafx.collections.ListChangeListener
 import javafx.event.EventHandler
 import javafx.geometry.VPos
 import javafx.scene.control.ComboBox
+import javafx.scene.control.Tooltip
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
@@ -46,7 +47,13 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         }
     }
 
-    private val chbCrossings = checkbox("Avoid crossings")
+    private val chbCrossings = checkbox("Avoid crossings") {
+        tooltip = Tooltip(
+            "Paths with crossings will receive penalties and will be passed over. " +
+                    "This way, the tendency is that these type of paths disappear " +
+                    "(but not always it will happen)."
+        )
+    }
 
     private val btnImage = button {
         text = "Select"

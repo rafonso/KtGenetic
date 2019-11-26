@@ -8,6 +8,7 @@ import javafx.scene.Cursor
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
+import tornadofx.*
 
 const val INITIAL_RADIO = 4.0
 
@@ -20,8 +21,10 @@ enum class CirclePointType {
 class CirclePoint(
     x: Double,
     y: Double,
-    val typeProperty: ObjectProperty<CirclePointType> = SimpleObjectProperty(CirclePointType.COMMON)
+    typeProperty: ObjectProperty<CirclePointType> = SimpleObjectProperty(CirclePointType.COMMON)
 ) : Circle(x, y, INITIAL_RADIO, color) {
+
+    var type: CirclePointType by typeProperty
 
     init {
         addEventHandler(MouseEvent.ANY, CirclePointMouseEventHandler)
@@ -36,7 +39,7 @@ class CirclePoint(
     }
 
     override fun toString(): String =
-            "[centerX=%4.0f, centerY=%4.0f, %3s]".format(super.getCenterX(), super.getCenterY(), typeProperty.value)
+            "[centerX=%4.0f, centerY=%4.0f, %3s]".format(super.getCenterX(), super.getCenterY(), type)
 
 }
 

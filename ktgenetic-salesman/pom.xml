@@ -11,7 +11,7 @@
     <name>rafael.ktgenetic.salesman</name>
 
     <properties>
-        <executable.mainclass>rafael.ktgenetic.salesman.fx.SalesmanView</executable.mainclass>
+        <executable.mainclass>rafael.ktgenetic.salesman.fx.SalesmanViewApp</executable.mainclass>
         <executable.name>ktgenetic-salesman</executable.name>
     </properties>
 

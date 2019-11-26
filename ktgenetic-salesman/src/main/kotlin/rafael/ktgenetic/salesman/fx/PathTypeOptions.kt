@@ -11,7 +11,7 @@ import java.math.BigInteger
 private fun factorial(n: Int) = (1..n).fold(BigInteger.ONE) { prod, i -> prod * i.toBigInteger() }
 
 private fun cleanCircle(circlePoint: CirclePoint) {
-    circlePoint.typeProperty.value = CirclePointType.COMMON
+    circlePoint.type = CirclePointType.COMMON
 }
 
 private fun addCommon(circlePoint: CirclePoint, menu: ContextMenu) {
@@ -34,12 +34,12 @@ private fun addStart(circlePoint: CirclePoint, otherCircles: () -> List<CirclePo
             otherCircles()
                 .filter(::selectStart)
                 .forEach(::cleanCircle)
-            circlePoint.typeProperty.value = CirclePointType.START
+            circlePoint.type = CirclePointType.START
         }
     }
 }
 
-fun selectStart(circlePoint: CirclePoint): Boolean = (circlePoint.typeProperty.value == CirclePointType.START)
+fun selectStart(circlePoint: CirclePoint): Boolean = (circlePoint.type == CirclePointType.START)
 
 private fun validateStartPresence(circles: List<CirclePoint>) {
     check(circles.any(::selectStart)) {
@@ -53,7 +53,7 @@ private fun addEnd(circlePoint: CirclePoint, otherCircles: () -> List<CirclePoin
             otherCircles()
                 .filter(::selectEnd)
                 .forEach(::cleanCircle)
-            circlePoint.typeProperty.value = CirclePointType.END
+            circlePoint.type = CirclePointType.END
         }
     }
 }
@@ -64,7 +64,7 @@ private fun validateEndPresence(circles: List<CirclePoint>) {
     }
 }
 
-fun selectEnd(circlePoint: CirclePoint): Boolean = (circlePoint.typeProperty.value == CirclePointType.END)
+fun selectEnd(circlePoint: CirclePoint): Boolean = (circlePoint.type == CirclePointType.END)
 
 private fun selectStartEnd(circlePoint: CirclePoint): Boolean = (selectStart(circlePoint) || selectEnd(circlePoint))
 
