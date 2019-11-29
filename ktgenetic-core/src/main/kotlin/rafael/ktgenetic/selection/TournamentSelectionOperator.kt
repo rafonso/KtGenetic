@@ -4,6 +4,9 @@ import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.createRandomPositions
 import java.util.*
 
+/**
+ * https://en.wikipedia.org/wiki/Tournament_selection
+ */
 internal class TournamentSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :
         SelectionOperator<C> {
 

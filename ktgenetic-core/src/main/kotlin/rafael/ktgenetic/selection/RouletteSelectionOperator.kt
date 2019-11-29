@@ -2,8 +2,6 @@ package rafael.ktgenetic.selection
 
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.geneticRandom
-import rafael.ktgenetic.mainLogger
-import rafael.ktgenetic.makeCuttingIntoPieces
 import java.util.*
 
 internal class RouletteSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :

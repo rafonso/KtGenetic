@@ -14,9 +14,6 @@ const val NO_STOP_PROCESSING_PARAMETER = "p"
 const val SELECTION_STRATEGY_PARAMETER = "s"
 const val ADD_MUTATION_TUNER_PARAMETER = "m"
 
-fun CommandLine.isValidIntValue(opt: String): Boolean =
-        this.getOptionValue(opt).matches(Regex("^\\d+$"))
-
 fun CommandLine.getIntOptionValue(opt: String, defaultValue: Int): Int =
         this.getOptionValue(opt, defaultValue.toString()).toInt()
 
