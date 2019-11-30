@@ -71,6 +71,11 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         }
     }
 
+    private val btnClearArrows = button("Clear Paths") {
+        isDisable = true
+        onAction = EventHandler { clearArrows() }
+    }
+
     // OUTPUT COMPONENTS
 
     private val canvasPane = pane {
@@ -101,7 +106,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
     }
 
     private val lblDistance = label {
-        prefWidth = 100.0
+        prefWidth = 200.0
     }
 
     private val lblNumberOfPoints = label {
@@ -128,6 +133,8 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
                     canvasPane.children.removeAll(change.removed)
                 }
             }
+
+            btnClearArrows.isDisable = it.isEmpty()
         })
     }
 
@@ -138,6 +145,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         addComponent("Crossings", chbCrossings)
         addComponent("Image", btnImage)
         addComponent("Image Name", lblImage)
+        addComponent("Paths", btnClearArrows)
 
         mouseCanvasXPosition.addListener { _ -> onCanvasMousePositionChanged() }
         mouseCanvasYPosition.addListener { _ -> onCanvasMousePositionChanged() }
@@ -188,12 +196,10 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
             it.fitHeightProperty().bind(canvasPane.heightProperty())
         }
 
-        if (canvasPane.children.isEmpty()) {
-            canvasPane.children.add(backgroundImageView)
-        } else if (canvasPane.children[0] is ImageView) {
-            canvasPane.children[0] = backgroundImageView
-        } else {
-            canvasPane.children.add(0, backgroundImageView)
+        when {
+            canvasPane.children.isEmpty()           -> canvasPane.children.add(backgroundImageView)
+            canvasPane.children[0] is ImageView     -> canvasPane.children[0] = backgroundImageView
+            else                                    -> canvasPane.children.add(0, backgroundImageView)
         }
         lblImage.text = fileImage.name
     }
@@ -279,15 +285,19 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
 
         primaryStage.isResizable = false
 
-        canvasPane.children.removeIf {
-            it is Arrow
-        }
+        clearArrows()
 
         val bestPath = genome[0]
         paintPath(bestPath, bestPaint)
-        lblDistance.text = "Length = %6.0f".format(bestPath.width)
+        lblDistance.text = "Length of best path = %6.0f".format(bestPath.width)
 
         paintPath(genome[1], secondPaint)
+    }
+
+    private fun clearArrows() {
+        canvasPane.children.removeIf {
+            it is Arrow
+        }
     }
 
     override fun onEvent(event: ProcessorEvent<*>) {
