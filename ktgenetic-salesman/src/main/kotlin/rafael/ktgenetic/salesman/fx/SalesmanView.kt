@@ -188,7 +188,9 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
             it.fitHeightProperty().bind(canvasPane.heightProperty())
         }
 
-        if (canvasPane.children[0] is ImageView) {
+        if (canvasPane.children.isEmpty()) {
+            canvasPane.children.add(backgroundImageView)
+        } else if (canvasPane.children[0] is ImageView) {
             canvasPane.children[0] = backgroundImageView
         } else {
             canvasPane.children.add(0, backgroundImageView)
