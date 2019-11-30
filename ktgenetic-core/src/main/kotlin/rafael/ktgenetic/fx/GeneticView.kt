@@ -20,7 +20,7 @@ import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import javafx.util.StringConverter
 import rafael.ktgenetic.*
-import rafael.ktgenetic.LogLevel.DEBUG
+import rafael.ktgenetic.LogLevel.INFO
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.selection.SelectionOperatorChoice
 import tornadofx.View
@@ -107,7 +107,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
 
         primaryStage.icons.add(geneticIcon)
 
-        configureLog(DEBUG)
+        configureLog(INFO)
     }
 
     private fun yAxisScrolled(event: ScrollEvent?) {
