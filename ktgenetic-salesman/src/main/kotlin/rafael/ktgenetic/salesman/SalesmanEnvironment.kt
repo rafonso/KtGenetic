@@ -15,7 +15,6 @@ class SalesmanEnvironment(
 ) : Environment<Point, Path> {
 
     private val maxDistance: Double by lazy {
-        // TODO: Change calculo, deve ser um ponto com (minX, minY) e outro com (maX, maxY)
         val minX = points.minBy { it.x }!!.x
         val minY = points.minBy { it.y }!!.y
         val maxX = points.maxBy { it.x }!!.x
@@ -55,9 +54,9 @@ class SalesmanEnvironment(
 
     override fun calculateFitness(chromosome: Path): Double {
         val basicFitness = (maxDistance - chromosome.width) / maxDistance
-        val crosssFactor = crossingHandler.calculateCrossFactor(chromosome)
+        val crossFactor = crossingHandler.calculateCrossFactor(chromosome)
 
-        return basicFitness * crosssFactor
+        return basicFitness * crossFactor
     }
 
 

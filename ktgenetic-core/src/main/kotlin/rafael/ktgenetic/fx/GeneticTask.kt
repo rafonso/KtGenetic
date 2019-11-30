@@ -60,13 +60,13 @@ internal class GeneticTask<C : Chromosome<*>>(
 
     override fun onEvent(event: ProcessorEvent<*>) {
         if (event.eventType == TypeProcessorEvent.ERROR) {
-            Platform.runLater { showEror(event) }
+            Platform.runLater { showError(event) }
         } else if ((event.eventType == TypeProcessorEvent.GENERATION_EVALUATING) || event.eventType.ended) {
             Platform.runLater { showGenerationData(event) }
         }
     }
 
-    private fun showEror(event: ProcessorEvent<*>) {
+    private fun showError(event: ProcessorEvent<*>) {
         val error = event.error!!
 
         val sw = StringWriter()

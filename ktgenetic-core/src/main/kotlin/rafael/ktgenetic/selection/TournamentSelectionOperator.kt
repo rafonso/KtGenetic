@@ -16,11 +16,11 @@ internal class TournamentSelectionOperator<C : Chromosome<*>>(override val gener
         }
 
         val (pos1, pos2) = createRandomPositions(population.size)
-        val selectedPosition = if (population[pos1].fitness > population[pos2].fitness) pos1 else pos2
-        val selectedElement = population[selectedPosition]
-        population.removeAt(selectedPosition)
+        val winnerPosition = if (population[pos1].fitness > population[pos2].fitness) pos1 else pos2
+        val winnerElement = population[winnerPosition]
+        population.removeAt(winnerPosition)
 
-        return select(population, winners + selectedElement)
+        return select(population, winners + winnerElement)
     }
 
     override fun select(children: List<C>): List<C> = select(LinkedList(children), listOf()).sortedBy { it.fitness }.reversed()
