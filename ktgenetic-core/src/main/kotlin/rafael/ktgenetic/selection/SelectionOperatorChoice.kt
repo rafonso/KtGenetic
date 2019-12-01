@@ -30,6 +30,13 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
                     LinearRankingSelectionOperator::class.primaryConstructor!! as KFunction<*>,
                     environment.generationSize
                 )
+    },
+    EXPONENTIAL_RANKING_ELITISM("x", "Exponential Ranking with Elitism") {
+        override fun <C : Chromosome<*>> chooseSelectionOperator(environment: Environment<*, C>): SelectionOperator<C> =
+                ElitismDelegateSelectionOperator(
+                    ExponentialRankingSelectionOperator::class.primaryConstructor!! as KFunction<*>,
+                    environment.generationSize
+                )
     }
     ;
 
