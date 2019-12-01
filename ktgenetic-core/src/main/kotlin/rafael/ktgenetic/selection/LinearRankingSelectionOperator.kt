@@ -3,24 +3,24 @@ package rafael.ktgenetic.selection
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.geneticRandom
 
-data class LinearProbabilities(val n: Int) {
+const val nMin = 0.9
+const val nMax = 2.0 - nMin
 
-    val total = n * (n + 1) / 2
-
-    val ranking = (0 until n).map { n - it }
-
-}
-
+/**
+ * Code Based on http://jenetics.io/javadoc/jenetics/5.1/io/jenetics/LinearRankSelector.html
+ */
 class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :
     SelectionOperator<C> {
 
     companion object {
 
-        val probabilitiesBySize = mutableMapOf<Int, LinearProbabilities>()
+        val rankingBySize = mutableMapOf<Int, List<Double>>()
+
+        fun calculateRanking(n: Int) = (0 until n).map { (nMin + (nMax - nMin) * (n - it - 1) / (n - 1)) }
 
     }
 
-    private fun selectPosition(ranking: List<Int>, sortedValue: Int, pos: Int = 0): Int {
+    private tailrec fun selectPosition(ranking: List<Double>, sortedValue: Double, pos: Int = 0): Int {
         if (pos >= ranking.size) {
             return ranking.size - 1
         }
@@ -30,16 +30,17 @@ class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationS
         return selectPosition(ranking, sortedValue - ranking[pos], pos + 1)
     }
 
-    private fun selectElement(probabilitiesSize: LinearProbabilities, population: List<C>): C {
-        val sortedValue = geneticRandom.nextInt(probabilitiesSize.total)
-        val selectedPosition = selectPosition(probabilitiesSize.ranking, sortedValue)
+    private fun selectElement(ranking: List<Double>, population: List<C>): C {
+        val sortedValue = geneticRandom.nextInt(population.size).toDouble()
+        val selectedPosition = selectPosition(ranking, sortedValue)
         return population[selectedPosition]
     }
 
     override fun select(children: List<C>): List<C> {
-        val probabilitiesSize = probabilitiesBySize.computeIfAbsent(children.size) { LinearProbabilities(it) }
+        val ranking = rankingBySize.computeIfAbsent(children.size) { calculateRanking(it) }
 
-        return (0 until generationSize).map { selectElement(probabilitiesSize, children) }
+        return (0 until generationSize)
+            .map { selectElement(ranking, children) }
             .sortedByDescending { it.fitness }
     }
 
