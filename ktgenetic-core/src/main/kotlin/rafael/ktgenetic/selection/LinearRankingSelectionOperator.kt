@@ -3,11 +3,12 @@ package rafael.ktgenetic.selection
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.geneticRandom
 
-const val nMin = 0.9
-const val nMax = 2.0 - nMin
+private const val nMin = 0.9
+private const val nMax = 2.0 - nMin
 
 /**
- * Code Based on http://jenetics.io/javadoc/jenetics/5.1/io/jenetics/LinearRankSelector.html
+ * Code Based on http://jenetics.io/javadoc/jenetics/5.1/io/jenetics/LinearRankSelector.html and
+ * https://github.com/jenetics/jenetics/blob/master/jenetics/src/main/java/io/jenetics/LinearRankSelector.java
  */
 class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :
     SelectionOperator<C> {

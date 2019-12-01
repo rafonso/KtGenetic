@@ -8,7 +8,7 @@ import java.util.*
  * https://en.wikipedia.org/wiki/Tournament_selection
  */
 internal class TournamentSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :
-        SelectionOperator<C> {
+    SelectionOperator<C> {
 
     private tailrec fun select(population: MutableList<C>, winners: List<C>): List<C> {
         if (winners.size >= generationSize) {
@@ -23,7 +23,8 @@ internal class TournamentSelectionOperator<C : Chromosome<*>>(override val gener
         return select(population, winners + winnerElement)
     }
 
-    override fun select(children: List<C>): List<C> = select(LinkedList(children), listOf()).sortedBy { it.fitness }.reversed()
+    override fun select(children: List<C>): List<C> =
+            select(LinkedList(children) as MutableList<C>, listOf()).sortedBy { it.fitness }.reversed()
 
     override fun toString(): String = this.javaClass.simpleName
 
