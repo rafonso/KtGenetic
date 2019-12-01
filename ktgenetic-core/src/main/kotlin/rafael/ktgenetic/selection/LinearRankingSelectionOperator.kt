@@ -45,6 +45,6 @@ class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationS
             .sortedByDescending { it.fitness }
     }
 
-    override fun toString(): String = "${this.javaClass.simpleName}($generationSize)"
+    override fun toString(): String = selectorToString(this)
 
 }

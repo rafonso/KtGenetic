@@ -38,6 +38,6 @@ internal class RouletteSelectionOperator<C : Chromosome<*>>(override val generat
         return selectElements(ArrayList(children), generationSize, totalFitness)
     }
 
-    override fun toString(): String = this.javaClass.simpleName
+    override fun toString(): String = selectorToString(this)
 
 }

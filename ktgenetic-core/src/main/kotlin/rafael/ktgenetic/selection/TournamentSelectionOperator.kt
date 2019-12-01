@@ -26,6 +26,6 @@ internal class TournamentSelectionOperator<C : Chromosome<*>>(override val gener
     override fun select(children: List<C>): List<C> =
             select(LinkedList(children) as MutableList<C>, listOf()).sortedBy { it.fitness }.reversed()
 
-    override fun toString(): String = this.javaClass.simpleName
+    override fun toString(): String = selectorToString(this)
 
 }

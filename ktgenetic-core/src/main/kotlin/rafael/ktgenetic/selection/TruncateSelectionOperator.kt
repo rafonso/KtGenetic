@@ -11,4 +11,6 @@ internal class TruncateSelectionOperator<C : Chromosome<*>>(override val generat
     override fun select(children: List<C>): List<C> = children.
             subList(0, generationSize)
 
+    override fun toString(): String = selectorToString(this)
+
 }
