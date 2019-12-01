@@ -6,6 +6,7 @@ import javafx.collections.ListChangeListener
 import javafx.event.EventHandler
 import javafx.geometry.VPos
 import javafx.scene.control.ComboBox
+import javafx.scene.control.OverrunStyle
 import javafx.scene.control.Tooltip
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
@@ -67,7 +68,8 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         style {
             fontWeight = FontWeight.BOLD
             vAlignment = VPos.BOTTOM
-            vgrow = Priority.ALWAYS
+            vgrow = Priority.SOMETIMES
+            textOverrun = OverrunStyle.ELLIPSIS
         }
     }
 
@@ -141,7 +143,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
     init {
         super.currentStage!!.isResizable = false
 
-        addComponent("Path Type", cmbPathType)
+        addComponent("Path Type", cmbPathType, 2)
         addComponent("Crossings", chbCrossings)
         addComponent("Image", btnImage)
         addComponent("Image Name", lblImage)

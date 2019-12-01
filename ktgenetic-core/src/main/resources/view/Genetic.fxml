@@ -4,6 +4,7 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="1024.0" prefHeight="600.0" prefWidth="1024.0" stylesheets="@Genetic.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="1024.0" prefHeight="600.0" prefWidth="1024.0" stylesheets="@Genetic.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <top>
         <GridPane fx:id="pnlInput" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
             <columnConstraints>
@@ -22,6 +23,7 @@
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
             </columnConstraints>
             <rowConstraints>
@@ -47,7 +49,13 @@
                         <ComboBox fx:id="cmbMutationFactor" />
                     </children>
                 </FlowPane>
-                <GridPane fx:id="pnlButtons" GridPane.columnIndex="4">
+            <FlowPane orientation="VERTICAL" styleClass="panel-control" GridPane.columnIndex="4">
+               <children>
+                  <Label text="Repeated Values" />
+                  <CheckBox fx:id="chbRepeatedValues" contentDisplay="TOP" mnemonicParsing="false" selected="true" text="Allow repeated values" />
+               </children>
+            </FlowPane>
+                <GridPane fx:id="pnlButtons" GridPane.columnIndex="5">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

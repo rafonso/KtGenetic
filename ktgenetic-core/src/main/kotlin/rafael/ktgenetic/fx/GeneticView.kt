@@ -8,10 +8,7 @@ import javafx.scene.Node
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
-import javafx.scene.control.Alert
-import javafx.scene.control.Button
-import javafx.scene.control.ComboBox
-import javafx.scene.control.Label
+import javafx.scene.control.*
 import javafx.scene.input.MouseEvent
 import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.BorderPane
@@ -58,7 +55,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
             FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
 
 
-    private val maxColumns = 5
+    private val maxColumns = 6
 
     // @formatter:off
     private val pnlInput                : GridPane                          by fxid()
@@ -68,6 +65,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
     private val cmbPopulation           : ComboBox<Int>                     by fxid()
     private val cmbMutationFactor       : ComboBox<Double>                  by fxid()
     private val cmbSelectionOperator    : ComboBox<SelectionOperatorChoice> by fxid()
+    private val chbRepeatedValues       : CheckBox                          by fxid()
     private val btnStop                 : Button                            by fxid()
     private val btnReset                : Button                            by fxid()
     private val btnStart                : Button                            by fxid()
@@ -190,7 +188,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
     protected abstract fun resetComponents()
 
     protected fun addComponent(title: String, component: Node, colspan: Int = 1) {
-        assert(colspan <= 5) // , () -> {"Colspan must be at least 5. It was $colspan"})
+        assert(colspan <= maxColumns) {"Colspan must be at least $maxColumns. It was $colspan"}
 
         val panel = FlowPane(Orientation.VERTICAL)
         panel.styleClass.add("panel-control")
@@ -220,7 +218,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
                     getEnvironment(cmbGenerations.value, cmbPopulation.value, cmbMutationFactor.value)
             disableInputComponents(true)
             val operatorChoice = cmbSelectionOperator.value
-            val selectionOperator = operatorChoice.chooseSelectionOperator(environment)
+            val selectionOperator = operatorChoice.chooseSelectionOperator(environment, chbRepeatedValues.isSelected)
             val processor = processorChoice.newInstance(environment, selectionOperator)
             processor.addListener(this)
 
