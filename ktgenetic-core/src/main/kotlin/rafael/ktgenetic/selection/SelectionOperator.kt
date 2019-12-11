@@ -5,8 +5,9 @@ import rafael.ktgenetic.Chromosome
 interface SelectionOperator<C : Chromosome<*>> {
 
     val generationSize: Int
-    
-    val allowRepetition: Boolean
+
+    // TODO: Transformar em not null
+    val allowRepetition: Boolean?
         get() = false
 
     fun select(children: List<C>): List<C>

@@ -20,7 +20,7 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
         ): SelectionOperator<C> =
                 ElitismDelegateSelectionOperator(
                     RouletteSelectionOperator::class.primaryConstructor!! as KFunction<*>,
-                    environment.generationSize
+                    environment.generationSize, allowRepetition
                 )
     },
     TOURNAMENT_ELITISM("o", "Tournament with Elitism") {
