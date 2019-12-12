@@ -3,16 +3,23 @@ package rafael.ktgenetic.selection
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.createRandomPositions
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * https://en.wikipedia.org/wiki/Tournament_selection
  */
-internal class TournamentSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :
+internal class TournamentSelectionOperator<C : Chromosome<*>>(
+    override val generationSize: Int,
+    allowRepetition: Boolean
+) :
     SelectionOperator<C> {
 
-    private tailrec fun select(population: MutableList<C>, winners: List<C>): List<C> {
+    private tailrec fun select(population: MutableList<C>, winners: MutableCollection<C>): List<C> {
         if (winners.size >= generationSize) {
-            return winners
+            return winners.toList()
+        }
+        if(population.size == 2) {
+            return winners.toList() + population
         }
 
         val (pos1, pos2) = createRandomPositions(population.size)
@@ -20,11 +27,13 @@ internal class TournamentSelectionOperator<C : Chromosome<*>>(override val gener
         val winnerElement = population[winnerPosition]
         population.removeAt(winnerPosition)
 
-        return select(population, winners + winnerElement)
+        winners.add(winnerElement)
+        return select(population, winners)
     }
 
-    override fun select(children: List<C>): List<C> =
-            select(LinkedList(children) as MutableList<C>, listOf()).sortedBy { it.fitness }.reversed()
+    private val getWinners: () -> MutableCollection<C> = if (allowRepetition) { -> ArrayList() } else { -> TreeSet() }
+
+    override fun select(children: List<C>): List<C> = select(LinkedList(children) as MutableList<C>, getWinners())
 
     override fun toString(): String = selectorToString(this)
 
