@@ -40,7 +40,7 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
         ): SelectionOperator<C> =
                 ElitismDelegateSelectionOperator(
                     LinearRankingSelectionOperator::class.primaryConstructor!! as KFunction<*>,
-                    environment.generationSize
+                    environment.generationSize, allowRepetition
                 )
     },
     EXPONENTIAL_RANKING_ELITISM("x", "Exponential Ranking with Elitism") {

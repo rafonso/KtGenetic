@@ -2,6 +2,8 @@ package rafael.ktgenetic.selection
 
 import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.geneticRandom
+import java.util.*
+import kotlin.collections.ArrayList
 
 private const val nMin = 0.9
 private const val nMax = 2.0 - nMin
@@ -10,7 +12,7 @@ private const val nMax = 2.0 - nMin
  * Code Based on http://jenetics.io/javadoc/jenetics/5.1/io/jenetics/LinearRankSelector.html and
  * https://github.com/jenetics/jenetics/blob/master/jenetics/src/main/java/io/jenetics/LinearRankSelector.java
  */
-class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationSize: Int) :
+class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationSize: Int, allowRepetition: Boolean) :
     SelectionOperator<C> {
 
     companion object {
@@ -31,18 +33,30 @@ class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationS
         return selectPosition(ranking, sortedValue - ranking[pos], pos + 1)
     }
 
-    private fun selectElement(ranking: List<Double>, population: List<C>): C {
+    private tailrec fun selectElements(
+        ranking: List<Double>,
+        population: List<C>,
+        selected: MutableCollection<C>
+    ): List<C> {
+        if (selected.size == generationSize) {
+            return selected.toList()
+        }
+
         val sortedValue = geneticRandom.nextInt(population.size).toDouble()
         val selectedPosition = selectPosition(ranking, sortedValue)
-        return population[selectedPosition]
+        val selectedElement = population[selectedPosition]
+
+        selected.add(selectedElement)
+        return selectElements(ranking, population, selected)
     }
+
+    private val getInitialSelected: () -> MutableCollection<C> =
+            if (allowRepetition) { -> ArrayList() } else { -> TreeSet() }
 
     override fun select(children: List<C>): List<C> {
         val ranking = rankingBySize.computeIfAbsent(children.size) { calculateRanking(it) }
 
-        return (0 until generationSize)
-            .map { selectElement(ranking, children) }
-            .sortedByDescending { it.fitness }
+        return selectElements(ranking, children, getInitialSelected())
     }
 
     override fun toString(): String = selectorToString(this)
