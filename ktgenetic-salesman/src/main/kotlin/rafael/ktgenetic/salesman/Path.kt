@@ -22,4 +22,17 @@ data class Path(override val content: List<Point>, val pathType: PathType) : Chr
         pathPoints.map { DistanceRepository.getDistance(it.first, it.second) }.sum()
     }
 
+    override fun compareTo(other: Chromosome<Point>): Int {
+        var diff = super.compareTo(other)
+        if (diff == 0) {
+            diff = if (this.content == other.content)
+                0
+            else
+                this.content.indices
+                    .map { Point.comparePoints(this.content[it], other.content[it]) }
+                    .first { it != 0 }
+        }
+        return diff
+    }
+
 }

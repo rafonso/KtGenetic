@@ -7,7 +7,12 @@ typealias Collision = Pair<Int, Int>
 /**
  *
  */
-data class Board(override val content: List<Int>, val piece: Piece, private var _collisions: List<Collision> = listOf(), private var _numOfCollisions: Int = Int.MAX_VALUE) : Chromosome<Int>() {
+data class Board(
+    override val content: List<Int>,
+    val piece: Piece,
+    private var _collisions: List<Collision> = listOf(),
+    private var _numOfCollisions: Int = Int.MAX_VALUE
+) : Chromosome<Int>() {
 
     companion object BoardUtils {
 
@@ -50,5 +55,21 @@ data class Board(override val content: List<Int>, val piece: Piece, private var 
         this.piece.validateBoard(this)
     }
 
-    override fun toString(): String = """(${content.joinToString(separator = "|")}${if (collisions.isEmpty()) "" else ", Collisions: $collisions"})"""
+    override fun compareTo(other: Chromosome<Int>): Int {
+        var diff = super.compareTo(other)
+        if (diff == 0) {
+            diff = if (this.content == other.content)
+                0
+            else
+                this.content.indices.map {
+                    other.content[it].compareTo(
+                        this.content[it]
+                    )
+                }.first { it != 0 }
+        }
+        return diff
+    }
+
+    override fun toString(): String =
+            """(${content.joinToString(separator = "|")}${if (collisions.isEmpty()) "" else ", Collisions: $collisions"})"""
 }
