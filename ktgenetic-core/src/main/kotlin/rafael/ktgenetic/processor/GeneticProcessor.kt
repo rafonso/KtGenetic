@@ -11,9 +11,9 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(
     private val selectionOperator: SelectionOperator<C>
 ) {
 
-    private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
+    private val listeners: MutableSet<ProcessorListener> = LinkedHashSet<ProcessorListener>()
 
-    var continueProcessing = true
+    private var continueProcessing = true
 
     private fun notifyEvent(event: ProcessorEvent<*>) {
         listeners.parallelStream().forEach { it.onEvent(event) }

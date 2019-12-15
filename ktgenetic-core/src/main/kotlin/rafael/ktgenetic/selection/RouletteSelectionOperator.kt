@@ -22,7 +22,7 @@ internal class RouletteSelectionOperator<C : Chromosome<*>>(override val generat
 
     private tailrec fun selectElements(population: MutableList<C>, remainingQuantity: Int, totalFitness: Double, selected: MutableCollection<C>): List<C> {
         if (remainingQuantity == 0) {
-            return selected.toList()
+            return selected.toList().sortedBy { it.fitness }.reversed()
         }
 
         val sortedValue = geneticRandom.nextDouble() * totalFitness

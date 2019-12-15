@@ -55,7 +55,7 @@ class ExponentialRankingSelectionOperator<C : Chromosome<*>>(
         selected: MutableCollection<C>
     ): List<C> {
         if (selected.size == generationSize || interactions > (5 * generationSize)) {
-            return selected.toList()
+            return selected.sortedBy { it.fitness }.reversed()
         }
 
         val sortedValue = geneticRandom.nextDouble()

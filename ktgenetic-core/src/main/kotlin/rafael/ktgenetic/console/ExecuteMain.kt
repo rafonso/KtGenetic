@@ -40,7 +40,7 @@ fun <G, C : Chromosome<G>> executeMain(
             val environment = getEnvironment(line)
             val selectionStrategy = codeToSelectionOperatorChoice(
                 line.getOptionValue(SELECTION_STRATEGY_PARAMETER, SelectionOperatorChoice.TRUNCATE.code)
-            ).chooseSelectionOperator(environment, true)
+            ).chooseSelectionOperator(environment, elitism = true, allowRepetition = true)
 
             val processor = prepareProcessor(line, environment, selectionStrategy, processorChoice)
 

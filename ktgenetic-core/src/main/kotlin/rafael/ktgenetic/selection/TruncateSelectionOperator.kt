@@ -20,7 +20,7 @@ internal class TruncateSelectionOperator<C : Chromosome<*>>(
 
             tailrec fun process(remainingChildren: LinkedList<C>, selected: MutableSet<C>): List<C> {
                 if ((selected.size == size) || remainingChildren.isEmpty()) {
-                    return selected.toList().reversed()
+                    return selected.toList().sortedBy { it.fitness }.reversed()
                 }
 
                 val first = remainingChildren.removeFirst()

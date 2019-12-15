@@ -39,7 +39,7 @@ class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationS
         selected: MutableCollection<C>
     ): List<C> {
         if (selected.size == generationSize) {
-            return selected.toList()
+            return selected.sortedBy { it.fitness }.reversed()
         }
 
         val sortedValue = geneticRandom.nextInt(population.size).toDouble()

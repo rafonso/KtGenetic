@@ -65,6 +65,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
     private val cmbPopulation           : ComboBox<Int>                     by fxid()
     private val cmbMutationFactor       : ComboBox<Double>                  by fxid()
     private val cmbSelectionOperator    : ComboBox<SelectionOperatorChoice> by fxid()
+    private val chbElitism              : CheckBox                          by fxid()
     private val chbRepeatedValues       : CheckBox                          by fxid()
     private val btnStop                 : Button                            by fxid()
     private val btnReset                : Button                            by fxid()
@@ -218,7 +219,11 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
                     getEnvironment(cmbGenerations.value, cmbPopulation.value, cmbMutationFactor.value)
             disableInputComponents(true)
             val operatorChoice = cmbSelectionOperator.value
-            val selectionOperator = operatorChoice.chooseSelectionOperator(environment, chbRepeatedValues.isSelected)
+            val selectionOperator = operatorChoice.chooseSelectionOperator(
+                environment,
+                chbElitism.isSelected,
+                chbRepeatedValues.isSelected
+            )
             val processor = processorChoice.newInstance(environment, selectionOperator)
             processor.addListener(this)
 

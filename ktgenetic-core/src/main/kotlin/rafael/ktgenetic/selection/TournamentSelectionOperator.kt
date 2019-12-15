@@ -14,12 +14,12 @@ internal class TournamentSelectionOperator<C : Chromosome<*>>(
 ) :
     SelectionOperator<C> {
 
-    private tailrec fun select(population: MutableList<C>, winners: MutableCollection<C>): List<C> {
-        if (winners.size >= generationSize) {
-            return winners.toList()
+    private tailrec fun select(population: MutableList<C>, selected: MutableCollection<C>): List<C> {
+        if (selected.size >= generationSize) {
+            return selected.toList().sortedBy { it.fitness }.reversed()
         }
         if(population.size == 2) {
-            return winners.toList() + population
+            return (selected.toList() + population).sortedBy { it.fitness }.reversed()
         }
 
         val (pos1, pos2) = createRandomPositions(population.size)
@@ -27,8 +27,8 @@ internal class TournamentSelectionOperator<C : Chromosome<*>>(
         val winnerElement = population[winnerPosition]
         population.removeAt(winnerPosition)
 
-        winners.add(winnerElement)
-        return select(population, winners)
+        selected.add(winnerElement)
+        return select(population, selected)
     }
 
     private val getWinners: () -> MutableCollection<C> = if (allowRepetition) { -> ArrayList() } else { -> TreeSet() }
