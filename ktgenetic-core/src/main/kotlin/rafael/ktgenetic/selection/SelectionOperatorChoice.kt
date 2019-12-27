@@ -19,7 +19,7 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
             )
         else TruncateSelectionOperator(environment.generationSize, allowRepetition)
     },
-    ROULETTE_ELITISM("r", "Roulette with Elitism") {
+    ROULETTE("r", "Roulette") {
         override fun <C : Chromosome<*>> chooseSelectionOperator(
             environment: Environment<*, C>,
             elitism: Boolean,
@@ -31,7 +31,7 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
             )
         else RouletteSelectionOperator(environment.generationSize, allowRepetition)
     },
-    TOURNAMENT_ELITISM("o", "Tournament with Elitism") {
+    TOURNAMENT("o", "Tournament") {
         override fun <C : Chromosome<*>> chooseSelectionOperator(
             environment: Environment<*, C>,
             elitism: Boolean,
@@ -43,7 +43,7 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
             )
         else TournamentSelectionOperator(environment.generationSize, allowRepetition)
     },
-    LINEAR_RANKING_ELITISM("l", "Linear Ranking with Elitism") {
+    LINEAR_RANKING("l", "Linear Ranking") {
         override fun <C : Chromosome<*>> chooseSelectionOperator(
             environment: Environment<*, C>,
             elitism: Boolean,
@@ -55,7 +55,7 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
             )
         else LinearRankingSelectionOperator(environment.generationSize, allowRepetition)
     },
-    EXPONENTIAL_RANKING_ELITISM("x", "Exponential Ranking with Elitism") {
+    EXPONENTIAL_RANKING("x", "Exponential Ranking") {
         override fun <C : Chromosome<*>> chooseSelectionOperator(
             environment: Environment<*, C>,
             elitism: Boolean,
