@@ -1,18 +1,12 @@
 package rafael.ktgenetic.pictures_comparsion.rectangles
 
-import kotlin.math.sqrt
-
 fun validateColor(x: Int, name: String) {
     require(x in 0..255) { "$name must be between 0 and 255" }
 }
 
-//const val MAX_COLOR_DISTANCE = 0xFFFFFF
-
 const val MAX_COLOR_VALUE = 255
 
-const val MAX_COLOR_VALUE_D = MAX_COLOR_VALUE.toDouble()
-
-//const val MAX_COLOR_DISTANCE: Int = 3 * 255 * 255
+const val MAX_COLOR_VALUE_D = (MAX_COLOR_VALUE * MAX_COLOR_VALUE).toDouble()
 
 /**
  * Represents the color in a pixel. Named as 'Kolor" to avoid confusing with JavaFX `Color`.
@@ -22,10 +16,6 @@ const val MAX_COLOR_VALUE_D = MAX_COLOR_VALUE.toDouble()
  * @param b Blue value
  */
 data class Kolor(val r: Int, val g: Int, val b: Int) {
-
-//    val longValue: Int by lazy {
-//        r.shl(16) + g.shl(8) + b
-//    }
 
     init {
         validateColor(r, "R")
@@ -40,7 +30,7 @@ data class Kolor(val r: Int, val g: Int, val b: Int) {
         val deltaG = (this.g - other.g).toDouble()
         val deltaB = (this.b - other.b).toDouble()
 
-        return sqrt((deltaR * deltaR) + (deltaG * deltaG) + (deltaB * deltaB))
+        return (deltaR * deltaR) + (deltaG * deltaG) + (deltaB * deltaB)
     }
 
 }
