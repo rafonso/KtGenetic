@@ -1,6 +1,7 @@
 package rafael.ktgenetic.nqueens.fx
 
 import javafx.collections.FXCollections
+import javafx.event.EventHandler
 import javafx.scene.control.Control
 import javafx.scene.control.Spinner
 import javafx.scene.control.TableView
@@ -32,9 +33,12 @@ abstract class NPiecesView (private val piece: Piece, _title: String, _processor
             board.content.joinToString(separator = " ", transform = { col -> rowNumberFormat.format(col) })
         }
 
-        onUserSelect { selectedBoard ->
-            ShowBoardDialog(selectedBoard).showAndWait()
+        onMouseClicked = EventHandler { event ->
+            if(event.clickCount == 2 && !selectionModel.isEmpty) {
+                ShowBoardDialog(selectionModel.selectedItem).showAndWait()
+            }
         }
+
         prefWidth = Control.USE_COMPUTED_SIZE
         columns.addAll(fitnessColumn, collisionsColumn, boardColumn)
     }
