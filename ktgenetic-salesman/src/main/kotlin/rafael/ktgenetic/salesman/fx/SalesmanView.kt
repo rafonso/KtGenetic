@@ -107,7 +107,11 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         prefWidth = 100.0
     }
 
-    private val lblDistance = label {
+    private val lblBestDistance = label {
+        prefWidth = 200.0
+    }
+
+    private val lblSecondBestDistance = label {
         prefWidth = 200.0
     }
 
@@ -158,7 +162,8 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
                 add(lblMouseCanvasPosition)
                 add(lblNumberOfPoints)
                 add(lblNumberOfPossiblePaths)
-                add(lblDistance)
+                add(lblBestDistance)
+                add(lblSecondBestDistance)
                 hgap = 10.0
             }
         }
@@ -289,11 +294,13 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
 
         clearArrows()
 
+        val secondBestPath = genome[1]
+        paintPath(secondBestPath, secondPaint)
+        lblSecondBestDistance.text = "Length of second best path = %6.0f".format(secondBestPath.width)
+
         val bestPath = genome[0]
         paintPath(bestPath, bestPaint)
-        lblDistance.text = "Length of best path = %6.0f".format(bestPath.width)
-
-        paintPath(genome[1], secondPaint)
+        lblBestDistance.text = "Length of best path = %6.0f".format(bestPath.width)
     }
 
     private fun clearArrows() {
@@ -326,7 +333,8 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         lblImage.text = ""
         canvasPane.children.clear()
         circles.clear()
-        lblDistance.text = ""
+        lblBestDistance.text = ""
+        lblSecondBestDistance.text = ""
     }
 
 }
