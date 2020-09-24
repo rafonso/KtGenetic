@@ -12,11 +12,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>1.8</jdk.version>
+        <jdk.version>10</jdk.version>
+        <!--
         <javafx.version>${jdk.version}</javafx.version>
+        -->
         <kotlin.version>1.4.10</kotlin.version>
         <tornadofx.version>1.7.20</tornadofx.version>
         <junit.version>5.5.2</junit.version>
+        <log4j.version>2.13.2</log4j.version>
         <maven.compiler.target>${jdk.version}</maven.compiler.target>
         <maven.compiler.source>${jdk.version}</maven.compiler.source>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
@@ -62,12 +65,12 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.12.1</version>
+            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.13.2</version>
+            <version>${log4j.version}</version>
         </dependency>
 
         <dependency>
