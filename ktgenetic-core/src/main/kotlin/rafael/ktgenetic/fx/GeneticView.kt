@@ -20,7 +20,7 @@ import rafael.ktgenetic.*
 import rafael.ktgenetic.LogLevel.INFO
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.selection.SelectionOperatorChoice
-import tornadofx.View
+import tornadofx.*
 import java.time.Instant
 import java.util.*
 
@@ -29,30 +29,32 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
     final override val root: BorderPane by fxml("/view/Genetic.fxml")
 
     private val values: ObservableList<Int> =
-            FXCollections.observableArrayList(
-                1,
-                10,
-                50,
-                100,
-                200,
-                300,
-                400,
-                500,
-                600,
-                700,
-                800,
-                900,
-                1000,
-                1500,
-                2000,
-                2500,
-                3000,
-                3500,
-                4000
-            )
+        FXCollections.observableArrayList(
+            1,
+            10,
+            50,
+            100,
+            200,
+            300,
+            400,
+            500,
+            600,
+            700,
+            800,
+            900,
+            1000,
+            1500,
+            2000,
+            2500,
+            3000,
+            3500,
+            4000
+        )
 
     private val mutationFactors: ObservableList<Double> =
-            FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+        FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+
+    private val yAxisBounds = listOf(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 1.0)
 
 
     private val maxColumns = 6
@@ -85,6 +87,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
 
     private val averageFitnessByGeneration: MutableList<Double> = mutableListOf()
     private val bestFitnessByGeneration: MutableList<Double> = mutableListOf()
+    private val currentLowerBoundIndex = intProperty(0)
+    private val currentUpperBoundIndex = intProperty(yAxisBounds.lastIndex)
 
     init {
         cmbGenerations.items = values
@@ -101,35 +105,47 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
         cmbSelectionOperator.converter = SelectionOperatorConverter()
 
         lineChartFitness.yAxis.isTickMarkVisible = false
+        yAxisChartFitness.tooltip(
+            "To adjust lower value scroll mouse. " +
+                    "To adjust upper value scroll mouse with CTRL pressed."
+        )
+        yAxisChartFitness.tickLabelFormatter
         yAxisChartFitness.onMouseClicked = EventHandler { yAxisClicked(it) }
         yAxisChartFitness.onScroll = EventHandler { yAxisScrolled(it) }
+        currentLowerBoundIndex.onChange { adjustFitnessYAxis() }
+        currentUpperBoundIndex.onChange { adjustFitnessYAxis() }
 
         primaryStage.icons.add(geneticIcon)
 
         configureLog(INFO)
     }
 
+    private fun adjustFitnessYAxis() {
+        yAxisChartFitness.lowerBound = yAxisBounds[currentLowerBoundIndex.value]
+        yAxisChartFitness.upperBound = yAxisBounds[currentUpperBoundIndex.value]
+        yAxisChartFitness.tickUnit = (yAxisChartFitness.upperBound - yAxisChartFitness.lowerBound) / 10
+    }
+
     private fun yAxisScrolled(event: ScrollEvent?) {
-
-        fun adjust(signal: Int) {
-            val newLowerBound = yAxisChartFitness.lowerBound + signal * 0.1
-            if (newLowerBound >= 0.0 && newLowerBound < 1.0) {
-                yAxisChartFitness.lowerBound = newLowerBound
-                yAxisChartFitness.tickUnit = (yAxisChartFitness.upperBound - yAxisChartFitness.lowerBound) / 10
+        if (event!!.isControlDown) {
+            if ((event.deltaY > 0.0) && (currentUpperBoundIndex < yAxisBounds.lastIndex)) {
+                currentUpperBoundIndex += 1
+            } else if ((event.deltaY < 0.0) && (currentUpperBoundIndex > (currentLowerBoundIndex + 1))) {
+                currentUpperBoundIndex -= 1
             }
-        }
-
-        if (event!!.deltaY > 0.0) {
-            adjust(+1)
-        } else if (event.deltaY < 0.0) {
-            adjust(-1)
+        } else {
+            if ((event.deltaY > 0.0) && (currentLowerBoundIndex < (currentUpperBoundIndex - 1))) {
+                currentLowerBoundIndex += 1
+            } else if ((event.deltaY < 0.0) && (currentLowerBoundIndex > 0)) {
+                currentLowerBoundIndex -= 1
+            }
         }
     }
 
     private fun yAxisClicked(event: MouseEvent) {
-        if (event.clickCount == 2) {
-            yAxisChartFitness.lowerBound = 0.0
-            yAxisChartFitness.tickUnit = (yAxisChartFitness.upperBound - yAxisChartFitness.lowerBound) / 10
+        if (event.clickCount == 2 && currentLowerBoundIndex.value > 0) {
+            currentLowerBoundIndex.value = 0
+            currentUpperBoundIndex.value = yAxisBounds.lastIndex
         }
     }
 
@@ -189,7 +205,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
     protected abstract fun resetComponents()
 
     protected fun addComponent(title: String, component: Node, colspan: Int = 1) {
-        assert(colspan <= maxColumns) {"Colspan must be at least $maxColumns. It was $colspan"}
+        assert(colspan <= maxColumns) { "Colspan must be at least $maxColumns. It was $colspan" }
 
         val panel = FlowPane(Orientation.VERTICAL)
         panel.styleClass.add("panel-control")
@@ -216,7 +232,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
             validate()
 
             val environment: Environment<G, C> =
-                    getEnvironment(cmbGenerations.value, cmbPopulation.value, cmbMutationFactor.value)
+                getEnvironment(cmbGenerations.value, cmbPopulation.value, cmbMutationFactor.value)
             disableInputComponents(true)
             val operatorChoice = cmbSelectionOperator.value
             val selectionOperator = operatorChoice.chooseSelectionOperator(
@@ -272,6 +288,6 @@ class SelectionOperatorConverter : StringConverter<SelectionOperatorChoice>() {
     override fun toString(choice: SelectionOperatorChoice?): String = choice!!.description
 
     override fun fromString(string: String?): SelectionOperatorChoice =
-            SelectionOperatorChoice.values().first { it.description == string }
+        SelectionOperatorChoice.values().first { it.description == string }
 
 }
