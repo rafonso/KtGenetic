@@ -1,9 +1,10 @@
 package rafael.ktgenetic.pictures_comparsion.rectangles.fx
 
-import javafx.collections.FXCollections
+import javafx.beans.property.SimpleObjectProperty
 import javafx.event.EventHandler
 import javafx.geometry.VPos
 import javafx.scene.canvas.Canvas
+import javafx.scene.control.ComboBox
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderStrokeStyle
@@ -13,6 +14,9 @@ import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
 import rafael.ktgenetic.Environment
+import rafael.ktgenetic.NoListener
+import rafael.ktgenetic.ProcessorEvent
+import rafael.ktgenetic.ProcessorListener
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.pictures_comparsion.rectangles.*
 import rafael.ktgenetic.processor.GeneticProcessorChoice
@@ -21,8 +25,13 @@ import java.io.File
 import java.io.FileInputStream
 import java.lang.Double.min
 import java.util.prefs.Preferences
+import tornadofx.getValue
+import tornadofx.setValue
 
 val noCanvas = Canvas(0.0, 0.0)
+
+const val MAX_ROWS = 40
+const val MAX_COLS = MAX_ROWS
 
 fun Color.toKolor(): Kolor = Kolor((255 * this.red).toInt(), (255 * this.green).toInt(), (255 * this.blue).toInt())
 
@@ -53,23 +62,16 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
     }
 
     private val cmbColumns = combobox<Int> {
-        items = FXCollections.observableArrayList((1..21).toList())
-        value = 5
-        onAction = EventHandler {
-            if (originalImageView.image != null) {
-                drawGridPreview()
-            }
-        }
+        configureCombo(MAX_COLS)
     }
 
     private val cmbRows = combobox<Int> {
-        items = FXCollections.observableArrayList((1..21).toList())
-        value = 5
-        onAction = EventHandler {
-            if (originalImageView.image != null) {
-                drawGridPreview()
-            }
-        }
+        configureCombo(MAX_ROWS)
+    }
+
+    private val cmbGenerationsSnapshots = combobox<Int> {
+        items = listOf(0, 10, 50, 100).asObservable()
+        value = 0
     }
 
     // OUTPUT COMPONENTS
@@ -94,6 +96,12 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
 
     private var canvas: Canvas = noCanvas
 
+    // OTHER COMPONENTS
+
+    val snapshotListenerProperty = SimpleObjectProperty<ProcessorListener>(NoListener)
+    var snapshotListener by snapshotListenerProperty
+
+
     init {
         super.currentStage!!.isResizable = false
 
@@ -106,6 +114,7 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
         addComponent("Image Dimensions", lblImageDimensions)
         addComponent("Rows", cmbRows)
         addComponent("Columns", cmbColumns)
+        addComponent("Snapshots for each Generations", cmbGenerationsSnapshots)
 
         val imagesPanes = gridpane {
             prefWidth = 800.0
@@ -137,6 +146,16 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
         imagesPanes.add(pnlGeneratedImage, 1, 0)
 
         root.center = imagesPanes
+    }
+
+    private fun ComboBox<Int>.configureCombo(max: Int) {
+        items = (1..max).toList().toObservable()
+        value = 10
+        onAction = EventHandler {
+            if (originalImageView.image != null) {
+                drawGridPreview()
+            }
+        }
     }
 
     private fun drawGridPreview() {
@@ -171,30 +190,30 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
         originalImageView.image = Image(FileInputStream(fileImage))
 
         val data =
-                if (originalImageView.image.width > pnlOriginalImage.prefWidth || originalImageView.image.height > pnlOriginalImage.prefWidth) {
-                    originalImageView.fitHeight = pnlOriginalImage.prefHeight
-                    originalImageView.fitWidth = pnlOriginalImage.prefWidth
+            if (originalImageView.image.width > pnlOriginalImage.prefWidth || originalImageView.image.height > pnlOriginalImage.prefWidth) {
+                originalImageView.fitHeight = pnlOriginalImage.prefHeight
+                originalImageView.fitWidth = pnlOriginalImage.prefWidth
 
-                    // https://stackoverflow.com/questions/39408845/how-to-get-width-height-of-displayed-image-in-javafx-imageview
-                    val aspectRatio = originalImageView.image.width / originalImageView.image.height
-                    val w = min(originalImageView.fitWidth, originalImageView.fitHeight * aspectRatio)
-                    val h = min(originalImageView.fitHeight, originalImageView.fitWidth / aspectRatio)
+                // https://stackoverflow.com/questions/39408845/how-to-get-width-height-of-displayed-image-in-javafx-imageview
+                val aspectRatio = originalImageView.image.width / originalImageView.image.height
+                val w = min(originalImageView.fitWidth, originalImageView.fitHeight * aspectRatio)
+                val h = min(originalImageView.fitHeight, originalImageView.fitWidth / aspectRatio)
 
-                    positionConversor =
-                            ProportionalPositionConversor(
-                                originalImageView.image.width / w,
-                                originalImageView.image.height / h
-                            )
+                positionConversor =
+                    ProportionalPositionConversor(
+                        originalImageView.image.width / w,
+                        originalImageView.image.height / h
+                    )
 
-                    Triple(w, h, "redimensioned")
-                } else {
-                    originalImageView.fitHeight = 0.0
-                    originalImageView.fitWidth = 0.0
+                Triple(w, h, "redimensioned")
+            } else {
+                originalImageView.fitHeight = 0.0
+                originalImageView.fitWidth = 0.0
 
-                    positionConversor = SimplePositionConversor()
+                positionConversor = SimplePositionConversor()
 
-                    Triple(originalImageView.image.width, originalImageView.image.height, "original")
-                }
+                Triple(originalImageView.image.width, originalImageView.image.height, "original")
+            }
 
         canvas = canvas {
             width = data.first
@@ -239,6 +258,17 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
                 originalImageView.image.pixelReader.getColor(col, row).toKolor()
             }.toTypedArray()
         }.toTypedArray()
+        snapshotListener =
+            if (cmbGenerationsSnapshots.value == 0) NoListener
+            else SnapshotPicturesListener(cmbRows.value, cmbColumns.value,
+                maxGenerations,
+                generationSize,
+                mutationFactor,
+                super.selectedOperator.value,
+                lblImage.text,
+                originalImageView.image,
+                canvas,
+                cmbGenerationsSnapshots.value)
 
         return ScreenEnvironment(
             originalBitmaps,
@@ -276,4 +306,8 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
         canvas = noCanvas
     }
 
+    override fun onEvent(event: ProcessorEvent<*>) {
+        super.onEvent(event)
+        snapshotListener.onEvent(event)
+    }
 }

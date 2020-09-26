@@ -1,5 +1,6 @@
 package rafael.ktgenetic.fx
 
+import javafx.beans.property.ReadOnlyProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.event.EventHandler
@@ -54,7 +55,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
     private val mutationFactors: ObservableList<Double> =
         FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
 
-    private val yAxisBounds = listOf(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 1.0)
+    private val yAxisBounds = listOf(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 0.999, 1.0)
 
 
     private val maxColumns = 6
@@ -89,6 +90,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
     private val bestFitnessByGeneration: MutableList<Double> = mutableListOf()
     private val currentLowerBoundIndex = intProperty(0)
     private val currentUpperBoundIndex = intProperty(yAxisBounds.lastIndex)
+
+    protected val selectedOperator = cmbSelectionOperator.valueProperty() as ReadOnlyProperty<SelectionOperatorChoice>
 
     init {
         cmbGenerations.items = values

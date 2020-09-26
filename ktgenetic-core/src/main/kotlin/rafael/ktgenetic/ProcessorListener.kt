@@ -15,3 +15,9 @@ interface ProcessorListener {
     fun onEvent(event: ProcessorEvent<*>)
 
 }
+
+object NoListener: ProcessorListener {
+    override fun onEvent(event: ProcessorEvent<*>) {
+        // Do nothing
+    }
+}
