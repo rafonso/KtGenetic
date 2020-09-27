@@ -133,5 +133,6 @@
         <module>ktgenetic-sudoku</module>
         <module>ktgenetic-pictures_comparsion-rectangles</module>
         <module>ktgenetic-salesman</module>
+        <module>ktgenetic-camouflage</module>
     </modules>
 </project>

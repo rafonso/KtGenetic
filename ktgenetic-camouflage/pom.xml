@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ktgenetic</artifactId>
+        <groupId>rafael.ktgenetic</groupId>
+        <version>0.0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ktgenetic-camouflage</artifactId>
+    <name>rafael.ktgenetic.camouflage</name>
+
+    <properties>
+        <executable.mainclass>rafael.ktgenetic.camouflage.fx.CamouflageViewApp</executable.mainclass>
+        <executable.name>ktgenetic-camouflage</executable.name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>rafael.ktgenetic</groupId>
+            <artifactId>ktgenetic-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+<!--        -->
+<!--        <dependency>-->
+<!--            <groupId>rafael.ktgenetic</groupId>-->
+<!--            <artifactId>ktgenetic-core</artifactId>-->
+<!--            <version>0.0.1</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+    </build>
+
+</project>
