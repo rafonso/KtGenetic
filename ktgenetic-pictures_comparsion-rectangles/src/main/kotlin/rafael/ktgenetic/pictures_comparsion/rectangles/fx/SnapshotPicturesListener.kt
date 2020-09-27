@@ -65,6 +65,8 @@ class SnapshotPicturesListener(
         )
         snapshotDir = Files.createDirectory(snapshotBaseDir.resolve(dirName))
 
+        println("Saving snpashots at $snapshotDir")
+
         saveImage(originalImage, "original")
     }
 
@@ -84,6 +86,7 @@ class SnapshotPicturesListener(
                 canvas.snapshot(null, image)
 
                 val fileName = "%04d_F=%.4f".format(event.generation, event.population.first().fitness)
+                println("Saving Snapshot $fileName")
 
                 saveImage(image, fileName)
             }
