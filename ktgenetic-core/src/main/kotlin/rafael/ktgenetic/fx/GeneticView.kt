@@ -207,12 +207,13 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
 
     protected abstract fun resetComponents()
 
-    protected fun addComponent(title: String, component: Node, colspan: Int = 1) {
+    protected fun addComponent(title: String, component: Node, colspan: Int = 1): Label {
         assert(colspan <= maxColumns) { "Colspan must be at least $maxColumns. It was $colspan" }
 
         val panel = FlowPane(Orientation.VERTICAL)
         panel.styleClass.add("panel-control")
-        panel.add(Label(title))
+        val lblTitle = Label(title)
+        panel.add(lblTitle)
         panel.add(component)
 
         if (lastColumn + colspan > maxColumns) {
@@ -222,6 +223,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
 
         pnlInput.add(panel, lastColumn, lastRow, colspan, 1)
         lastColumn += colspan
+
+        return lblTitle
     }
 
     override fun onEvent(event: ProcessorEvent<*>) {

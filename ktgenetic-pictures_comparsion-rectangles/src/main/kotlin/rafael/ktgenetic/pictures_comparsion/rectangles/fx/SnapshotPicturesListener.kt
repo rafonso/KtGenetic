@@ -12,7 +12,6 @@ import tornadofx.runLater
 import java.awt.image.BufferedImage
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.imageio.ImageIO
@@ -24,7 +23,7 @@ const val DIR_FORMAT = "%s " +// Nome do arquivo original
         "MAX_GEN=%04d " + // Quantidade de Gerações
         "GEN_SIZE=%04d " + // Tamanho da geração
         "MUT_FACT=%.1f " + // Fator de Mutação
-        "%s" // DAta/Hora da geração
+        "%s" // Data/Hora da geração
 
 class SnapshotPicturesListener(
     rows: Int, cols: Int,
@@ -34,6 +33,7 @@ class SnapshotPicturesListener(
     selectionOperator: SelectionOperatorChoice,
     originalImageName: String,
     originalImage: Image,
+    snapshotBaseDir: Path,
     private val canvas: Canvas,
     private val generationsSnapshot: Int
 ) : ProcessorListener {
@@ -63,9 +63,7 @@ class SnapshotPicturesListener(
             mutationFactor,
             dateTimeCreation
         )
-
-        val basePath = Paths.get("d:\\Users\\T-Gamer\\Pictures\\snapshots")
-        snapshotDir = Files.createDirectory(basePath.resolve(dirName))
+        snapshotDir = Files.createDirectory(snapshotBaseDir.resolve(dirName))
 
         saveImage(originalImage, "original")
     }
@@ -82,14 +80,14 @@ class SnapshotPicturesListener(
     override fun onEvent(event: ProcessorEvent<*>) {
         if ((event.eventType == TypeProcessorEvent.GENERATION_EVALUATED) && generationEvaluator(event.generation)) {
             runLater {
-                val fileName = "%04d_F=%.4f".format(event.generation, event.population.first().fitness)
-
-
                 val image = WritableImage(canvas.width.toInt(), canvas.height.toInt())
                 canvas.snapshot(null, image)
+
+                val fileName = "%04d_F=%.4f".format(event.generation, event.population.first().fitness)
 
                 saveImage(image, fileName)
             }
         }
     }
+
 }

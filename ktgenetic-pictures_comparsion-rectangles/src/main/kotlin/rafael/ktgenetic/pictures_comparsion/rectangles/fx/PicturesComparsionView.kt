@@ -1,6 +1,5 @@
 package rafael.ktgenetic.pictures_comparsion.rectangles.fx
 
-import javafx.beans.property.SimpleObjectProperty
 import javafx.event.EventHandler
 import javafx.geometry.VPos
 import javafx.scene.canvas.Canvas
@@ -12,6 +11,7 @@ import javafx.scene.layout.Pane
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
+import javafx.stage.DirectoryChooser
 import javafx.stage.FileChooser
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.NoListener
@@ -24,14 +24,16 @@ import tornadofx.*
 import java.io.File
 import java.io.FileInputStream
 import java.lang.Double.min
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.prefs.Preferences
-import tornadofx.getValue
-import tornadofx.setValue
 
 val noCanvas = Canvas(0.0, 0.0)
 
 const val MAX_ROWS = 40
 const val MAX_COLS = MAX_ROWS
+
+const val BASE_DIR = "snapshotBaseDir"
 
 fun Color.toKolor(): Kolor = Kolor((255 * this.red).toInt(), (255 * this.green).toInt(), (255 * this.blue).toInt())
 
@@ -98,8 +100,9 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
 
     // OTHER COMPONENTS
 
-    val snapshotListenerProperty = SimpleObjectProperty<ProcessorListener>(NoListener)
-    var snapshotListener by snapshotListenerProperty
+    private var snapshotListener: ProcessorListener = NoListener
+
+    private var snapshotBaseDir: Path
 
 
     init {
@@ -114,7 +117,11 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
         addComponent("Image Dimensions", lblImageDimensions)
         addComponent("Rows", cmbRows)
         addComponent("Columns", cmbColumns)
-        addComponent("Snapshots for each Generations", cmbGenerationsSnapshots)
+        val lblGenerations = addComponent("Snapshots for each Generations", cmbGenerationsSnapshots)
+
+        lblGenerations.tooltip("Double click to set the directory where snapshots will be saved")
+        lblGenerations.onDoubleClick { changeSnaphotBaseDir() }
+
 
         val imagesPanes = gridpane {
             prefWidth = 800.0
@@ -146,6 +153,24 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
         imagesPanes.add(pnlGeneratedImage, 1, 0)
 
         root.center = imagesPanes
+
+        val prefs = Preferences.userRoot().node(this.javaClass.name)
+        this.snapshotBaseDir = Paths.get(prefs.get(BASE_DIR, System.getProperty("user.home")))
+    }
+
+    private fun changeSnaphotBaseDir() {
+        DirectoryChooser()
+            .apply {
+                initialDirectory = snapshotBaseDir.toFile()
+                title = "Choose Directory base of snapshots"
+            }
+            .showDialog(super.currentWindow)
+            ?.let {
+                snapshotBaseDir = it.toPath()
+
+                val prefs = Preferences.userRoot().node(this.javaClass.name)
+                prefs.put(BASE_DIR, it.absolutePath)
+            }
     }
 
     private fun ComboBox<Int>.configureCombo(max: Int) {
@@ -258,17 +283,21 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
                 originalImageView.image.pixelReader.getColor(col, row).toKolor()
             }.toTypedArray()
         }.toTypedArray()
+
         snapshotListener =
             if (cmbGenerationsSnapshots.value == 0) NoListener
-            else SnapshotPicturesListener(cmbRows.value, cmbColumns.value,
+            else SnapshotPicturesListener(
+                cmbRows.value, cmbColumns.value,
                 maxGenerations,
                 generationSize,
                 mutationFactor,
                 super.selectedOperator.value,
                 lblImage.text,
                 originalImageView.image,
+                snapshotBaseDir,
                 canvas,
-                cmbGenerationsSnapshots.value)
+                cmbGenerationsSnapshots.value
+            )
 
         return ScreenEnvironment(
             originalBitmaps,
