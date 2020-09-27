@@ -227,6 +227,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
         return lblTitle
     }
 
+    protected fun addComponent(component: Node, colspan: Int = 1): Label = addComponent("", component, colspan)
+
     override fun onEvent(event: ProcessorEvent<*>) {
         if (event.eventType.ended) {
             disableInputComponents(false)
@@ -287,6 +289,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
 
         resetComponents()
     }
+
 }
 
 class SelectionOperatorConverter : StringConverter<SelectionOperatorChoice>() {
