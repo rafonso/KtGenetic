@@ -5,6 +5,7 @@ import javafx.beans.value.ChangeListener
 import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.scene.Node
+import javafx.scene.control.Tooltip
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Background
@@ -44,7 +45,9 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         }
     }
 
-    private val chkNonStop = checkbox("Run non Stop")
+    private val chkNonStop = checkbox("Run non Stop").also { chk ->
+        chk.tooltip = Tooltip("When checked, it will run indefinitely, ignoring Generations Combo")
+    }
 
     private val cmbCircleRadius = combobox<Int> {
         items = observableListOf(10, 20, 30, 40, 50)
@@ -63,7 +66,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
 
     // OTHER COMPONENTS
 
-    private val circlesProperty = SimpleObjectProperty<List<Circle>>(listOf<Circle>())
+    private val circlesProperty = SimpleObjectProperty(listOf<Circle>())
     private var circles by circlesProperty
 
     private var backgroundColorToEnvironmentListener: ChangeListener<Color>? = null
@@ -123,9 +126,10 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
                 }
             }
 
+        val maxGen = if (chkNonStop.isSelected) Integer.MAX_VALUE else maxGenerations
         return CamouflageEnvironment(
             backgroundColorPicker.value.toKolor(),
-            maxGenerations,
+            maxGen,
             generationSize,
             mutationFactor
         ).also { env ->
