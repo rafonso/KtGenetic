@@ -11,10 +11,20 @@ import javafx.scene.layout.CornerRadii
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import rafael.ktgenetic.Environment
+import rafael.ktgenetic.camouflage.CamouflageEnvironment
 import rafael.ktgenetic.camouflage.Kolor
+import rafael.ktgenetic.camouflage.MAX_COLOR_VALUE
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
+
+fun Kolor.toColor(): Color = Color.rgb(this.r, this.g, this.b)
+
+fun Color.toKolor() = Kolor(
+    (this.red * MAX_COLOR_VALUE).toInt(),
+    (this.green * MAX_COLOR_VALUE).toInt(),
+    (this.blue * MAX_COLOR_VALUE).toInt()
+)
 
 class CamouflageApp : App(CamouflageView::class)
 
@@ -65,10 +75,9 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         }
         addComponent("Circles Radi", cmbCircleRadius)
 
-
         circlesProperty.onChange { reloadBackgound() }
 
-        val scrollPane = scrollpane(true, true) {
+        val scrollPane = scrollpane(fitToWidth = true, fitToHeight = true) {
             content = pnlEnvironment
         }
         root.center = scrollPane
@@ -87,7 +96,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
     }
 
     override fun validate() {
-
+// Do nothing
     }
 
     override fun getEnvironment(
@@ -106,16 +115,24 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
                 }
             }
 
-
-        TODO("Not yet implemented")
+        return CamouflageEnvironment(
+            backgroundColorPicker.value.toKolor(),
+            maxGenerations,
+            generationSize,
+            mutationFactor
+        )
     }
 
     override fun fillOwnComponent(genome: List<Kolor>) {
-        TODO("Not yet implemented")
+        genome.forEachIndexed { index, kolor ->
+            circles[index].fill = kolor.toColor()
+            circles[index].tooltip(circles[index].fill.toString())
+        }
     }
 
     override fun resetComponents() {
         backgroundColorPicker.value = Color.WHITE
         chkNonStop.isSelected = false;
     }
+
 }
