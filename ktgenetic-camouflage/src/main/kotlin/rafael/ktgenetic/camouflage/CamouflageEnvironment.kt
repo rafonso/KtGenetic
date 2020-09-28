@@ -33,6 +33,6 @@ class CamouflageEnvironment(
 
     override fun createNewChromosome(sequence: List<Int>): Kolor = Kolor(sequence[0], sequence[1], sequence[2])
 
-    override fun calculateFitness(chromosome: Kolor): Double = chromosome.distanceTo(this.backgroundColor) / 3
+    override fun calculateFitness(chromosome: Kolor): Double = 1 / (1 + chromosome.distanceTo(this.backgroundColor))
 
 }
