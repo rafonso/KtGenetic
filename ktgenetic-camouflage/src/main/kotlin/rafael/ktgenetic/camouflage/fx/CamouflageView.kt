@@ -143,9 +143,8 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
     override fun fillOwnComponent(genome: List<Kolor>) {
         genome.forEachIndexed { index, kolor ->
             circles[index].fill = kolor.toColor()
-            circles[index].tooltip(
-                "Color: ${circles[index].fill}, Fitness: ${kolor.fitness}"
-            )
+            circles[index].strokeWidth = 1 + kolor.fitness
+            circles[index].tooltip("Color: %s, Fitness: %.5f".format(circles[index].fill, kolor.fitness))
         }
     }
 
