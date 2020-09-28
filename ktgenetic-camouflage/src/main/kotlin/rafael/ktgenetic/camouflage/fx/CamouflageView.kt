@@ -1,8 +1,10 @@
 package rafael.ktgenetic.camouflage.fx
 
 import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.value.ChangeListener
 import javafx.event.EventHandler
 import javafx.geometry.Insets
+import javafx.scene.Node
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Background
@@ -11,6 +13,7 @@ import javafx.scene.layout.CornerRadii
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import rafael.ktgenetic.Environment
+import rafael.ktgenetic.ProcessorEvent
 import rafael.ktgenetic.camouflage.CamouflageEnvironment
 import rafael.ktgenetic.camouflage.Kolor
 import rafael.ktgenetic.camouflage.MAX_COLOR_VALUE
@@ -43,6 +46,13 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
 
     private val chkNonStop = checkbox("Run non Stop")
 
+    private val cmbCircleRadius = combobox<Int> {
+        items = observableListOf(10, 20, 30, 40, 50)
+        value = 10
+    }
+
+    private var backgroundColorPickerParent: Node
+
     // OUTPUT COMPONENTS
 
     private val pnlEnvironment = flowpane {
@@ -51,24 +61,21 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         hgap = 5.0
     }
 
-    private val cmbCircleRadius = combobox<Int> {
-        items = observableListOf(10, 20, 30, 40, 50)
-        value = 10
-    }
-
     // OTHER COMPONENTS
 
     private val circlesProperty = SimpleObjectProperty<List<Circle>>(listOf<Circle>())
     private var circles by circlesProperty
 
+    private var backgroundColorToEnvironmentListener: ChangeListener<Color>? = null
 
     init {
         backgroundColorPicker.onAction = EventHandler { changeBackground() }
 
         addComponent("Background Color", backgroundColorPicker)
+        backgroundColorPickerParent = backgroundColorPicker.parent
         addComponent(chkNonStop)
 
-        cmbCircleRadius.onAction = EventHandler { event ->
+        cmbCircleRadius.onAction = EventHandler {
             val newRadius = cmbCircleRadius.value.toDouble()
             this.circles.forEach { it.radius = newRadius }
             reloadBackgound()
@@ -84,6 +91,8 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
 
         changeBackground()
     }
+
+    override fun alwaysEnabledComponents(): List<Node> = listOf(backgroundColorPickerParent)
 
     private fun reloadBackgound() {
         pnlEnvironment.clear()
@@ -104,7 +113,6 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         generationSize: Int,
         mutationFactor: Double
     ): Environment<Int, Kolor> {
-        println(generationSize)
         val newRadius = cmbCircleRadius.value.toDouble()
         this.circles =
             (1..generationSize).map { circleId ->
@@ -120,19 +128,34 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
             maxGenerations,
             generationSize,
             mutationFactor
-        )
+        ).also { env ->
+            backgroundColorToEnvironmentListener = ChangeListener { _, _, newColor ->
+                env.backgroundColor = newColor.toKolor()
+            }
+            backgroundColorPicker.valueProperty().addListener(backgroundColorToEnvironmentListener)
+        }
     }
 
     override fun fillOwnComponent(genome: List<Kolor>) {
         genome.forEachIndexed { index, kolor ->
             circles[index].fill = kolor.toColor()
-            circles[index].tooltip(circles[index].fill.toString())
+            circles[index].tooltip(
+                "Color: ${circles[index].fill}, Fitness: ${kolor.fitness}"
+            )
         }
     }
 
     override fun resetComponents() {
         backgroundColorPicker.value = Color.WHITE
-        chkNonStop.isSelected = false;
+        chkNonStop.isSelected = false
+    }
+
+    override fun onEvent(event: ProcessorEvent<*>) {
+        super.onEvent(event)
+        if (event.eventType.ended) {
+            backgroundColorPicker.valueProperty().removeListener(backgroundColorToEnvironmentListener)
+            backgroundColorToEnvironmentListener = null
+        }
     }
 
 }

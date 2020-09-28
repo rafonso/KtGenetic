@@ -1,9 +1,12 @@
 package rafael.ktgenetic.camouflage
 
+import javafx.beans.property.SimpleObjectProperty
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.randomIntExclusive
 import rafael.ktgenetic.randomIntInclusive
 import rafael.ktgenetic.replace
+import tornadofx.getValue
+import tornadofx.setValue
 
 class CamouflageEnvironment(
     initialBackgroundColor: Kolor,
@@ -12,7 +15,8 @@ class CamouflageEnvironment(
     override var mutationFactor: Double = 0.01
 ) : Environment<Int, Kolor> {
 
-    var backgroundColor = initialBackgroundColor
+    private val backgroundColorProperty = SimpleObjectProperty<Kolor>(initialBackgroundColor)
+    var backgroundColor: Kolor by backgroundColorProperty
 
     private fun randomByte() = randomIntInclusive(MAX_COLOR_VALUE)
 

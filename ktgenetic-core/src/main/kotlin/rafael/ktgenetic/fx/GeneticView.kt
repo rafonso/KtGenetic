@@ -156,7 +156,10 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
         btnStart.isDisable = disable
         btnReset.isDisable = disable
         btnStop.isDisable = !disable
-        pnlInput.children.filtered { it != pnlButtons }.forEach { it.isDisable = disable }
+        pnlInput.children
+            .filtered { it != pnlButtons }
+            .filtered { !alwaysEnabledComponents().contains(it) }
+            .forEach { it.isDisable = disable }
     }
 
     private fun showValidationError(e: IllegalStateException) {
@@ -206,6 +209,11 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
     protected abstract fun fillOwnComponent(genome: List<C>)
 
     protected abstract fun resetComponents()
+
+    /**
+     * Returns the [Node]s that will not be disabled while processing.
+     */
+    protected open fun alwaysEnabledComponents() = emptyList<Node>()
 
     protected fun addComponent(title: String, component: Node, colspan: Int = 1): Label {
         assert(colspan <= maxColumns) { "Colspan must be at least $maxColumns. It was $colspan" }
