@@ -15,13 +15,12 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.ProcessorEvent
-import rafael.ktgenetic.camouflage.CamouflageEnvironment
-import rafael.ktgenetic.camouflage.Kolor
-import rafael.ktgenetic.camouflage.KolorDistance
-import rafael.ktgenetic.camouflage.MAX_COLOR_VALUE
+import rafael.ktgenetic.camouflage.*
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
+import tornadofx.getValue
+import tornadofx.setValue
 
 fun Kolor.toColor(): Color = Color.rgb(this.r, this.g, this.b)
 
@@ -75,13 +74,19 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
     private val circlesProperty = SimpleObjectProperty(listOf<Circle>())
     private var circles by circlesProperty
 
-    private var backgroundColorToEnvironmentListener: ChangeListener<Color>? = null
+    private var backgroundKolorToEnvironmentListener: ChangeListener<Kolor>? = null
+
+    private val backgroundKolorProperty = SimpleObjectProperty(Kolor(0, 0, 0))
+    private var backgroundKolor by backgroundKolorProperty
+
 
     init {
-        backgroundColorPicker.onAction = EventHandler { changeBackground() }
-
+        BidirectionalBinding.bindBidirectional(backgroundKolorProperty, backgroundColorPicker.valueProperty(),
+            { _, _, newKolor -> backgroundColorPicker.value = newKolor.toColor() },
+            { _, _, newColor -> backgroundKolor = newColor.toKolor() })
         addComponent("Background Color", backgroundColorPicker)
         backgroundColorPickerParent = backgroundColorPicker.parent
+
         addComponent(chkNonStop)
 
         cmbCircleRadius.onAction = EventHandler {
@@ -89,7 +94,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
             this.circles.forEach { it.radius = newRadius }
             reloadBackgound()
         }
-        addComponent("Circles Radi", cmbCircleRadius)
+        addComponent("Circles Radii", cmbCircleRadius)
         addComponent("Color Distance Calculator", cmbColorDistance)
 
         circlesProperty.onChange { reloadBackgound() }
@@ -99,6 +104,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         }
         root.center = scrollPane
 
+        backgroundKolorProperty.onChange { changeBackground() }
         changeBackground()
     }
 
@@ -135,16 +141,16 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
 
         val maxGen = if (chkNonStop.isSelected) Integer.MAX_VALUE else maxGenerations
         return CamouflageEnvironment(
-            backgroundColorPicker.value.toKolor(),
+            backgroundKolor,
             cmbColorDistance.value,
             maxGen,
             generationSize,
             mutationFactor
         ).also { env ->
-            backgroundColorToEnvironmentListener = ChangeListener { _, _, newColor ->
-                env.backgroundColor = newColor.toKolor()
+            backgroundKolorToEnvironmentListener = ChangeListener { _, _, newKolor ->
+                env.backgroundColor = newKolor
             }
-            backgroundColorPicker.valueProperty().addListener(backgroundColorToEnvironmentListener)
+            backgroundKolorProperty.addListener(backgroundKolorToEnvironmentListener)
         }
     }
 
@@ -157,15 +163,15 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
     }
 
     override fun resetComponents() {
-        backgroundColorPicker.value = Color.WHITE
+        backgroundKolor = WHITE
         chkNonStop.isSelected = false
     }
 
     override fun onEvent(event: ProcessorEvent<*>) {
         super.onEvent(event)
         if (event.eventType.ended) {
-            backgroundColorPicker.valueProperty().removeListener(backgroundColorToEnvironmentListener)
-            backgroundColorToEnvironmentListener = null
+            backgroundKolorProperty.removeListener(backgroundKolorToEnvironmentListener)
+            backgroundKolorToEnvironmentListener = null
         }
     }
 

@@ -42,3 +42,5 @@ data class Kolor(val r: Int, val g: Int, val b: Int) : Chromosome<Int>() {
     override fun toString() = super.toString()
 
 }
+
+val WHITE = Kolor(MAX_COLOR_VALUE, MAX_COLOR_VALUE, MAX_COLOR_VALUE)
