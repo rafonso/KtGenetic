@@ -1,6 +1,10 @@
 package rafael.ktgenetic.camouflage
 
+import javafx.scene.paint.Color
 import rafael.ktgenetic.Chromosome
+import kotlin.math.abs
+import kotlin.math.min
+import kotlin.math.sqrt
 
 fun validateColor(x: Int, name: String) {
     require(x in 0..MAX_COLOR_VALUE) { "$name must be between 0 and 255" }
@@ -19,9 +23,11 @@ const val MAX_COLOR_VALUE_D = (MAX_COLOR_VALUE * MAX_COLOR_VALUE).toDouble()
  */
 data class Kolor(val r: Int, val g: Int, val b: Int) : Chromosome<Int>() {
 
-    val rDouble = r.toDouble() / MAX_COLOR_VALUE
-    val gDouble = g.toDouble() / MAX_COLOR_VALUE
-    val bDouble = b.toDouble() / MAX_COLOR_VALUE
+    private val rDouble = r.toDouble() / MAX_COLOR_VALUE
+    private val gDouble = g.toDouble() / MAX_COLOR_VALUE
+    private val bDouble = b.toDouble() / MAX_COLOR_VALUE
+
+    val color = Color.color(rDouble, gDouble, bDouble)
 
     init {
         validateColor(r, "R")
@@ -34,13 +40,5 @@ data class Kolor(val r: Int, val g: Int, val b: Int) : Chromosome<Int>() {
     override fun valueToString(): String = "(%3d,%3d,%3d)".format(r, g, b)
 
     override fun toString() = super.toString()
-
-    fun distanceTo(other: Kolor): Double {
-        val deltaR = (this.rDouble - other.rDouble)
-        val deltaG = (this.gDouble - other.gDouble)
-        val deltaB = (this.bDouble - other.bDouble)
-
-        return (deltaR * deltaR) + (deltaG * deltaG) + (deltaB * deltaB)
-    }
 
 }

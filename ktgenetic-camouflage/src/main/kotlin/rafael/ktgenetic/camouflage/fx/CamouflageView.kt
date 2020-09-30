@@ -17,6 +17,7 @@ import rafael.ktgenetic.Environment
 import rafael.ktgenetic.ProcessorEvent
 import rafael.ktgenetic.camouflage.CamouflageEnvironment
 import rafael.ktgenetic.camouflage.Kolor
+import rafael.ktgenetic.camouflage.KolorDistance
 import rafael.ktgenetic.camouflage.MAX_COLOR_VALUE
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
@@ -54,6 +55,11 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         value = 10
     }
 
+    private val cmbColorDistance = combobox<KolorDistance> {
+        items = observableListOf(KolorDistance.values().toList())
+        value = KolorDistance.RGB
+    }
+
     private var backgroundColorPickerParent: Node
 
     // OUTPUT COMPONENTS
@@ -84,6 +90,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
             reloadBackgound()
         }
         addComponent("Circles Radi", cmbCircleRadius)
+        addComponent("Color Distance Calculator", cmbColorDistance)
 
         circlesProperty.onChange { reloadBackgound() }
 
@@ -129,6 +136,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         val maxGen = if (chkNonStop.isSelected) Integer.MAX_VALUE else maxGenerations
         return CamouflageEnvironment(
             backgroundColorPicker.value.toKolor(),
+            cmbColorDistance.value,
             maxGen,
             generationSize,
             mutationFactor

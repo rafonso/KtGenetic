@@ -10,6 +10,7 @@ import tornadofx.setValue
 
 class CamouflageEnvironment(
     initialBackgroundColor: Kolor,
+    val distanceCalulator: KolorDistance,
     override val maxGenerations: Int,
     override val generationSize: Int,
     override var mutationFactor: Double = 0.01
@@ -33,6 +34,7 @@ class CamouflageEnvironment(
 
     override fun createNewChromosome(sequence: List<Int>): Kolor = Kolor(sequence[0], sequence[1], sequence[2])
 
-    override fun calculateFitness(chromosome: Kolor): Double = 1 / (1 + chromosome.distanceTo(this.backgroundColor))
+    override fun calculateFitness(chromosome: Kolor): Double =
+        1 / (1 + distanceCalulator.distance(chromosome, this.backgroundColor))
 
 }

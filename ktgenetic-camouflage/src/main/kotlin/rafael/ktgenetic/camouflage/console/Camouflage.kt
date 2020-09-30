@@ -5,6 +5,7 @@ import org.apache.commons.cli.Options
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.camouflage.CamouflageEnvironment
 import rafael.ktgenetic.camouflage.Kolor
+import rafael.ktgenetic.camouflage.KolorDistance
 import rafael.ktgenetic.camouflage.MAX_COLOR_VALUE
 import rafael.ktgenetic.console.executeMain
 import rafael.ktgenetic.console.getIntOptionValue
@@ -46,6 +47,7 @@ fun getBackgroundKolor(line: CommandLine) = Kolor(
 private fun getEnvironment(line: CommandLine) =
     CamouflageEnvironment(
         getBackgroundKolor(line),
+        KolorDistance.RGB,
         line.getMaxGenerations(),
         line.getPopulationByGeneration()
     )
