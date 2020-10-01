@@ -21,6 +21,7 @@ import rafael.ktgenetic.Environment
 import rafael.ktgenetic.ProcessorEvent
 import rafael.ktgenetic.camouflage.*
 import rafael.ktgenetic.fx.GeneticView
+import rafael.ktgenetic.fx.bindBidirectional
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import rafael.ktgenetic.randomIntInclusive
 import tornadofx.*
@@ -93,7 +94,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
 
         fun confgureIntSpinner(spinner: Spinner<Int>, kolorToValue: (Kolor) -> Int, copyColor: (Kolor, Int) -> Kolor) {
             spinner.valueFactory.value = kolorToValue(backgroundKolor)
-            BidirectionalBinding.bindBidirectional(
+            bindBidirectional(
                 backgroundKolorProperty, spinner.valueFactory.valueProperty(),
                 { newKolor -> spinner.valueFactory.value = kolorToValue(newKolor) },
                 { newValue -> backgroundKolor = copyColor(backgroundKolor, newValue) })
@@ -117,7 +118,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         addComponent("Color Distance Calculator", cmbColorDistance, 4)
 
         backgroundColorPicker.value = backgroundKolor.color
-        BidirectionalBinding.bindBidirectional(backgroundKolorProperty, backgroundColorPicker.valueProperty(),
+        bindBidirectional(backgroundKolorProperty, backgroundColorPicker.valueProperty(),
             { newKolor -> backgroundColorPicker.value = newKolor.color },
             { newColor -> backgroundKolor = newColor.toKolor() })
         addComponent("Background Color", backgroundColorPicker)
