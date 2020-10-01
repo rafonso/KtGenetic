@@ -14,6 +14,12 @@ const val MAX_COLOR_VALUE = 255
 
 const val MAX_COLOR_VALUE_D = (MAX_COLOR_VALUE * MAX_COLOR_VALUE).toDouble()
 
+fun Color.toKolor() = Kolor(
+    (this.red * MAX_COLOR_VALUE).toInt(),
+    (this.green * MAX_COLOR_VALUE).toInt(),
+    (this.blue * MAX_COLOR_VALUE).toInt()
+)
+
 /**
  * Represents the color in a pixel. Named as 'Kolor" to avoid confusing with JavaFX `Color`.
  *

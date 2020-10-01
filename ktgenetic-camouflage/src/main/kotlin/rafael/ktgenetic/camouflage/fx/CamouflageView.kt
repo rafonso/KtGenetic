@@ -7,6 +7,7 @@ import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Node
+import javafx.scene.control.Label
 import javafx.scene.control.Spinner
 import javafx.scene.control.Tooltip
 import javafx.scene.input.*
@@ -21,15 +22,8 @@ import rafael.ktgenetic.ProcessorEvent
 import rafael.ktgenetic.camouflage.*
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.randomIntInclusive
 import tornadofx.*
-
-fun Kolor.toColor(): Color = Color.rgb(this.r, this.g, this.b)
-
-fun Color.toKolor() = Kolor(
-    (this.red * MAX_COLOR_VALUE).toInt(),
-    (this.green * MAX_COLOR_VALUE).toInt(),
-    (this.blue * MAX_COLOR_VALUE).toInt()
-)
 
 class CamouflageApp : App(CamouflageView::class)
 
@@ -107,6 +101,12 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
     private val backgroundKolorProperty = SimpleObjectProperty(WHITE)
     private var backgroundKolor by backgroundKolorProperty
 
+    private fun initColorLabels(lbl: Label, kolortoColor: (Kolor) -> Color) {
+        lbl.textFill = kolortoColor(backgroundKolor)
+        backgroundKolorProperty.addListener { _, _, newKolor ->
+            lbl.textFill = kolortoColor(newKolor)
+        }
+    }
 
     init {
         addComponent(chkNonStop)
@@ -120,43 +120,67 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
 
         backgroundColorPicker.value = backgroundKolor.color
         BidirectionalBinding.bindBidirectional(backgroundKolorProperty, backgroundColorPicker.valueProperty(),
-            { _, _, newKolor -> backgroundColorPicker.value = newKolor.toColor() },
+            { _, _, newKolor -> backgroundColorPicker.value = newKolor.color },
             { _, _, newColor -> backgroundKolor = newColor.toKolor() })
         addComponent("Background Color", backgroundColorPicker)
 
-        confgureIntSpinner(spnRed, { k -> k.r }, { k, v -> k.copy(r = v) })
-        addComponent("Red", spnRed)
+        confgureIntSpinner(spnRed, { it.r }, { k, v -> k.copy(r = v) })
+        addComponent("Red", spnRed).also { initColorLabels(it) { k -> Color.rgb(k.r, 0, 0) } }
 
-        confgureIntSpinner(spnGreen, { k -> k.g }, { k, v -> k.copy(g = v) })
-        addComponent("Green", spnGreen)
+        confgureIntSpinner(spnGreen, { it.g }, { k, v -> k.copy(g = v) })
+        addComponent("Green", spnGreen).also { initColorLabels(it) { k -> Color.rgb(0, k.g, 0) } }
 
-        confgureIntSpinner(spnBlue, { k -> k.b }, { k, v -> k.copy(b = v) })
-        addComponent("Blue", spnBlue, 3)
+        confgureIntSpinner(spnBlue, { it.b }, { k, v -> k.copy(b = v) })
+        addComponent("Blue", spnBlue, 3).also { initColorLabels(it) { k -> Color.rgb(0, 0, k.b) } }
 
         addComponent(Pane())
 
-        confgureIntSpinner(spnHue, { k -> k.color.hue.toInt() }, { k, v ->
+        confgureIntSpinner(spnHue, { it.color.hue.toInt() }, { k, v ->
             val c = k.color
             Color.hsb(v.toDouble(), c.saturation, c.brightness).toKolor()
         })
-        addComponent("Hue", spnHue)
+        addComponent("Hue", spnHue).also {
+            initColorLabels(it) { k ->
+                val c = k.color
+                Color.hsb(c.hue, 0.0, 0.0)
+            }
+        }
 
-        confgureIntSpinner(spnSaturation, { k -> (100.0 * k.color.saturation).toInt() }, { k, v ->
+        confgureIntSpinner(spnSaturation, { (100.0 * it.color.saturation).toInt() }, { k, v ->
             val c = k.color
             Color.hsb(c.hue, (v.toDouble() / 100.0), c.brightness).toKolor()
         })
-        addComponent("Saturation (%)", spnSaturation)
+        addComponent("Saturation (%)", spnSaturation).also {
+            initColorLabels(it) { k ->
+                val c = k.color
+                Color.hsb(0.0, c.saturation, 0.0)
+            }
+        }
 
-        confgureIntSpinner(spnBrightness, { k -> (100.0 * k.color.brightness).toInt() }, { k, v ->
+        confgureIntSpinner(spnBrightness, { (100.0 * it.color.brightness).toInt() }, { k, v ->
             val c = k.color
             Color.hsb(c.hue, c.saturation, (v.toDouble() / 100.0)).toKolor()
         })
-        addComponent("Brightness (%)", spnBrightness)
+        addComponent("Brightness (%)", spnBrightness).also {
+            initColorLabels(it) { k ->
+                val c = k.color
+                Color.hsb(0.0, 0.0, c.brightness)
+            }
+        }
 
         circlesProperty.onChange { reloadBackgound() }
 
         val scrollPane = scrollpane(fitToWidth = true, fitToHeight = true) {
             content = pnlEnvironment
+            onMouseClicked = EventHandler { evt ->
+                if (evt.clickCount == 2) {
+                    backgroundKolor = Kolor(
+                        randomIntInclusive(MAX_COLOR_VALUE),
+                        randomIntInclusive(MAX_COLOR_VALUE),
+                        randomIntInclusive(MAX_COLOR_VALUE)
+                    )
+                }
+            }
         }
         root.center = scrollPane
 
@@ -221,7 +245,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
 
     override fun fillOwnComponent(genome: List<Kolor>) {
         genome.forEachIndexed { index, kolor ->
-            circles[index].fill = kolor.toColor()
+            circles[index].fill = kolor.color
             circles[index].strokeWidth = 1 + kolor.fitness
             circles[index].tooltip("Color: %s, Fitness: %.5f".format(circles[index].fill, kolor.fitness))
         }
