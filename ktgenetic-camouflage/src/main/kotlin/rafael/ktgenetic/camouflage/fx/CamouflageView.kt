@@ -2,15 +2,18 @@ package rafael.ktgenetic.camouflage.fx
 
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ChangeListener
+import javafx.event.Event
 import javafx.event.EventHandler
 import javafx.geometry.Insets
+import javafx.geometry.Pos
 import javafx.scene.Node
+import javafx.scene.control.Spinner
 import javafx.scene.control.Tooltip
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
+import javafx.scene.input.*
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.CornerRadii
+import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import rafael.ktgenetic.Environment
@@ -19,8 +22,6 @@ import rafael.ktgenetic.camouflage.*
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.processor.GeneticProcessorChoice
 import tornadofx.*
-import tornadofx.getValue
-import tornadofx.setValue
 
 fun Kolor.toColor(): Color = Color.rgb(this.r, this.g, this.b)
 
@@ -33,6 +34,23 @@ fun Color.toKolor() = Kolor(
 class CamouflageApp : App(CamouflageView::class)
 
 class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorChoice.SIMPLE) {
+
+    private fun makeIntSpinner(maxValue: Int) = spinner(0, maxValue, 0, 1, enableScroll = true).also { spn ->
+        spn.editor.alignment = Pos.CENTER_RIGHT
+        spn.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume)
+    }
+
+    private fun confgureIntSpinner(
+        spinner: Spinner<Int>,
+        kolorToValue: (Kolor) -> Int,
+        copyColor: (Kolor, Int) -> Kolor
+    ) {
+        spinner.valueFactory.value = kolorToValue(backgroundKolor)
+        BidirectionalBinding.bindBidirectional(
+            backgroundKolorProperty, spinner.valueFactory.valueProperty(),
+            { _, _, newKolor -> spinner.valueFactory.value = kolorToValue(newKolor) },
+            { _, _, newValue -> backgroundKolor = copyColor(backgroundKolor, newValue) })
+    }
 
     // INPUT COMPONENTS
 
@@ -59,7 +77,17 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         value = KolorDistance.RGB
     }
 
-    private var backgroundColorPickerParent: Node
+    private val spnRed = makeIntSpinner(MAX_COLOR_VALUE)
+
+    private val spnGreen = makeIntSpinner(MAX_COLOR_VALUE)
+
+    private val spnBlue = makeIntSpinner(MAX_COLOR_VALUE)
+
+    private val spnHue = makeIntSpinner(360)
+
+    private val spnSaturation = makeIntSpinner(100)
+
+    private val spnBrightness = makeIntSpinner(100)
 
     // OUTPUT COMPONENTS
 
@@ -76,26 +104,54 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
 
     private var backgroundKolorToEnvironmentListener: ChangeListener<Kolor>? = null
 
-    private val backgroundKolorProperty = SimpleObjectProperty(Kolor(0, 0, 0))
+    private val backgroundKolorProperty = SimpleObjectProperty(WHITE)
     private var backgroundKolor by backgroundKolorProperty
 
 
     init {
-        BidirectionalBinding.bindBidirectional(backgroundKolorProperty, backgroundColorPicker.valueProperty(),
-            { _, _, newKolor -> backgroundColorPicker.value = newKolor.toColor() },
-            { _, _, newColor -> backgroundKolor = newColor.toKolor() })
-        addComponent("Background Color", backgroundColorPicker)
-        backgroundColorPickerParent = backgroundColorPicker.parent
-
         addComponent(chkNonStop)
-
         cmbCircleRadius.onAction = EventHandler {
             val newRadius = cmbCircleRadius.value.toDouble()
             this.circles.forEach { it.radius = newRadius }
             reloadBackgound()
         }
         addComponent("Circles Radii", cmbCircleRadius)
-        addComponent("Color Distance Calculator", cmbColorDistance)
+        addComponent("Color Distance Calculator", cmbColorDistance, 4)
+
+        backgroundColorPicker.value = backgroundKolor.color
+        BidirectionalBinding.bindBidirectional(backgroundKolorProperty, backgroundColorPicker.valueProperty(),
+            { _, _, newKolor -> backgroundColorPicker.value = newKolor.toColor() },
+            { _, _, newColor -> backgroundKolor = newColor.toKolor() })
+        addComponent("Background Color", backgroundColorPicker)
+
+        confgureIntSpinner(spnRed, { k -> k.r }, { k, v -> k.copy(r = v) })
+        addComponent("Red", spnRed)
+
+        confgureIntSpinner(spnGreen, { k -> k.g }, { k, v -> k.copy(g = v) })
+        addComponent("Green", spnGreen)
+
+        confgureIntSpinner(spnBlue, { k -> k.b }, { k, v -> k.copy(b = v) })
+        addComponent("Blue", spnBlue, 3)
+
+        addComponent(Pane())
+
+        confgureIntSpinner(spnHue, { k -> k.color.hue.toInt() }, { k, v ->
+            val c = k.color
+            Color.hsb(v.toDouble(), c.saturation, c.brightness).toKolor()
+        })
+        addComponent("Hue", spnHue)
+
+        confgureIntSpinner(spnSaturation, { k -> (100.0 * k.color.saturation).toInt() }, { k, v ->
+            val c = k.color
+            Color.hsb(c.hue, (v.toDouble() / 100.0), c.brightness).toKolor()
+        })
+        addComponent("Saturation (%)", spnSaturation)
+
+        confgureIntSpinner(spnBrightness, { k -> (100.0 * k.color.brightness).toInt() }, { k, v ->
+            val c = k.color
+            Color.hsb(c.hue, c.saturation, (v.toDouble() / 100.0)).toKolor()
+        })
+        addComponent("Brightness (%)", spnBrightness)
 
         circlesProperty.onChange { reloadBackgound() }
 
@@ -108,7 +164,16 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         changeBackground()
     }
 
-    override fun alwaysEnabledComponents(): List<Node> = listOf(backgroundColorPickerParent)
+    override fun alwaysEnabledComponents(): List<Node> =
+        listOf(
+            backgroundColorPicker,
+            spnRed,
+            spnGreen,
+            spnBlue,
+            spnHue,
+            spnSaturation,
+            spnBrightness
+        ).map { c -> c.parent }
 
     private fun reloadBackgound() {
         pnlEnvironment.clear()
