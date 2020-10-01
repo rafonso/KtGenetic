@@ -107,20 +107,20 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
         prefWidth = 100.0
     }
 
-    private val lblBestDistance = label {
-        prefWidth = 200.0
-    }
-
-    private val lblSecondBestDistance = label {
-        prefWidth = 200.0
-    }
-
     private val lblNumberOfPoints = label {
-        prefWidth = 200.0
+        prefWidth = 150.0
     }
 
     private val lblNumberOfPossiblePaths = label {
-        prefWidth = 200.0
+        prefWidth = 150.0
+    }
+
+    private val lblBestDistance = label {
+        prefWidth = 150.0
+    }
+
+    private val lblSecondBestDistance = label {
+        prefWidth = 150.0
     }
 
     // OTHER ATTRIBUTES
@@ -296,11 +296,11 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice
 
         val secondBestPath = genome[1]
         paintPath(secondBestPath, secondPaint)
-        lblSecondBestDistance.text = "Length of second best path = %6.0f".format(secondBestPath.width)
+        lblSecondBestDistance.text = "2nd best path = %6.0f".format(secondBestPath.width)
 
         val bestPath = genome[0]
         paintPath(bestPath, bestPaint)
-        lblBestDistance.text = "Length of best path = %6.0f".format(bestPath.width)
+        lblBestDistance.text = "Best path = %6.0f".format(bestPath.width)
     }
 
     private fun clearArrows() {
