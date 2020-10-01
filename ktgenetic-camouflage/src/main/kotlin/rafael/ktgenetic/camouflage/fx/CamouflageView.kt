@@ -34,18 +34,6 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         spn.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume)
     }
 
-    private fun confgureIntSpinner(
-        spinner: Spinner<Int>,
-        kolorToValue: (Kolor) -> Int,
-        copyColor: (Kolor, Int) -> Kolor
-    ) {
-        spinner.valueFactory.value = kolorToValue(backgroundKolor)
-        BidirectionalBinding.bindBidirectional(
-            backgroundKolorProperty, spinner.valueFactory.valueProperty(),
-            { _, _, newKolor -> spinner.valueFactory.value = kolorToValue(newKolor) },
-            { _, _, newValue -> backgroundKolor = copyColor(backgroundKolor, newValue) })
-    }
-
     // INPUT COMPONENTS
 
     private val backgroundColorPicker = colorpicker(Color.WHITE, ColorPickerMode.Button).also { colorPicker ->
@@ -101,14 +89,24 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
     private val backgroundKolorProperty = SimpleObjectProperty(WHITE)
     private var backgroundKolor by backgroundKolorProperty
 
-    private fun initColorLabels(lbl: Label, kolortoColor: (Kolor) -> Color) {
-        lbl.textFill = kolortoColor(backgroundKolor)
-        backgroundKolorProperty.addListener { _, _, newKolor ->
-            lbl.textFill = kolortoColor(newKolor)
-        }
-    }
-
     init {
+
+        fun confgureIntSpinner(spinner: Spinner<Int>, kolorToValue: (Kolor) -> Int, copyColor: (Kolor, Int) -> Kolor) {
+            spinner.valueFactory.value = kolorToValue(backgroundKolor)
+            BidirectionalBinding.bindBidirectional(
+                backgroundKolorProperty, spinner.valueFactory.valueProperty(),
+                { newKolor -> spinner.valueFactory.value = kolorToValue(newKolor) },
+                { newValue -> backgroundKolor = copyColor(backgroundKolor, newValue) })
+        }
+
+        fun initColorLabels(lbl: Label, kolortoColor: (Kolor) -> Color) {
+            lbl.textFill = kolortoColor(backgroundKolor)
+            backgroundKolorProperty.addListener { _, _, newKolor ->
+                lbl.textFill = kolortoColor(newKolor)
+            }
+        }
+
+
         addComponent(chkNonStop)
         cmbCircleRadius.onAction = EventHandler {
             val newRadius = cmbCircleRadius.value.toDouble()
@@ -120,8 +118,8 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
 
         backgroundColorPicker.value = backgroundKolor.color
         BidirectionalBinding.bindBidirectional(backgroundKolorProperty, backgroundColorPicker.valueProperty(),
-            { _, _, newKolor -> backgroundColorPicker.value = newKolor.color },
-            { _, _, newColor -> backgroundKolor = newColor.toKolor() })
+            { newKolor -> backgroundColorPicker.value = newKolor.color },
+            { newColor -> backgroundKolor = newColor.toKolor() })
         addComponent("Background Color", backgroundColorPicker)
 
         confgureIntSpinner(spnRed, { it.r }, { k, v -> k.copy(r = v) })
