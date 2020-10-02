@@ -132,33 +132,33 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
         addSpinner("Blue", spnBlue, { it.b }, { k, v -> k.copy(b = v) }, { k -> Color.rgb(0, 0, k.b) })
         addComponent(Pane(), 2)
 
-        addComponent(Pane())
-        addSpinner("Hue", spnHue, { it.color.hue.toInt() },
-            { k, v ->
-                val c = k.color
-                Color.hsb(v.toDouble(), c.saturation, c.brightness).toKolor()
-            },
-            { k -> Color.hsb(k.color.hue, 0.0, 0.0) }
-        )
-        addSpinner("Saturation (%)", spnSaturation, { (100.0 * it.color.saturation).toInt() },
-            { k, v ->
-                val c = k.color
-                Color.hsb(c.hue, (v.toDouble() / 100.0), c.brightness).toKolor()
-            },
-            { k -> Color.hsb(0.0, k.color.saturation, 0.0) }
-        )
-        addSpinner("Brightness (%)", spnBrightness, { (100.0 * it.color.brightness).toInt() },
-            { k, v ->
-                val c = k.color
-                Color.hsb(c.hue, c.saturation, (v.toDouble() / 100.0)).toKolor()
-            },
-            { k -> Color.hsb(0.0, 0.0, k.color.brightness) }
-        )
-        addComponent(label().also { lbl ->
-            backgroundKolorProperty.addListener { _, _, k ->
-                lbl.text = "HSB(%03.0f, %.2f, %.2f)".format(k.color.hue, k.color.saturation, k.color.brightness)
-            }
-        }, 2)
+//        addComponent(Pane())
+//        addSpinner("Hue", spnHue, { it.color.hue.toInt() },
+//            { k, v ->
+//                val c = k.color
+//                Color.hsb(v.toDouble(), c.saturation, c.brightness).toKolor()
+//            },
+//            { k -> Color.hsb(k.color.hue, 0.0, 0.0) }
+//        )
+//        addSpinner("Saturation (%)", spnSaturation, { (100.0 * it.color.saturation).toInt() },
+//            { k, v ->
+//                val c = k.color
+//                Color.hsb(c.hue, (v.toDouble() / 100.0), c.brightness).toKolor()
+//            },
+//            { k -> Color.hsb(0.0, k.color.saturation, 0.0) }
+//        )
+//        addSpinner("Brightness (%)", spnBrightness, { (100.0 * it.color.brightness).toInt() },
+//            { k, v ->
+//                val c = k.color
+//                Color.hsb(c.hue, c.saturation, (v.toDouble() / 100.0)).toKolor()
+//            },
+//            { k -> Color.hsb(0.0, 0.0, k.color.brightness) }
+//        )
+//        addComponent(label().also { lbl ->
+//            backgroundKolorProperty.addListener { _, _, k ->
+//                lbl.text = "HSB(%03.0f, %.2f, %.2f)".format(k.color.hue, k.color.saturation, k.color.brightness)
+//            }
+//        }, 2)
 
         circlesProperty.onChange { reloadBackgound() }
 
