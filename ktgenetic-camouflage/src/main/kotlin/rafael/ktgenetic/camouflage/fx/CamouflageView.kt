@@ -7,7 +7,6 @@ import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Node
-import javafx.scene.control.Label
 import javafx.scene.control.Spinner
 import javafx.scene.control.Tooltip
 import javafx.scene.input.*
@@ -92,18 +91,24 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
 
     init {
 
-        fun confgureIntSpinner(spinner: Spinner<Int>, kolorToValue: (Kolor) -> Int, copyColor: (Kolor, Int) -> Kolor) {
+        fun addSpinner(
+            title: String,
+            spinner: Spinner<Int>,
+            kolorToValue: (Kolor) -> Int,
+            copyColor: (Kolor, Int) -> Kolor,
+            kolortoColor: (Kolor) -> Color
+        ) {
             spinner.valueFactory.value = kolorToValue(backgroundKolor)
             bindBidirectional(
                 backgroundKolorProperty, spinner.valueFactory.valueProperty(),
                 { newKolor -> spinner.valueFactory.value = kolorToValue(newKolor) },
                 { newValue -> backgroundKolor = copyColor(backgroundKolor, newValue) })
-        }
 
-        fun initColorLabels(lbl: Label, kolortoColor: (Kolor) -> Color) {
-            lbl.textFill = kolortoColor(backgroundKolor)
-            backgroundKolorProperty.addListener { _, _, newKolor ->
-                lbl.textFill = kolortoColor(newKolor)
+            addComponent(title, spinner).also { lbl ->
+                lbl.textFill = kolortoColor(backgroundKolor)
+                backgroundKolorProperty.addListener { _, _, newKolor ->
+                    lbl.textFill = kolortoColor(newKolor)
+                }
             }
         }
 
@@ -122,50 +127,38 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorCho
             { newKolor -> backgroundColorPicker.value = newKolor.color },
             { newColor -> backgroundKolor = newColor.toKolor() })
         addComponent("Background Color", backgroundColorPicker)
-
-        confgureIntSpinner(spnRed, { it.r }, { k, v -> k.copy(r = v) })
-        addComponent("Red", spnRed).also { initColorLabels(it) { k -> Color.rgb(k.r, 0, 0) } }
-
-        confgureIntSpinner(spnGreen, { it.g }, { k, v -> k.copy(g = v) })
-        addComponent("Green", spnGreen).also { initColorLabels(it) { k -> Color.rgb(0, k.g, 0) } }
-
-        confgureIntSpinner(spnBlue, { it.b }, { k, v -> k.copy(b = v) })
-        addComponent("Blue", spnBlue, 3).also { initColorLabels(it) { k -> Color.rgb(0, 0, k.b) } }
+        addSpinner("Red", spnRed, { it.r }, { k, v -> k.copy(r = v) }, { k -> Color.rgb(k.r, 0, 0) })
+        addSpinner("Green", spnGreen, { it.g }, { k, v -> k.copy(g = v) }, { k -> Color.rgb(0, k.g, 0) })
+        addSpinner("Blue", spnBlue, { it.b }, { k, v -> k.copy(b = v) }, { k -> Color.rgb(0, 0, k.b) })
+        addComponent(Pane(), 2)
 
         addComponent(Pane())
-
-        confgureIntSpinner(spnHue, { it.color.hue.toInt() }, { k, v ->
-            val c = k.color
-            Color.hsb(v.toDouble(), c.saturation, c.brightness).toKolor()
-        })
-        addComponent("Hue", spnHue).also {
-            initColorLabels(it) { k ->
+        addSpinner("Hue", spnHue, { it.color.hue.toInt() },
+            { k, v ->
                 val c = k.color
-                Color.hsb(c.hue, 0.0, 0.0)
-            }
-        }
-
-        confgureIntSpinner(spnSaturation, { (100.0 * it.color.saturation).toInt() }, { k, v ->
-            val c = k.color
-            Color.hsb(c.hue, (v.toDouble() / 100.0), c.brightness).toKolor()
-        })
-        addComponent("Saturation (%)", spnSaturation).also {
-            initColorLabels(it) { k ->
+                Color.hsb(v.toDouble(), c.saturation, c.brightness).toKolor()
+            },
+            { k -> Color.hsb(k.color.hue, 0.0, 0.0) }
+        )
+        addSpinner("Saturation (%)", spnSaturation, { (100.0 * it.color.saturation).toInt() },
+            { k, v ->
                 val c = k.color
-                Color.hsb(0.0, c.saturation, 0.0)
-            }
-        }
-
-        confgureIntSpinner(spnBrightness, { (100.0 * it.color.brightness).toInt() }, { k, v ->
-            val c = k.color
-            Color.hsb(c.hue, c.saturation, (v.toDouble() / 100.0)).toKolor()
-        })
-        addComponent("Brightness (%)", spnBrightness).also {
-            initColorLabels(it) { k ->
+                Color.hsb(c.hue, (v.toDouble() / 100.0), c.brightness).toKolor()
+            },
+            { k -> Color.hsb(0.0, k.color.saturation, 0.0) }
+        )
+        addSpinner("Brightness (%)", spnBrightness, { (100.0 * it.color.brightness).toInt() },
+            { k, v ->
                 val c = k.color
-                Color.hsb(0.0, 0.0, c.brightness)
+                Color.hsb(c.hue, c.saturation, (v.toDouble() / 100.0)).toKolor()
+            },
+            { k -> Color.hsb(0.0, 0.0, k.color.brightness) }
+        )
+        addComponent(label().also { lbl ->
+            backgroundKolorProperty.addListener { _, _, k ->
+                lbl.text = "HSB(%03.0f, %.2f, %.2f)".format(k.color.hue, k.color.saturation, k.color.brightness)
             }
-        }
+        }, 2)
 
         circlesProperty.onChange { reloadBackgound() }
 
