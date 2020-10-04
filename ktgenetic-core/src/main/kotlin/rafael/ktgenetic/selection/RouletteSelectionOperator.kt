@@ -5,11 +5,15 @@ import rafael.ktgenetic.geneticRandom
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class RouletteSelectionOperator<C : Chromosome<*>>(override val generationSize: Int,
-                                                            override val allowRepetition: Boolean) :
-        SelectionOperator<C> {
+/**
+ * See https://en.wikipedia.org/wiki/Fitness_proportionate_selection
+ */
+internal class RouletteSelectionOperator<C : Chromosome<*>>(
+    override val generationSize: Int,
+    override val allowRepetition: Boolean
+) : SelectionOperator<C> {
 
-    private tailrec fun selectPosition(children: List<C>, sortedValue: Double, pos: Int = 0): Int {
+    private tailrec fun selectPosition(children: DoubleArray, sortedValue: Double, pos: Int = 0): Int {
         if (pos >= children.size) {
             return children.size - 1
         }
@@ -17,29 +21,38 @@ internal class RouletteSelectionOperator<C : Chromosome<*>>(override val generat
             return pos
         }
 
-        return selectPosition(children, sortedValue - children[pos].fitness, pos + 1)
+        return selectPosition(children, sortedValue - children[pos], pos + 1)
     }
 
-    private tailrec fun selectElements(population: MutableList<C>, remainingQuantity: Int, totalFitness: Double, selected: MutableCollection<C>): List<C> {
+    private tailrec fun selectElements(
+        population: MutableList<C>,
+        fitnesses: DoubleArray,
+        remainingQuantity: Int,
+        totalFitness: Double,
+        selected: MutableCollection<C>
+    ): List<C> {
         if (remainingQuantity == 0) {
             return selected.toList().sortedBy { it.fitness }.reversed()
         }
 
         val sortedValue = geneticRandom.nextDouble() * totalFitness
-        val selectedPosition = selectPosition(population, sortedValue)
+        val selectedPosition = selectPosition(fitnesses, sortedValue)
         val selectedElement = population[selectedPosition]
-        population.removeAt(selectedPosition)
+        fitnesses[selectedPosition] = 0.0
 
         selected.add(selectedElement)
-        return selectElements(population, remainingQuantity - 1,
-                totalFitness - selectedElement.fitness, selected)
+        return selectElements(
+            population, fitnesses,
+            remainingQuantity - 1, totalFitness - selectedElement.fitness, selected
+        )
     }
 
     override fun select(children: List<C>): List<C> {
         val totalFitness = children.map { it.fitness }.sum()
         val selected: MutableCollection<C> = if (allowRepetition) ArrayList() else TreeSet()
+        val fitnesses = children.map { it.fitness }.toDoubleArray()
 
-        return selectElements(ArrayList(children), generationSize, totalFitness, selected)
+        return selectElements(ArrayList(children), fitnesses, generationSize, totalFitness, selected)
     }
 
     override fun toString(): String = selectorToString(this)
