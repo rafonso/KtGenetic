@@ -32,7 +32,7 @@ internal class RouletteSelectionOperator<C : Chromosome<*>>(
         selected: MutableCollection<C>
     ): List<C> {
         if (remainingQuantity == 0) {
-            return selected.toList().sortedBy { it.fitness }.reversed()
+            return selected.toList().sortedBy { - it.fitness }
         }
 
         val sortedValue = geneticRandom.nextDouble() * totalFitness
@@ -48,9 +48,9 @@ internal class RouletteSelectionOperator<C : Chromosome<*>>(
     }
 
     override fun select(children: List<C>): List<C> {
-        val totalFitness = children.map { it.fitness }.sum()
-        val selected: MutableCollection<C> = if (allowRepetition) ArrayList() else TreeSet()
         val fitnesses = children.map { it.fitness }.toDoubleArray()
+        val totalFitness = fitnesses.sum()
+        val selected: MutableCollection<C> = if (allowRepetition) ArrayList() else TreeSet()
 
         return selectElements(ArrayList(children), fitnesses, generationSize, totalFitness, selected)
     }
