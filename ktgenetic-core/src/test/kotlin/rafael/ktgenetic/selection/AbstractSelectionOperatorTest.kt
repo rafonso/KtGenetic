@@ -15,7 +15,7 @@ const val REPETITION = 10
 
 abstract class AbstractSelectionOperatorTest {
 
-    private val parentsDefault = listOf(
+    protected val parentsDefault = listOf(
         TemplateChromosome("1.00 =", 1.00),
         TemplateChromosome("1.00 <", 1.00 - EPSLON),
         TemplateChromosome("0.75 >", 0.75 + EPSLON),
@@ -64,6 +64,29 @@ abstract class AbstractSelectionOperatorTest {
         }
     }
 
+    protected inline fun <C : Chromosome<*>, reified E : Throwable> assertException(
+        parents: List<C>,
+        operator: SelectionOperator<C>,
+        exClass: Class<E>
+    ) {
+        assertThrows<E> {
+            val selected = operator.select(parents)
+
+            fail("it should not have selected an empty list: $selected")
+        }
+    }
+
+    protected inline fun <reified E : Throwable> testWithSizeError(
+        size: Int, hasRepetition: Boolean,
+        exClass: Class<E>
+    ) {
+        val operator = createOperator(size, hasRepetition)
+        val parents = parentsDefault.shuffled()
+
+        assertException(parents, operator, exClass)
+    }
+
+
     protected abstract fun createOperator(
         generationSize: Int,
         allowRepetition: Boolean
@@ -86,11 +109,7 @@ abstract class AbstractSelectionOperatorTest {
         val operator = createOperator(5, true)
         val parents = emptyList<TemplateChromosome>()
 
-        assertThrows<IndexOutOfBoundsException> {
-            val selected = operator.select(parents)
-
-            fail("it should not have selected an empty list: $selected")
-        }
+        assertException(parents, operator, IndexOutOfBoundsException::class.java)
     }
 
     @Test

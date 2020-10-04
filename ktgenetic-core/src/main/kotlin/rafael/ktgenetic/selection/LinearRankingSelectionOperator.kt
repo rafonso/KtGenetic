@@ -12,7 +12,7 @@ private const val nMax = 2.0 - nMin
  * Code Based on http://jenetics.io/javadoc/jenetics/5.1/io/jenetics/LinearRankSelector.html and
  * https://github.com/jenetics/jenetics/blob/master/jenetics/src/main/java/io/jenetics/LinearRankSelector.java
  */
-class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationSize: Int, allowRepetition: Boolean) :
+class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationSize: Int, override val allowRepetition: Boolean) :
     SelectionOperator<C> {
 
     companion object {
@@ -54,6 +54,10 @@ class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationS
             if (allowRepetition) { -> ArrayList() } else { -> TreeSet() }
 
     override fun select(children: List<C>): List<C> {
+        assert(allowRepetition || children.size > generationSize) {
+            "children size (${children.size}) must be greater than Generation Size ($generationSize) "
+        }
+
         val ranking = rankingBySize.computeIfAbsent(children.size) { calculateRanking(it) }
 
         return selectElements(ranking, children, getInitialSelected())

@@ -10,7 +10,7 @@ import kotlin.collections.ArrayList
  */
 internal class TournamentSelectionOperator<C : Chromosome<*>>(
     override val generationSize: Int,
-    allowRepetition: Boolean
+    override val allowRepetition: Boolean
 ) :
     SelectionOperator<C> {
 
@@ -33,7 +33,13 @@ internal class TournamentSelectionOperator<C : Chromosome<*>>(
 
     private val getWinners: () -> MutableCollection<C> = if (allowRepetition) { -> ArrayList() } else { -> TreeSet() }
 
-    override fun select(children: List<C>): List<C> = select(LinkedList(children) as MutableList<C>, getWinners())
+    override fun select(children: List<C>): List<C> {
+        assert(allowRepetition || children.size > generationSize) {
+            "children size (${children.size}) must be greater than Generation Size ($generationSize) "
+        }
+
+        return select(LinkedList(children) as MutableList<C>, getWinners())
+    }
 
     override fun toString(): String = selectorToString(this)
 
