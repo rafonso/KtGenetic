@@ -16,10 +16,10 @@ internal class TournamentSelectionOperator<C : Chromosome<*>>(
 
     private tailrec fun select(population: MutableList<C>, selected: MutableCollection<C>): List<C> {
         if (selected.size >= generationSize) {
-            return selected.toList().sortedBy { it.fitness }.reversed()
+            return selected.toList().sortedBy { -it.fitness }
         }
-        if(population.size == 2) {
-            return (selected.toList() + population).sortedBy { it.fitness }.reversed()
+        if (population.size == 2) {
+            return (selected.toList() + population).sortedBy { -it.fitness }
         }
 
         val (pos1, pos2) = createRandomPositions(population.size)
@@ -38,7 +38,7 @@ internal class TournamentSelectionOperator<C : Chromosome<*>>(
             "children size (${children.size}) must be greater than Generation Size ($generationSize) "
         }
 
-        return select(LinkedList(children) as MutableList<C>, getWinners())
+        return select(ArrayList(children), getWinners())
     }
 
     override fun toString(): String = selectorToString(this)
