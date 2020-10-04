@@ -5,12 +5,12 @@ import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class RouletteSelectionOperatorTest : AbstractSelectionOperatorTest() {
+class ExponentialRankingSelectionOperatorTest : AbstractSelectionOperatorTest() {
 
     override fun createOperator(
         generationSize: Int,
         allowRepetition: Boolean
     ): SelectionOperator<TemplateChromosome> =
-        RouletteSelectionOperator(generationSize, allowRepetition)
+        ExponentialRankingSelectionOperator(generationSize, allowRepetition)
 
 }
