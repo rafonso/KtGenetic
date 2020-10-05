@@ -41,22 +41,22 @@ abstract class AbstractSelectionOperatorTest {
         val getParents: () -> List<TemplateChromosome>,
         val validate: (List<Chromosome<*>>, Boolean) -> Unit
     ) {
-        EMPTY({ emptyList() }, { selected, _ -> assertTrue(selected.isEmpty()) }),
-        SINGLE({ listOf(singleChromosome) }, { selected, _ -> assertEquals(listOf(singleChromosome), selected) }),
+        EMPTY({ emptyList() }, { selected, _ ->
+            assertTrue(selected.isEmpty())
+        }),
+        SINGLE({ listOf(singleChromosome) }, { selected, _ ->
+            selected.forEach { c -> assertEquals(singleChromosome, c, selected.toString()) }
+        }),
         SHUFFLE({ parentsDefault.shuffled() }, { selected, hasRepetition ->
-            val evaluator: (Int) -> Unit = if (hasRepetition) { index ->
+            val comparator: (Double, Double) -> Boolean = if (hasRepetition) { x, y -> x <= y } else { x, y -> x < y }
+            val complMessage = if (hasRepetition) "lesser" else "lesser or equals"
+
+            (2..selected.lastIndex).forEach { index ->
                 assertTrue(
-                    selected[index].fitness <= selected[index - 1].fitness,
-                    "Fitness of Chromossome $index lesser then its prior: $selected"
-                )
-            } else { index ->
-                assertTrue(
-                    selected[index].fitness < selected[index - 1].fitness,
-                    "Fitness of Chromossome $index lesser or equals then its prior: $selected"
+                    comparator(selected[index].fitness, selected[index - 1].fitness),
+                    "Fitness of Chromossome $index $complMessage then its prior: $selected"
                 )
             }
-
-            (2..selected.lastIndex).forEach(evaluator)
         })
     }
 
@@ -118,13 +118,7 @@ abstract class AbstractSelectionOperatorTest {
     @Test
     @Order(50)
     open fun `Singleton parent with Generation size 2 with repetition creates children with repetition`() {
-        val operator = createOperator(2, true)
-        val parent = singleChromosome
-        val parents = listOf(parent)
-
-        val selected = operator.select(parents)
-
-        assertEquals(listOf(parent, parent), selected)
+        testWithSize(ParentsType.SINGLE, 2, true)
     }
 
     @Test
