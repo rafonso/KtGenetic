@@ -54,7 +54,7 @@ fun <T> List<T>.randomSwap(): List<T> {
 }
 
 /**
- * Do the same as Iterable.map but using Java's parallel streams.
+ * Do the same as [Iterable.map] but using Java's parallel streams.
  *
  * @param transform Tranformation function
  * @return A List transformed
@@ -63,7 +63,7 @@ fun <T, R> Iterable<T>.pMap(transform: (T) -> R): List<R> =
         ArrayList(toMutableList()).parallelStream().map { transform(it) }.collect(Collectors.toList()).toList()
 
 /**
- * Do the same as Iterable.flatMap but using Java's parallel streams.
+ * Do the same as [Iterable.flatMap] but using Java's parallel streams.
  *
  * @param transform Tranformation function
  * @return A List transformed

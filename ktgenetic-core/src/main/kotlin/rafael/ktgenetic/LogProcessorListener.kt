@@ -37,14 +37,14 @@ class LogProcessorListener : ProcessorListener {
             selected.pMap { (it.fitness - averageFitness).pow(2.0) }.sum() /
                     (selected.size * (selected.size - 1))
         )
-        val bestOption = selected.maxBy { it.fitness }
+        val bestOption = selected.maxByOrNull { it.fitness }!!
 
         log.debug(
             "Gen %3d - AF %.3f (%.3f). BF: %.3f. Best Opt: %s".format(
                 event.generation,
                 averageFitness,
                 averageFitnessDeviation,
-                bestOption?.fitness,
+                bestOption.fitness,
                 bestOption
             )
         )

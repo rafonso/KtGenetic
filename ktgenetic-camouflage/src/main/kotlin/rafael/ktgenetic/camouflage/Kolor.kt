@@ -12,8 +12,6 @@ fun validateColor(x: Int, name: String) {
 
 const val MAX_COLOR_VALUE = 255
 
-const val MAX_COLOR_VALUE_D = (MAX_COLOR_VALUE * MAX_COLOR_VALUE).toDouble()
-
 fun Color.toKolor() = Kolor(
     (this.red * MAX_COLOR_VALUE).toInt(),
     (this.green * MAX_COLOR_VALUE).toInt(),
