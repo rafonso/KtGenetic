@@ -20,18 +20,18 @@ class ExponentialRankingSelectionOperator<C : Chromosome<*>>(
 
     companion object {
 
-        val rankingBySize = mutableMapOf<Int, List<Double>>()
+        val rankingBySize = mutableMapOf<Int, DoubleArray>()
 
-        fun calculateRanking(n: Int): List<Double> {
+        fun calculateRanking(n: Int): DoubleArray {
             val b = (c - 1.0) / (c.pow(n.toDouble()) - 1)
             val a = n.toDouble() - 1
 
-            return (0 until n).map { c.pow(a - it) * b }.reversed()
+            return DoubleArray(n) { c.pow(a - it) * b }.reversedArray()
         }
 
     }
 
-    private tailrec fun selectPosition(ranking: List<Double>, sortedValue: Double, pos: Int = 0): Int {
+    private tailrec fun selectPosition(ranking: DoubleArray, sortedValue: Double, pos: Int = 0): Int {
         if (pos >= ranking.size) {
             return ranking.size - 1
         }
@@ -49,13 +49,13 @@ class ExponentialRankingSelectionOperator<C : Chromosome<*>>(
      * maximum number of interactions.
      */
     private tailrec fun selectElements(
-        ranking: List<Double>,
+        ranking: DoubleArray,
         population: List<C>,
         interactions: Int,
         selected: MutableCollection<C>
     ): List<C> {
         if (selected.size == generationSize || interactions > (5 * generationSize)) {
-            return selected.sortedBy { it.fitness }.reversed()
+            return selected.sortedBy { - it.fitness }
         }
 
         val sortedValue = geneticRandom.nextDouble()
@@ -67,7 +67,7 @@ class ExponentialRankingSelectionOperator<C : Chromosome<*>>(
     }
 
     private val getInitialSelected: () -> MutableCollection<C> =
-            if (allowRepetition) { -> ArrayList() } else { -> TreeSet() }
+        if (allowRepetition) { -> ArrayList() } else { -> TreeSet() }
 
     override fun select(children: List<C>): List<C> {
         val ranking = rankingBySize.computeIfAbsent(children.size) { calculateRanking(it) }
