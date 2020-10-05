@@ -21,11 +21,7 @@ class TruncateSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @Test
     @Order(52)
     fun `Singleton parent with Generation size 2 with repetition throws IndexOutOfBoundsException`() {
-        val operator = createOperator(2, true)
-        val parent = TemplateChromosome("only", 0.5)
-        val parents = listOf(parent)
-
-        assertException(parents, operator, IndexOutOfBoundsException::class.java)
+        super.testWithSizeError(ParentsType.SINGLE, 2, true, IndexOutOfBoundsException::class.java)
     }
 
     @Disabled
@@ -36,7 +32,12 @@ class TruncateSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @RepeatedTest(REPETITION)
     @Order(152)
     fun `Generation size greater to parents size with repetition throws IndexOutOfBoundsException`() {
-        super.testWithSizeError(parentsDefault.size + 5, true, IndexOutOfBoundsException::class.java)
+        super.testWithSizeError(
+            ParentsType.SHUFFLE,
+            sizeDefault + 5,
+            true,
+            IndexOutOfBoundsException::class.java
+        )
     }
 
 }

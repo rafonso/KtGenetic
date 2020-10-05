@@ -21,10 +21,7 @@ class LinearRankingSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @Test
     @Order(26)
     fun `Empty Parents with generation positive throws IllegalArgumentException`() {
-        val operator = createOperator(5, true)
-        val parents = emptyList<TemplateChromosome>()
-
-        assertException(parents, operator, IllegalArgumentException::class.java)
+        super.testWithSizeError(ParentsType.EMPTY, 5, true, IllegalArgumentException::class.java)
     }
 
     @Disabled
@@ -35,11 +32,7 @@ class LinearRankingSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @Test
     @Order(66)
     fun `Singleton parent with Generation size 2 with no repetition throws AssertionError`() {
-        val operator = createOperator(2, false)
-        val parent = TemplateChromosome("only", 0.5)
-        val parents = listOf(parent)
-
-        assertException(parents, operator, AssertionError::class.java)
+        super.testWithSizeError(ParentsType.SINGLE, 2, false, AssertionError::class.java)
     }
 
     @Disabled
@@ -50,7 +43,7 @@ class LinearRankingSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @RepeatedTest(REPETITION)
     @Order(146)
     fun `Generation size equals to parents size with no repetition throws AssertionError`() {
-        super.testWithSizeError(super.parentsDefault.size, false, AssertionError::class.java)
+        super.testWithSizeError(ParentsType.SHUFFLE, sizeDefault, false, AssertionError::class.java)
     }
 
     @Disabled
@@ -61,7 +54,7 @@ class LinearRankingSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @RepeatedTest(REPETITION)
     @Order(166)
     fun `Generation size greater to parents size with no repetition throws AssertionError`() {
-        super.testWithSizeError(super.parentsDefault.size + 5, false, AssertionError::class.java)
+        super.testWithSizeError(ParentsType.SHUFFLE, sizeDefault + 5, false, AssertionError::class.java)
     }
 
 }

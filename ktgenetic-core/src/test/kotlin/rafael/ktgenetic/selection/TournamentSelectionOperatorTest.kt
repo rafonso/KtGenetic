@@ -21,10 +21,7 @@ class TournamentSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @Test
     @Order(24)
     fun `Empty Parents with generation positive throws IllegalArgumentException`() {
-        val operator = createOperator(5, true)
-        val parents = emptyList<TemplateChromosome>()
-
-        assertException(parents, operator, IllegalArgumentException::class.java)
+        super.testWithSizeError(ParentsType.EMPTY, 5, true, IllegalArgumentException::class.java)
     }
 
     @Disabled
@@ -35,10 +32,7 @@ class TournamentSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @Test
     @Order(44)
     fun `Singleton Parent with generation size 1 throws IllegalArgumentException`() {
-        val operator = createOperator(1, true)
-        val parents = listOf(TemplateChromosome("only", 0.5))
-
-        assertException(parents, operator, IllegalArgumentException::class.java)
+        super.testWithSizeError(ParentsType.SINGLE, 1, true, IllegalArgumentException::class.java)
     }
 
     @Disabled
@@ -49,11 +43,7 @@ class TournamentSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @Test
     @Order(54)
     fun `Singleton Parent with generation size 2 throws IllegalArgumentException`() {
-        val operator = createOperator(2, true)
-        val parent = TemplateChromosome("only", 0.5)
-        val parents = listOf(parent)
-
-        assertException(parents, operator, IllegalArgumentException::class.java)
+        super.testWithSizeError(ParentsType.SINGLE, 2, true, IllegalArgumentException::class.java)
     }
 
     @Disabled
@@ -64,11 +54,7 @@ class TournamentSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @Test
     @Order(64)
     fun `Singleton parent with Generation size 2 with no repetition throws AssertionError`() {
-        val operator = createOperator(2, false)
-        val parent = TemplateChromosome("only", 0.5)
-        val parents = listOf(parent)
-
-        assertException(parents, operator, AssertionError::class.java)
+        super.testWithSizeError(ParentsType.SINGLE, 2, false, AssertionError::class.java)
     }
 
     @Disabled
@@ -79,7 +65,7 @@ class TournamentSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @RepeatedTest(REPETITION)
     @Order(144)
     fun `Generation size equals to parents size with no repetition throws AssertionError`() {
-        super.testWithSizeError(parentsDefault.size, false, AssertionError::class.java)
+        super.testWithSizeError(ParentsType.SHUFFLE, sizeDefault, false, AssertionError::class.java)
     }
 
 
@@ -91,23 +77,7 @@ class TournamentSelectionOperatorTest : AbstractSelectionOperatorTest() {
     @RepeatedTest(REPETITION)
     @Order(164)
     fun `Generation size greater to parents size with no repetition throws AssertionError`() {
-        super.testWithSizeError(parentsDefault.size + 5, false, AssertionError::class.java)
+        super.testWithSizeError(ParentsType.SHUFFLE, sizeDefault + 5, false, AssertionError::class.java)
     }
 
 }
-/*
-[
-[1.00 =, 1,0000000000],0
-[1.00 <, 0,9999999900],1
-[0.75 >, 0,7500000100],2
-[0.75 A, 0,7500000000],3
-[0.75 <, 0,7499999900],4
-[0.50 =, 0,5000000000],5
-[0.25 >, 0,2500000100],6
-[0.25 B, 0,2500000000],7
-[0.25 A, 0,2500000000],8
-[0.25 <, 0,2499999900],
-[0.00 >, 0,0000000100],
-[0.00 =, 0,0000000000]
-]
- */
