@@ -17,13 +17,13 @@ class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationS
 
     companion object {
 
-        val rankingBySize = mutableMapOf<Int, List<Double>>()
+        val rankingBySize = mutableMapOf<Int, DoubleArray>()
 
-        fun calculateRanking(n: Int) = (0 until n).map { (nMin + (nMax - nMin) * (n - it - 1) / (n - 1)) }
+        fun calculateRanking(n: Int) = DoubleArray(n) {(nMin + (nMax - nMin) * (n - it - 1) / (n - 1)) }
 
     }
 
-    private tailrec fun selectPosition(ranking: List<Double>, sortedValue: Double, pos: Int = 0): Int {
+    private tailrec fun selectPosition(ranking: DoubleArray, sortedValue: Double, pos: Int = 0): Int {
         if (pos >= ranking.size) {
             return ranking.size - 1
         }
@@ -34,12 +34,12 @@ class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationS
     }
 
     private tailrec fun selectElements(
-        ranking: List<Double>,
+        ranking: DoubleArray,
         population: List<C>,
         selected: MutableCollection<C>
     ): List<C> {
         if (selected.size == generationSize) {
-            return selected.sortedBy { it.fitness }.reversed()
+            return selected.sortedBy { - it.fitness }
         }
 
         val sortedValue = geneticRandom.nextInt(population.size).toDouble()
