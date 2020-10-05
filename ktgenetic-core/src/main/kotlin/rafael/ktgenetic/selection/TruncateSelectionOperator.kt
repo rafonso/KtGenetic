@@ -14,13 +14,14 @@ internal class TruncateSelectionOperator<C : Chromosome<*>>(
 
     companion object {
 
-        fun <C : Chromosome<*>> listSelector(children: List<C>, size: Int): List<C> = children.subList(0, size)
+        fun <C : Chromosome<*>> listSelector(children: List<C>, size: Int): List<C> =
+            children.sortedBy { -it.fitness }.subList(0, size)
 
         fun <C : Chromosome<*>> setSelector(children: List<C>, size: Int): List<C> {
 
             tailrec fun process(remainingChildren: LinkedList<C>, selected: MutableSet<C>): List<C> {
                 if ((selected.size == size) || remainingChildren.isEmpty()) {
-                    return selected.toList().sortedBy { it.fitness }.reversed()
+                    return selected.toList().sortedBy { -it.fitness }
                 }
 
                 val first = remainingChildren.removeFirst()
