@@ -8,7 +8,7 @@ import rafael.ktgenetic.console.getIntOptionValue
 import rafael.ktgenetic.console.getMaxGenerations
 import rafael.ktgenetic.console.getPopulationByGeneration
 import rafael.ktgenetic.pallete.*
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 
 private const val WEIGHT_PARAMETER = "w"
 private const val ROWS_PARAMETER = "rows"
@@ -51,7 +51,7 @@ fun main(args: Array<String>) = executeMain(
         ::addOptions,
         ::validateParameters,
         ::getEnvironment,
-        GeneticProcessorChoice.ORDERED,
+        GeneticCrossingType.ORDERED,
         ::showEnvironmentDetails
 ) { p, e -> p.addListener(e as PalleteEnvironment) }
 

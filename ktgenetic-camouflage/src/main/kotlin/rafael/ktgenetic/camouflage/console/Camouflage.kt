@@ -11,7 +11,7 @@ import rafael.ktgenetic.console.executeMain
 import rafael.ktgenetic.console.getIntOptionValue
 import rafael.ktgenetic.console.getMaxGenerations
 import rafael.ktgenetic.console.getPopulationByGeneration
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 import tornadofx.isInt
 
 private const val R_PARAMETER = "r"
@@ -63,6 +63,6 @@ fun main(args: Array<String>) = executeMain(
     ::addOptions,
     ::validateParameters,
     ::getEnvironment,
-    GeneticProcessorChoice.SIMPLE,
+    GeneticCrossingType.SIMPLE,
     ::showEnvironmentDetails
 )

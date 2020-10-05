@@ -13,12 +13,12 @@ import rafael.ktgenetic.equalstring.Word
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.chromosomeToTableColumn
 import rafael.ktgenetic.fx.fitnessToTableColumn
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 import tornadofx.*
 
 class EqualStringsViewApp : App(EqualStringsView::class)
 
-class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticProcessorChoice.SIMPLE) {
+class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticCrossingType.SIMPLE) {
 
     // INPUT COMPONENTS
 

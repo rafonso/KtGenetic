@@ -20,7 +20,7 @@ import rafael.ktgenetic.Environment
 import rafael.ktgenetic.ProcessorEvent
 import rafael.ktgenetic.TypeProcessorEvent
 import rafael.ktgenetic.fx.GeneticView
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 import rafael.ktgenetic.salesman.Path
 import rafael.ktgenetic.salesman.Point
 import rafael.ktgenetic.salesman.SalesmanEnvironment
@@ -33,7 +33,7 @@ const val MIN_POINTS_TO_START = 5
 
 class SalesmanViewApp : App(SalesmanView::class)
 
-class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticProcessorChoice.ORDERED) {
+class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticCrossingType.ORDERED) {
 
     // INPUT COMPONENTS
 

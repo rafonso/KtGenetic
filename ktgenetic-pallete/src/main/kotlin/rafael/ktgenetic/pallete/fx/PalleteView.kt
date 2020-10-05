@@ -9,7 +9,7 @@ import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.chromosomeToTableColumn
 import rafael.ktgenetic.fx.fitnessToTableColumn
 import rafael.ktgenetic.pallete.*
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 import tornadofx.*
 
 /**
@@ -31,7 +31,7 @@ private val gradients = listOf(
 
 class PalleteViewApp : App(PalleteView::class)
 
-class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticProcessorChoice.ORDERED) {
+class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticCrossingType.ORDERED) {
 
     // INPUT COMPONENTS
 

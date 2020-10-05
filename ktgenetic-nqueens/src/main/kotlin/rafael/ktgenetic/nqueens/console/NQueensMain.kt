@@ -9,7 +9,7 @@ import rafael.ktgenetic.console.getPopulationByGeneration
 import rafael.ktgenetic.nqueens.Board
 import rafael.ktgenetic.nqueens.BoardEnvironment
 import rafael.ktgenetic.nqueens.Piece
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 import java.lang.Exception
 
 private const val SIZE_PARAMETER = "size"
@@ -59,13 +59,13 @@ class FinalBoardListener : ProcessorListener {
 
 }
 
-fun getProcessorChoice(args: Array<String>): GeneticProcessorChoice {
-    var result = GeneticProcessorChoice.SIMPLE
+fun getProcessorChoice(args: Array<String>): GeneticCrossingType {
+    var result = GeneticCrossingType.SIMPLE
     val idx = args.indexOf("-$PIECE_PARAMETER")
     if (idx >= 0) {
         try {
-            when {
-                Piece.valueOf(args[idx + 1]) == Piece.QUEEN -> result = GeneticProcessorChoice.ORDERED
+            when (Piece.QUEEN) {
+                Piece.valueOf(args[idx + 1]) -> result = GeneticCrossingType.ORDERED
             }
         } catch (e: Exception) {
         }

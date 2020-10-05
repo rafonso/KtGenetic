@@ -5,13 +5,20 @@ import rafael.ktgenetic.selection.SelectionOperator
 
 /**
  * Executes the evolutionary process.
+ *
+ * @param crossingType Crossing Type
+ * @param environment Environment with selecion rules
+ * @param selectionOperator [SelectionOperator] to be used
  */
-abstract class GeneticProcessor<G, C : Chromosome<G>>(
+class GeneticProcessor<G, C : Chromosome<G>>(
+    crossingType: GeneticCrossingType,
     val environment: Environment<G, C>,
     private val selectionOperator: SelectionOperator<C>
 ) {
 
-    private val listeners: MutableSet<ProcessorListener> = LinkedHashSet<ProcessorListener>()
+    private val geneticCrosser = crossingType.getGeneticCrosser<G, C>()
+
+    private val listeners: MutableSet<ProcessorListener> = LinkedHashSet()
 
     var continueProcessing = true
 
@@ -23,18 +30,11 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(
         notifyEvent(ProcessorEvent(eventType, generation, population))
     }
 
-    protected fun basicCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): List<C> = listOf(
-        environment.createNewChromosome(pieces2.left + pieces1.core + pieces2.right),
-        environment.createNewChromosome(pieces1.left + pieces2.core + pieces1.right)
-    )
-
-    protected abstract fun executeCrossing(pieces1: ListPieces<G>, pieces2: ListPieces<G>): List<C>
-
     private fun executeMutation(chromosome: C): C =
-            if (Math.random() < environment.mutationFactor) environment.createNewChromosome(
-                environment.executeMutation(chromosome.content)
-            )
-            else chromosome
+        if (Math.random() < environment.mutationFactor) environment.createNewChromosome(
+            environment.executeMutation(chromosome.content)
+        )
+        else chromosome
 
 
     private fun cross(parent1: C, parent2: C): List<C> {
@@ -43,17 +43,17 @@ abstract class GeneticProcessor<G, C : Chromosome<G>>(
         val pieces1 = environment.cutIntoPieces(parent1.content, cutPositions)
         val pieces2 = environment.cutIntoPieces(parent2.content, cutPositions)
 
-        return executeCrossing(pieces1, pieces2)
+        return geneticCrosser.executeCrossing(pieces1, pieces2, environment)
     }
 
     private fun inferEndProcessingType(generation: Int): TypeProcessorEvent =
-            if (!continueProcessing) {
-                TypeProcessorEvent.ENDED_BY_INTERRUPTION
-            } else if (generation <= environment.maxGenerations) {
-                TypeProcessorEvent.ENDED_BY_FITNESS
-            } else {
-                TypeProcessorEvent.ENDED_BY_GENERATIONS
-            }
+        if (!continueProcessing) {
+            TypeProcessorEvent.ENDED_BY_INTERRUPTION
+        } else if (generation <= environment.maxGenerations) {
+            TypeProcessorEvent.ENDED_BY_FITNESS
+        } else {
+            TypeProcessorEvent.ENDED_BY_GENERATIONS
+        }
 
     private tailrec fun processGeneration(generation: Int, parents: List<C>): ProcessorEvent<C> {
         if (!continueProcessing || environment.resultFound(parents) || (generation > environment.maxGenerations)) {

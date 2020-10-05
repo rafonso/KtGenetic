@@ -16,7 +16,7 @@ import rafael.ktgenetic.balancedtable.Box
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.chromosomeToTableColumn
 import rafael.ktgenetic.fx.fitnessToTableColumn
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 import tornadofx.*
 
 /**
@@ -38,7 +38,7 @@ private val gradients = listOf(
 
 class BalanceViewApp : App(BalanceView::class)
 
-class BalanceView : GeneticView<Box, Balance>("Balance", GeneticProcessorChoice.ORDERED) {
+class BalanceView : GeneticView<Box, Balance>("Balance", GeneticCrossingType.ORDERED) {
 
     // INPUT COMPONENTS
 

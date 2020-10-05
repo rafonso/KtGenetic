@@ -5,7 +5,7 @@ import org.apache.commons.cli.Options
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.console.*
 import rafael.ktgenetic.equalstring.*
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 
 private const val WORD_PARAMETER = "w"
 private const val FITNESS_PARAMETER = "f"
@@ -62,6 +62,6 @@ fun main(args: Array<String>) = executeMain(
         ::addOptions,
         ::validateParameters,
         ::getEnvironment,
-        GeneticProcessorChoice.SIMPLE,
+        GeneticCrossingType.SIMPLE,
         ::showEnvironmentDetails
 )

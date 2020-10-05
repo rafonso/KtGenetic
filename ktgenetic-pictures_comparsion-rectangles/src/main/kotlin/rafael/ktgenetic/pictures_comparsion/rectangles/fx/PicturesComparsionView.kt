@@ -19,7 +19,7 @@ import rafael.ktgenetic.ProcessorEvent
 import rafael.ktgenetic.ProcessorListener
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.pictures_comparsion.rectangles.*
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 import tornadofx.*
 import java.io.File
 import java.io.FileInputStream
@@ -41,7 +41,7 @@ fun Kolor.toColor(): Color = Color.rgb(r, g, b)
 
 class PicturesComparsionViewApp : App(PicturesComparsionView::class)
 
-class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsion", GeneticProcessorChoice.SIMPLE) {
+class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsion", GeneticCrossingType.SIMPLE) {
 
     private var positionConversor: PositionConversor = SimplePositionConversor()
 

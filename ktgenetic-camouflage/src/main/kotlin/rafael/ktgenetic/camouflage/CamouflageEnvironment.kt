@@ -10,7 +10,7 @@ import tornadofx.setValue
 
 class CamouflageEnvironment(
     initialBackgroundColor: Kolor,
-    val distanceCalulator: KolorDistance,
+    private val distanceCalulator: KolorDistance,
     override val maxGenerations: Int,
     override val generationSize: Int,
     override var mutationFactor: Double = 0.01

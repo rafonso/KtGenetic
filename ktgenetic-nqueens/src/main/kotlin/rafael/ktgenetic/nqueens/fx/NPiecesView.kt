@@ -12,10 +12,10 @@ import rafael.ktgenetic.fx.fitnessToTableColumn
 import rafael.ktgenetic.nqueens.Board
 import rafael.ktgenetic.nqueens.BoardEnvironment
 import rafael.ktgenetic.nqueens.Piece
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 import tornadofx.*
 
-abstract class NPiecesView (private val piece: Piece, _title: String, _processorChoice: GeneticProcessorChoice): GeneticView<Int, Board>(_title, _processorChoice) {
+abstract class NPiecesView (private val piece: Piece, _title: String, _processorChoice: GeneticCrossingType): GeneticView<Int, Board>(_title, _processorChoice) {
 
     // INPUT COMPONENTS
 

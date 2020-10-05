@@ -9,7 +9,7 @@ import rafael.ktgenetic.TypeProcessorEvent
 import rafael.ktgenetic.console.executeMain
 import rafael.ktgenetic.console.getMaxGenerations
 import rafael.ktgenetic.console.getPopulationByGeneration
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 import rafael.ktgenetic.sudoku.Grid
 import rafael.ktgenetic.sudoku.MutationStrategy
 import rafael.ktgenetic.sudoku.PuzzleEnvironment
@@ -81,7 +81,7 @@ fun main(args: Array<String>) =
         ::addOptions,
         ::validateParameters,
         ::getEnvironment,
-        GeneticProcessorChoice.SIMPLE,
+        GeneticCrossingType.SIMPLE,
         ::showEnvironmentDetails
     ) { p, _ -> p.addListener(FinalGridListener()) }
 

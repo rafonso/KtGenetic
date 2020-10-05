@@ -21,13 +21,13 @@ import rafael.ktgenetic.ProcessorEvent
 import rafael.ktgenetic.camouflage.*
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.bindBidirectional
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 import rafael.ktgenetic.randomIntInclusive
 import tornadofx.*
 
 class CamouflageApp : App(CamouflageView::class)
 
-class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticProcessorChoice.SIMPLE) {
+class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType.SIMPLE) {
 
     private fun makeIntSpinner(maxValue: Int) = spinner(0, maxValue, 0, 1, enableScroll = true).also { spn ->
         spn.editor.alignment = Pos.CENTER_RIGHT

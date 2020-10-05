@@ -7,7 +7,7 @@ import rafael.ktgenetic.balancedtable.Balance
 import rafael.ktgenetic.balancedtable.BalanceEnvironment
 import rafael.ktgenetic.balancedtable.Box
 import rafael.ktgenetic.console.*
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
 
 private const val WEIGHT_PARAMETER = "w"
 
@@ -43,7 +43,7 @@ fun main(args: Array<String>) = executeMain(
         ::addOptions,
         ::validateParameters,
         ::getEnvironment,
-        GeneticProcessorChoice.ORDERED,
+        GeneticCrossingType.ORDERED,
         ::showEnvironmentDetails
 )
 

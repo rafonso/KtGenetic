@@ -19,13 +19,14 @@ import javafx.stage.Stage
 import javafx.util.StringConverter
 import rafael.ktgenetic.*
 import rafael.ktgenetic.LogLevel.INFO
-import rafael.ktgenetic.processor.GeneticProcessorChoice
+import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.processor.GeneticProcessor
 import rafael.ktgenetic.selection.SelectionOperatorChoice
 import tornadofx.*
 import java.time.Instant
 import java.util.*
 
-abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val processorChoice: GeneticProcessorChoice) :
+abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val crossingType: GeneticCrossingType) :
     View(title), ProcessorListener {
     final override val root: BorderPane by fxml("/view/Genetic.fxml")
 
@@ -256,7 +257,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val proc
                 chbElitism.isSelected,
                 chbRepeatedValues.isSelected
             )
-            val processor = processorChoice.newInstance(environment, selectionOperator)
+            val processor = GeneticProcessor(crossingType, environment, selectionOperator)
             processor.addListener(this)
 
             val (averageSeries, bestSeries) = createSeries()
