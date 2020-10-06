@@ -34,14 +34,6 @@ fun randomIntInclusive(maxValue: Int) = randomIntExclusive(maxValue + 1)
 
 fun createCutPositions(maxPos: Int): Pair<Int, Int> = createRandomPositions(maxPos, 1)
 
-fun <G> makeCuttingIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>):
-        ListPieces<G> =
-    ListPieces(
-        sequence.subList(0, cutPositions.first),
-        sequence.subList(cutPositions.first, cutPositions.second),
-        sequence.subList(cutPositions.second, sequence.size)
-    )
-
 /**
  * From a list of [Chromosome]s, it returns the best [Chromosome.fitness], the average fitness and the deviation of this average.
  *
