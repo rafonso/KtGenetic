@@ -4,14 +4,17 @@ import rafael.ktgenetic.Chromosome
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.ListPieces
 
-internal interface GeneticCrosser<G, C : Chromosome<G>> {
-    fun executeCrossing(
+internal sealed class GeneticCrosser<G, C : Chromosome<G>> {
+
+    abstract fun executeCrossing(
         pieces1: ListPieces<G>,
-        pieces2: ListPieces<G>, environment: Environment<G, C>
+        pieces2: ListPieces<G>,
+        environment: Environment<G, C>
     ): List<C>
+
 }
 
-internal class SimpleGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C> {
+internal class SimpleGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C>() {
 
     override fun executeCrossing(
         pieces1: ListPieces<G>,
@@ -24,7 +27,7 @@ internal class SimpleGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C>
 
 }
 
-internal class OrderedGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C> {
+internal class OrderedGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C>() {
 
     private val basicCrosser = SimpleGeneticCrosser<G, C>()
 
@@ -48,8 +51,9 @@ internal class OrderedGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C
         pieces2: ListPieces<G>,
         environment: Environment<G, C>
     ): List<C> {
-        val thereIsIntersection = pieces1.core.intersect(pieces2.left + pieces2.right)
-            .isNotEmpty() || pieces2.core.intersect(pieces1.left + pieces1.right).isNotEmpty()
+        val thereIsIntersection =
+            pieces1.core.intersect(pieces2.left + pieces2.right).isNotEmpty() ||
+                    pieces2.core.intersect(pieces1.left + pieces1.right).isNotEmpty()
 
         return if (thereIsIntersection) executeCross(pieces1, pieces2, environment)
         else basicCrosser.executeCrossing(pieces1, pieces2, environment)
