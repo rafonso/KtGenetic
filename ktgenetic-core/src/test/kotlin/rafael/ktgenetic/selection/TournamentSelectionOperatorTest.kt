@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
+import rafael.ktgenetic.TemplateChromosome
 
 class TournamentSelectionOperatorTest : AbstractSelectionOperatorTest() {
 

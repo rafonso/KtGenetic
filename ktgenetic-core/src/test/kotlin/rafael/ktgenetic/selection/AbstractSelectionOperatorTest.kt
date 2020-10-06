@@ -5,6 +5,7 @@ import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.TemplateChromosome
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
@@ -73,7 +74,7 @@ abstract class AbstractSelectionOperatorTest {
         parentsType: ParentsType,
         size: Int,
         hasRepetition: Boolean,
-        exClass: Class<E>
+        @Suppress("UNUSED_PARAMETER") exClass: Class<E>
     ) {
         val operator = createOperator(size, hasRepetition)
         val parents = parentsType.getParents()

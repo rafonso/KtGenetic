@@ -1,5 +1,7 @@
 package rafael.ktgenetic.selection
 
+import rafael.ktgenetic.TemplateChromosome
+
 class ExponentialRankingSelectionOperatorTest : AbstractSelectionOperatorTest() {
 
     override fun createOperator(

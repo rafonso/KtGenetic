@@ -1,14 +1,17 @@
-package rafael.ktgenetic.selection
-
-import rafael.ktgenetic.Chromosome
+package rafael.ktgenetic
 
 class TemplateChromosome(override val content: List<Char>, fit: Double) : Chromosome<Char>() {
 
     constructor(word: String, fit: Double) : this(word.toList(), fit)
 
+    constructor(word: String) : this(word.toList(), 0.0)
+
     init {
         this.fitness = fit
     }
 
-    override fun toString(): String = "[%s, %.10f]".format(content.joinToString(""), this.fitness)
+    fun toWord() = content.joinToString("")
+
+    override fun toString(): String = "[%s, %.10f]".format(toWord(), this.fitness)
+
 }
