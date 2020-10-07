@@ -16,12 +16,15 @@ import javafx.stage.Stage
 import javafx.stage.Window
 import rafael.ktgenetic.*
 import rafael.ktgenetic.processor.GeneticProcessor
-import tornadofx.*
+import tornadofx.label
+import tornadofx.textarea
+import tornadofx.vbox
+import tornadofx.vgrow
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.time.Duration
-import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -32,7 +35,7 @@ internal class GeneticTask<C : Chromosome<*>>(
 ) :
     Task<ProcessorEvent<C>>(), ProcessorListener {
 
-    private lateinit var t0: Instant
+    private lateinit var t0: LocalDateTime
 
     val timeProperty            : StringProperty = SimpleStringProperty()
     val generationProperty      : StringProperty = SimpleStringProperty()
@@ -47,7 +50,7 @@ internal class GeneticTask<C : Chromosome<*>>(
         processor.addListener(this)
         processor.addListener(LogProcessorListener())
 
-        t0 = Instant.now()
+        t0 = LocalDateTime.now()
         return processor.process()
     }
 
@@ -92,17 +95,17 @@ internal class GeneticTask<C : Chromosome<*>>(
     }
 
     private fun showGenerationData(event: ProcessorEvent<*>) {
-        val dt = Date(Duration.between(t0, Instant.now()).toMillis())
+        val dt = Date(Duration.between(t0, event.dateTime).toMillis())
         timeProperty.value = formatter.format(dt)
 
         generationProperty.value = event.generation.toString()
         if (event.population.isNotEmpty()) {
-            val (best, average, deviation) = getBestAverageDeviationFitness(event.population)
-            bestFitnessProperty.value = "%.4f".format(best)
-            averageFitnessProperty.value = "%.4f (%.4f)".format(average, deviation)
-            averageData.value.add(XYChart.Data(event.generation, average))
-            bestData.value.add(XYChart.Data(event.generation, best))
+            bestFitnessProperty.value = "%.4f".format(event.statistics.bestFitness)
+            averageFitnessProperty.value = "%.4f (%.4f)".format(event.statistics.averageFitness, event.statistics.averageFitnessDeviation)
+            averageData.value.add(XYChart.Data(event.generation, event.statistics.averageFitness))
+            bestData.value.add(XYChart.Data(event.generation, event.statistics.bestFitness))
 
+            @Suppress("UNCHECKED_CAST")
             fillOwnComponent(event.population as List<C>)
         }
     }

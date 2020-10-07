@@ -1,5 +1,7 @@
 package rafael.ktgenetic
 
+import java.time.LocalDateTime
+
 /**
  * Represents a eventType occurred during the evolutionary process in [rafael.ktgenetic.processor.GeneticProcessor].
  *
@@ -13,4 +15,9 @@ package rafael.ktgenetic
 data class ProcessorEvent<out C: Chromosome<*>>(val eventType: TypeProcessorEvent,
                                                 val generation: Int,
                                                 val population: List<C>,
-                                                val error: Throwable? = null)
+                                                val error: Throwable? = null) {
+    val dateTime: LocalDateTime = LocalDateTime.now()
+
+    val statistics: GenerationStatistics<C> by lazy { getStatistics(this) }
+
+}
