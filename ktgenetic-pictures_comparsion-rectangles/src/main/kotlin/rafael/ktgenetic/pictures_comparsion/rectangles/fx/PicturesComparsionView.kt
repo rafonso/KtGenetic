@@ -291,7 +291,7 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
                 maxGenerations,
                 generationSize,
                 mutationFactor,
-                super.selectedOperator.value,
+                super.selectedOperator,
                 lblImage.text,
                 originalImageView.image,
                 snapshotBaseDir,
