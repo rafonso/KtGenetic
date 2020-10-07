@@ -3,18 +3,15 @@ package rafael.ktgenetic.fx
 import javafx.beans.property.ReadOnlyProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import javafx.event.EventHandler
 import javafx.geometry.Orientation
 import javafx.scene.Node
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
-import javafx.scene.chart.XYChart
 import javafx.scene.control.*
-import javafx.scene.input.MouseEvent
-import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.GridPane
+import javafx.scene.layout.Pane
 import javafx.stage.Stage
 import javafx.util.StringConverter
 import rafael.ktgenetic.*
@@ -22,8 +19,7 @@ import rafael.ktgenetic.LogLevel.INFO
 import rafael.ktgenetic.processor.GeneticCrossingType
 import rafael.ktgenetic.processor.GeneticProcessor
 import rafael.ktgenetic.selection.SelectionOperatorChoice
-import tornadofx.*
-import java.time.Instant
+import tornadofx.View
 import java.util.*
 
 abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val crossingType: GeneticCrossingType) :
@@ -56,14 +52,11 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
     private val mutationFactors: ObservableList<Double> =
         FXCollections.observableArrayList(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
 
-    private val yAxisBounds = listOf(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 0.999, 1.0)
-
-
     private val maxColumns = 6
 
     // @formatter:off
     private val pnlInput                : GridPane                          by fxid()
-    private val pnlOutput               : GridPane                          by fxid()
+    private val pnlOutput               : Pane                              by fxid()
     private val pnlButtons              : GridPane                          by fxid()
     private val cmbGenerations          : ComboBox<Int>                     by fxid()
     private val cmbPopulation           : ComboBox<Int>                     by fxid()
@@ -84,15 +77,19 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
 
     private var lastRow = 1
     private var lastColumn = 0
-    private lateinit var t0: Instant
     private lateinit var task: GeneticTask<C>
 
-    private val averageFitnessByGeneration: MutableList<Double> = mutableListOf()
-    private val bestFitnessByGeneration: MutableList<Double> = mutableListOf()
-    private val currentLowerBoundIndex = intProperty(0)
-    private val currentUpperBoundIndex = intProperty(yAxisBounds.lastIndex)
-
     protected val selectedOperator = cmbSelectionOperator.valueProperty() as ReadOnlyProperty<SelectionOperatorChoice>
+
+    private var statisticsView: StatisticsView = StatisticsView(
+        pnlOutput,
+        lblGeneration,
+        lblBestFitness,
+        lblAverageFitness,
+        lblTime,
+        lineChartFitness,
+        yAxisChartFitness
+    )
 
     init {
         cmbGenerations.items = values
@@ -108,49 +105,9 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
         cmbSelectionOperator.value = SelectionOperatorChoice.TRUNCATE
         cmbSelectionOperator.converter = SelectionOperatorConverter()
 
-        lineChartFitness.yAxis.isTickMarkVisible = false
-        yAxisChartFitness.tooltip(
-            "To adjust lower value scroll mouse. " +
-                    "To adjust upper value scroll mouse with CTRL pressed."
-        )
-        yAxisChartFitness.tickLabelFormatter
-        yAxisChartFitness.onMouseClicked = EventHandler { yAxisClicked(it) }
-        yAxisChartFitness.onScroll = EventHandler { yAxisScrolled(it) }
-        currentLowerBoundIndex.onChange { adjustFitnessYAxis() }
-        currentUpperBoundIndex.onChange { adjustFitnessYAxis() }
-
         primaryStage.icons.add(geneticIcon)
 
         configureLog(INFO)
-    }
-
-    private fun adjustFitnessYAxis() {
-        yAxisChartFitness.lowerBound = yAxisBounds[currentLowerBoundIndex.value]
-        yAxisChartFitness.upperBound = yAxisBounds[currentUpperBoundIndex.value]
-        yAxisChartFitness.tickUnit = (yAxisChartFitness.upperBound - yAxisChartFitness.lowerBound) / 10
-    }
-
-    private fun yAxisScrolled(event: ScrollEvent?) {
-        if (event!!.isControlDown) {
-            if ((event.deltaY > 0.0) && (currentUpperBoundIndex < yAxisBounds.lastIndex)) {
-                currentUpperBoundIndex += 1
-            } else if ((event.deltaY < 0.0) && (currentUpperBoundIndex > (currentLowerBoundIndex + 1))) {
-                currentUpperBoundIndex -= 1
-            }
-        } else {
-            if ((event.deltaY > 0.0) && (currentLowerBoundIndex < (currentUpperBoundIndex - 1))) {
-                currentLowerBoundIndex += 1
-            } else if ((event.deltaY < 0.0) && (currentLowerBoundIndex > 0)) {
-                currentLowerBoundIndex -= 1
-            }
-        }
-    }
-
-    private fun yAxisClicked(event: MouseEvent) {
-        if (event.clickCount == 2 && currentLowerBoundIndex.value > 0) {
-            currentLowerBoundIndex.value = 0
-            currentUpperBoundIndex.value = yAxisBounds.lastIndex
-        }
     }
 
     private fun disableInputComponents(disable: Boolean) {
@@ -170,33 +127,6 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
             it.contentText = e.message
             (it.dialogPane.scene.window as Stage).icons.add(geneticIcon)
         }.showAndWait()
-    }
-
-    private fun createSeries(): Pair<XYChart.Series<Int, Double>, XYChart.Series<Int, Double>> {
-        lineChartFitness.data.clear()
-
-        val averageSeries = XYChart.Series<Int, Double>()
-        averageSeries.name = "Average"
-        lineChartFitness.data.add(averageSeries)
-
-        val bestSeries = XYChart.Series<Int, Double>()
-        bestSeries.name = "Best"
-        lineChartFitness.data.add(bestSeries)
-
-        return Pair(averageSeries, bestSeries)
-    }
-
-    private fun makeBind(
-        task: GeneticTask<C>,
-        averageSeries: XYChart.Series<Int, Double>,
-        bestSeries: XYChart.Series<Int, Double>
-    ) {
-        lblGeneration.textProperty().bind(task.generationProperty)
-        lblBestFitness.textProperty().bind(task.bestFitnessProperty)
-        lblTime.textProperty().bind(task.timeProperty)
-        lblAverageFitness.textProperty().bind(task.averageFitnessProperty)
-        averageSeries.dataProperty().bind(task.averageData)
-        bestSeries.dataProperty().bind(task.bestData)
     }
 
     protected abstract fun validate()
@@ -260,11 +190,9 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
             val processor = GeneticProcessor(crossingType, environment, selectionOperator)
             processor.addListener(this)
 
-            val (averageSeries, bestSeries) = createSeries()
-
             task = GeneticTask(processor, super.primaryStage, this::fillOwnComponent)
 
-            makeBind(task, averageSeries, bestSeries)
+            statisticsView.bind(task)
 
             Thread(task, "%s-%tT".format(environment.javaClass.simpleName, Date())).start()
         } catch (e: IllegalStateException) {
@@ -283,18 +211,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
         cmbMutationFactor.value = 0.1
         cmbPopulation.value = 100
 
-        lblGeneration.textProperty().unbind()
-        lblGeneration.text = ""
-        lblTime.textProperty().unbind()
-        lblTime.text = ""
-        lblBestFitness.textProperty().unbind()
-        lblBestFitness.text = ""
-        lblAverageFitness.textProperty().unbind()
-        lblAverageFitness.text = ""
-        lineChartFitness.data.clear()
-        yAxisChartFitness.upperBound = 1.0
-        yAxisChartFitness.lowerBound = 0.0
-        yAxisChartFitness.tickUnit = 0.1
+        statisticsView.reset()
 
         resetComponents()
     }
