@@ -1,5 +1,8 @@
 package rafael.ktgenetic.fx
 
+import javafx.application.Platform
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 import javafx.event.EventHandler
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
@@ -8,8 +11,12 @@ import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.Pane
-import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.*
 import tornadofx.*
+import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.LocalDateTime
+import java.util.*
 
 
 internal class StatisticsView(
@@ -20,15 +27,19 @@ internal class StatisticsView(
     private val lblTime: Label,
     private val lineChartFitness: LineChart<Int, Double>,
     private val yAxisChartFitness: NumberAxis
-) {
+) : ChangeListener<GenerationEvent> {
 
     private val yAxisBounds = listOf(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 0.999, 1.0)
 
-//    private val averageFitnessByGeneration: MutableList<Double> = mutableListOf()
-//    private val bestFitnessByGeneration: MutableList<Double> = mutableListOf()
-
     private val currentLowerBoundIndex = intProperty(0)
     private val currentUpperBoundIndex = intProperty(yAxisBounds.lastIndex)
+
+    private val formatter = SimpleDateFormat("mm:ss.SSS")
+
+    private lateinit var averageSeries: XYChart.Series<Int, Double>
+    private lateinit var bestSeries: XYChart.Series<Int, Double>
+
+    private lateinit var t0: LocalDateTime
 
     init {
         lineChartFitness.yAxis.isTickMarkVisible = false
@@ -72,32 +83,6 @@ internal class StatisticsView(
         }
     }
 
-    private fun createSeries(): Pair<XYChart.Series<Int, Double>, XYChart.Series<Int, Double>> {
-        lineChartFitness.data.clear()
-
-        val averageSeries = XYChart.Series<Int, Double>()
-        averageSeries.name = "Average"
-        lineChartFitness.data.add(averageSeries)
-
-        val bestSeries = XYChart.Series<Int, Double>()
-        bestSeries.name = "Best"
-        lineChartFitness.data.add(bestSeries)
-
-        return Pair(averageSeries, bestSeries)
-    }
-
-    fun <C : Chromosome<*>> bind(task: GeneticTask<C>) {
-        lblGeneration.textProperty().bind(task.generationProperty)
-        lblBestFitness.textProperty().bind(task.bestFitnessProperty)
-        lblTime.textProperty().bind(task.timeProperty)
-        lblAverageFitness.textProperty().bind(task.averageFitnessProperty)
-
-        val (averageSeries, bestSeries) = createSeries()
-
-        averageSeries.dataProperty().bind(task.averageData)
-        bestSeries.dataProperty().bind(task.bestData)
-    }
-
     fun reset() {
         lblGeneration.textProperty().unbind()
         lblGeneration.text = ""
@@ -111,7 +96,57 @@ internal class StatisticsView(
         yAxisChartFitness.upperBound = 1.0
         yAxisChartFitness.lowerBound = 0.0
         yAxisChartFitness.tickUnit = 0.1
+
+        lineChartFitness.data.clear()
+        (lineChartFitness.xAxis as NumberAxis).upperBound = 100.0
     }
 
+    private fun starting(startingTime: LocalDateTime) {
+        t0 = startingTime
+
+        lineChartFitness.data.clear()
+
+        averageSeries = XYChart.Series<Int, Double>()
+        averageSeries.name = "Average"
+        lineChartFitness.data.add(averageSeries)
+
+        bestSeries = XYChart.Series<Int, Double>()
+        bestSeries.name = "Best"
+        lineChartFitness.data.add(bestSeries)
+
+    }
+
+    private fun showGenerationData(event: GenerationEvent) {
+        val dt = Date(Duration.between(t0, event.dateTime).toMillis())
+        lblTime.text = formatter.format(dt)
+
+        lblGeneration.text = event.generation.toString()
+
+        if (event.population.isNotEmpty()) {
+            lblBestFitness.text = "%.4f".format(event.statistics.bestFitness)
+            lblAverageFitness.text =
+                "%.4f (%.4f)".format(event.statistics.averageFitness, event.statistics.averageFitnessDeviation)
+
+            averageSeries.data.add(XYChart.Data(event.generation, event.statistics.averageFitness))
+            bestSeries.data.add(XYChart.Data(event.generation, event.statistics.bestFitness))
+        }
+    }
+
+    override fun changed(
+        observable: ObservableValue<out GenerationEvent>?,
+        oldValue: GenerationEvent?,
+        newValue: GenerationEvent?
+    ) {
+        val event = newValue!!
+        when {
+            event.eventType == TypeProcessorEvent.STARTING ->
+                Platform.runLater { starting(event.dateTime) }
+            event.isEvaluating() ->
+                Platform.runLater { showGenerationData(event) }
+            event.eventType == TypeProcessorEvent.WAITING ->
+                reset()
+
+        }
+    }
 
 }

@@ -1,5 +1,6 @@
 package rafael.ktgenetic.fx
 
+import javafx.application.Platform
 import javafx.scene.Node
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
@@ -7,14 +8,21 @@ import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Pane
+import javafx.scene.layout.Priority
+import javafx.scene.text.Font
 import javafx.stage.Stage
 import rafael.ktgenetic.*
 import rafael.ktgenetic.LogLevel.INFO
 import rafael.ktgenetic.processor.GeneticCrossingType
 import rafael.ktgenetic.processor.GeneticProcessor
 import rafael.ktgenetic.selection.SelectionOperatorChoice
-import tornadofx.View
+import tornadofx.*
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.util.*
+
+internal fun GenerationEvent.isEvaluating() =
+    ((this.eventType == TypeProcessorEvent.GENERATION_EVALUATING) || this.eventType.ended)
 
 abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val crossingType: GeneticCrossingType) :
     View(title), ProcessorListener {
@@ -69,8 +77,13 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
 
     protected val selectedOperator = inputsView.selectionOperator
 
+    private val processorEventProperty = waitingEvent().toProperty()
+    private var processorEvent by processorEventProperty
+
     init {
         primaryStage.icons.add(geneticIcon)
+
+        processorEventProperty.addListener(statisticsView)
 
         configureLog(INFO)
     }
@@ -81,6 +94,33 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
             it.headerText = "Can not proceed Processing"
             it.contentText = e.message
             (it.dialogPane.scene.window as Stage).icons.add(geneticIcon)
+        }.showAndWait()
+    }
+
+    private fun showError(event: ProcessorEvent<*>) {
+        println("showError($event)")
+
+        val error = event.error!!
+
+        val sw = StringWriter()
+        val pw = PrintWriter(sw)
+        error.printStackTrace(pw)
+        val stackTrace = sw.toString()
+
+        Alert(Alert.AlertType.ERROR).also {
+            it.title = "Execution Error at generation ${event.generation}"
+            it.headerText = if(error.message == null) "" else error.message
+            it.initOwner(super.primaryStage)
+            it.dialogPane.content = vbox {
+                label { text = "Stack Trace:" }
+                textarea {
+                    text = stackTrace
+                    font = Font.font("monospaced")
+                    vgrow = Priority.ALWAYS
+                }
+            }
+            (it.dialogPane.scene.window as Stage).icons.add(geneticIcon)
+            it.isResizable = true
         }.showAndWait()
     }
 
@@ -107,9 +147,21 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
     protected fun addComponent(component: Node, colspan: Int = 1): Label =
         inputsView.addComponent("", component, colspan)
 
-    override fun onEvent(event: ProcessorEvent<*>) {
-        if (event.eventType.ended) {
-            inputsView.disableInputComponents(false)
+    override fun onEvent(event: GenerationEvent) {
+        if (event.eventType == TypeProcessorEvent.ERROR) {
+            // TODO disable btnStop, enable btnReset
+            Platform.runLater { showError(event) }
+        } else {
+            if (event.isEvaluating()) {
+                runLater {
+                    @Suppress("UNCHECKED_CAST")
+                    fillOwnComponent(event.population as List<C>)
+                }
+            }
+            if (event.eventType.ended) {
+                inputsView.disableInputComponents(false)
+            }
+            processorEvent = event
         }
     }
 
@@ -129,9 +181,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
             val processor = GeneticProcessor(crossingType, environment, selectionOperator)
             processor.addListener(this)
 
-            task = GeneticTask(processor, super.primaryStage, this::fillOwnComponent)
-
-            statisticsView.bind(task)
+            task = GeneticTask(processor)
 
             Thread(task, "%s-%tT".format(environment.javaClass.simpleName, Date())).start()
         } catch (e: IllegalStateException) {
@@ -146,6 +196,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
 
     fun reset() {
         inputsView.reset()
+        processorEvent = waitingEvent()
         statisticsView.reset()
         resetComponents()
     }

@@ -6,6 +6,10 @@ package rafael.ktgenetic
  */
 enum class TypeProcessorEvent(val ended: Boolean = false) {
     /**
+     * Waiting for processing start.
+     */
+    WAITING,
+    /**
      * Stating of processing.
      */
     STARTING,
