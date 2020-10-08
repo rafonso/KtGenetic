@@ -18,7 +18,6 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 
-
 internal class StatisticsView(
     @Suppress("unused") private val pnlOutput: Pane,
     private val lblGeneration: Label,
@@ -143,9 +142,6 @@ internal class StatisticsView(
                 Platform.runLater { starting(event.dateTime) }
             event.isEvaluating() ->
                 Platform.runLater { showGenerationData(event) }
-            event.eventType == TypeProcessorEvent.WAITING ->
-                reset()
-
         }
     }
 

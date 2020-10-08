@@ -1,5 +1,7 @@
 package rafael.ktgenetic.fx
 
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.geometry.Orientation
@@ -11,6 +13,8 @@ import javafx.scene.control.Label
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.GridPane
 import javafx.util.StringConverter
+import rafael.ktgenetic.GenerationEvent
+import rafael.ktgenetic.TypeProcessorEvent
 import rafael.ktgenetic.selection.SelectionOperatorChoice
 
 internal class InputsView(
@@ -27,7 +31,7 @@ internal class InputsView(
     private val btnReset                : Button                            ,
     private val btnStart                : Button
     // @formatter:on
-) {
+) : ChangeListener<GenerationEvent> {
 
     private val values: ObservableList<Int> =
         FXCollections.observableArrayList(
@@ -78,6 +82,8 @@ internal class InputsView(
     val hasRepeatedValues: Boolean
         get() = chbRepeatedValues.isSelected
 
+    internal var enabledComponents: List<Node> = emptyList()
+
     init {
         cmbGenerations.items = values
         cmbGenerations.value = 100
@@ -93,7 +99,7 @@ internal class InputsView(
         cmbSelectionOperator.converter = SelectionOperatorConverter()
     }
 
-    fun addComponent(title: String, component: Node, colspan: Int = 1): Label {
+    internal fun addComponent(title: String, component: Node, colspan: Int = 1): Label {
         assert(colspan <= maxColumns) { "Colspan must be at least $maxColumns. It was $colspan" }
 
         val panel = FlowPane(Orientation.VERTICAL)
@@ -113,15 +119,15 @@ internal class InputsView(
         return lblTitle
     }
 
-    fun addComponent(component: Node, colspan: Int = 1): Label = addComponent("", component, colspan)
-
-    fun disableInputComponents(disable: Boolean, enabledComponents: List<Node> = emptyList()) {
+    internal fun disableInputComponents(disable: Boolean) {
         btnStart.isDisable = disable
         btnReset.isDisable = disable
         btnStop.isDisable = !disable
         pnlInput.children
             .filtered { it != pnlButtons }
-            .filtered { !enabledComponents.contains(it) }
+            .filtered {
+                !enabledComponents.contains(it)
+            }
             .forEach { it.isDisable = disable }
     }
 
@@ -130,6 +136,24 @@ internal class InputsView(
         cmbGenerations.value = 100
         cmbMutationFactor.value = 0.1
         cmbPopulation.value = 100
+    }
+
+    override fun changed(
+        observable: ObservableValue<out GenerationEvent>?,
+        oldValue: GenerationEvent?,
+        newValue: GenerationEvent?
+    ) {
+        val event = newValue!!
+        when {
+            event.eventType == TypeProcessorEvent.STARTING ->
+                disableInputComponents(true)
+            event.eventType == TypeProcessorEvent.ERROR -> {
+                btnStop.isDisable = true
+                btnReset.isDisable = false
+            }
+            event.eventType.ended ->
+                disableInputComponents(false)
+        }
     }
 
 }

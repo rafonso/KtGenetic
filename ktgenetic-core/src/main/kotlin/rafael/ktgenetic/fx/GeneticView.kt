@@ -1,6 +1,7 @@
 package rafael.ktgenetic.fx
 
-import javafx.application.Platform
+import javafx.beans.value.ChangeListener
+import javafx.beans.value.ObservableValue
 import javafx.scene.Node
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
@@ -25,7 +26,7 @@ internal fun GenerationEvent.isEvaluating() =
     ((this.eventType == TypeProcessorEvent.GENERATION_EVALUATING) || this.eventType.ended)
 
 abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val crossingType: GeneticCrossingType) :
-    View(title), ProcessorListener {
+    View(title), ProcessorListener, ChangeListener<GenerationEvent> {
     final override val root: BorderPane by fxml("/view/Genetic.fxml")
 
     // @formatter:off
@@ -83,6 +84,8 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
     init {
         primaryStage.icons.add(geneticIcon)
 
+        processorEventProperty.addListener(this)
+        processorEventProperty.addListener(inputsView)
         processorEventProperty.addListener(statisticsView)
 
         configureLog(INFO)
@@ -98,8 +101,6 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
     }
 
     private fun showError(event: ProcessorEvent<*>) {
-        println("showError($event)")
-
         val error = event.error!!
 
         val sw = StringWriter()
@@ -109,7 +110,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
 
         Alert(Alert.AlertType.ERROR).also {
             it.title = "Execution Error at generation ${event.generation}"
-            it.headerText = if(error.message == null) "" else error.message
+            it.headerText = if (error.message == null) "" else error.message
             it.initOwner(super.primaryStage)
             it.dialogPane.content = vbox {
                 label { text = "Stack Trace:" }
@@ -148,31 +149,19 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
         inputsView.addComponent("", component, colspan)
 
     override fun onEvent(event: GenerationEvent) {
-        if (event.eventType == TypeProcessorEvent.ERROR) {
-            // TODO disable btnStop, enable btnReset
-            Platform.runLater { showError(event) }
-        } else {
-            if (event.isEvaluating()) {
-                runLater {
-                    @Suppress("UNCHECKED_CAST")
-                    fillOwnComponent(event.population as List<C>)
-                }
-            }
-            if (event.eventType.ended) {
-                inputsView.disableInputComponents(false)
-            }
-            processorEvent = event
-        }
+        processorEvent = event
     }
 
     fun startProcessing() {
         try {
             validate()
 
+            inputsView.enabledComponents = alwaysEnabledComponents()
+            inputsView.disableInputComponents(true)
+            val operatorChoice = inputsView.selectionOperator
+
             val environment: Environment<G, C> =
                 getEnvironment(inputsView.generations, inputsView.population, inputsView.mutationFactor)
-            inputsView.disableInputComponents(true, alwaysEnabledComponents())
-            val operatorChoice = inputsView.selectionOperator
             val selectionOperator = operatorChoice.chooseSelectionOperator(
                 environment,
                 inputsView.hasElitism,
@@ -196,10 +185,28 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
 
     fun reset() {
         inputsView.reset()
-        processorEvent = waitingEvent()
         statisticsView.reset()
         resetComponents()
+
+        processorEvent = waitingEvent()
+    }
+
+    override fun changed(
+        observable: ObservableValue<out GenerationEvent>?,
+        oldValue: GenerationEvent?,
+        newValue: GenerationEvent?
+    ) {
+        val event = newValue!!
+        when {
+            event.eventType == TypeProcessorEvent.ERROR ->
+                runLater { showError(event) }
+            event.isEvaluating() ->
+                runLater {
+                    @Suppress("UNCHECKED_CAST")
+                    fillOwnComponent(event.population as List<C>)
+                }
+        }
+
     }
 
 }
-
