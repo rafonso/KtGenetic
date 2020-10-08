@@ -3,14 +3,13 @@ package rafael.ktgenetic
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-data class GenerationStatistics<out C : Chromosome<*>>(
+data class GenerationStatistics internal constructor(
     val bestFitness: Double,
     val averageFitness: Double,
-    val averageFitnessDeviation: Double,
-    val median: C
+    val averageFitnessDeviation: Double
 )
 
-internal fun <C : Chromosome<*>> getStatistics(event: ProcessorEvent<C>): GenerationStatistics<C> {
+internal fun <C : Chromosome<*>> getStatistics(event: ProcessorEvent<C>): GenerationStatistics {
     val finesses = event.population.map { it.fitness }
 
     val bestFitness = finesses.maxOrNull()!!
@@ -19,7 +18,6 @@ internal fun <C : Chromosome<*>> getStatistics(event: ProcessorEvent<C>): Genera
         finesses.map { (it - averageFitness).pow(2) }.sum() /
                 (finesses.size * (finesses.size - 1))
     )
-    val median = event.population[event.population.size / 2]
 
-    return GenerationStatistics(bestFitness, averageFitness, averageFitnessDeviation, median)
+    return GenerationStatistics(bestFitness, averageFitness, averageFitnessDeviation)
 }

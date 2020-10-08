@@ -22,7 +22,7 @@ data class ProcessorEvent<out C : Chromosome<*>>(
 ) {
     val dateTime: LocalDateTime = LocalDateTime.now()
 
-    val statistics: GenerationStatistics<C> by lazy { getStatistics(this) }
+    val statistics: GenerationStatistics by lazy { getStatistics(this) }
 
 }
 
