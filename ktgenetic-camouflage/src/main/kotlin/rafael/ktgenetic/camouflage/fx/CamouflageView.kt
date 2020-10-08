@@ -9,13 +9,14 @@ import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.Spinner
 import javafx.scene.control.Tooltip
-import javafx.scene.input.*
+import javafx.scene.input.ContextMenuEvent
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.CornerRadii
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
-import javafx.scene.shape.Circle
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.ProcessorEvent
 import rafael.ktgenetic.camouflage.*
@@ -81,7 +82,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
 
     // OTHER COMPONENTS
 
-    private val circlesProperty = SimpleObjectProperty(listOf<Circle>())
+    private val circlesProperty = SimpleObjectProperty(listOf<CircleNode>())
     private var circles by circlesProperty
 
     private var backgroundKolorToEnvironmentListener: ChangeListener<Kolor>? = null
@@ -114,11 +115,6 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
 
 
         addComponent(chkNonStop)
-        cmbCircleRadius.onAction = EventHandler {
-            val newRadius = cmbCircleRadius.value.toDouble()
-            this.circles.forEach { it.radius = newRadius }
-            reloadBackgound()
-        }
         addComponent("Circles Radii", cmbCircleRadius)
         addComponent("Color Distance Calculator", cmbColorDistance, 4)
 
@@ -213,11 +209,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
         val newRadius = cmbCircleRadius.value.toDouble()
         this.circles =
             (1..generationSize).map { circleId ->
-                Circle(newRadius).also { c ->
-                    c.id = "circle-%04d".format(circleId)
-                    c.fill = Color.TRANSPARENT
-                    c.stroke = Color.BLACK
-                }
+                CircleNode(newRadius, circleId)
             }
 
         val maxGen = if (chkNonStop.isSelected) Integer.MAX_VALUE else maxGenerations
@@ -237,9 +229,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
 
     override fun fillOwnComponent(genome: List<Kolor>) {
         genome.forEachIndexed { index, kolor ->
-            circles[index].fill = kolor.color
-            circles[index].strokeWidth = 1 + kolor.fitness
-            circles[index].tooltip("Color: %s, Fitness: %.5f".format(circles[index].fill, kolor.fitness))
+            circles[index].kolor = kolor
         }
     }
 
@@ -249,6 +239,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
         cmbColorDistance.value = KolorDistance.RGB
         backgroundKolor = WHITE
         pnlEnvironment.clear()
+        circles = emptyList()
     }
 
     override fun onEvent(event: ProcessorEvent<*>) {
