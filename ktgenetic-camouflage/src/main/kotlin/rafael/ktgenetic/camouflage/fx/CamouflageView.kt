@@ -244,8 +244,11 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
     }
 
     override fun resetComponents() {
-        backgroundKolor = WHITE
         chkNonStop.isSelected = false
+        cmbCircleRadius.value = 10
+        cmbColorDistance.value = KolorDistance.RGB
+        backgroundKolor = WHITE
+        pnlEnvironment.clear()
     }
 
     override fun onEvent(event: ProcessorEvent<*>) {
