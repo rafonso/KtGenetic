@@ -46,10 +46,10 @@ internal class StatisticsView(
     private lateinit var updateChart: (Int) -> Boolean
 
     init {
-        cmbUpdateChart.value = 1
         cmbUpdateChart.valueProperty().onChange { multiple ->
             updateChart = if (multiple == 1) { _ -> true } else { g -> (g % multiple!! == 0) }
         }
+        cmbUpdateChart.value = 1
 
         lineChartFitness.yAxis.isTickMarkVisible = false
         yAxisChartFitness.tooltip(

@@ -97,38 +97,22 @@
         </GridPane>
     </top>
    <right>
-      <VBox fx:id="pnlOutput" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="pnlOutput" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <FlowPane orientation="VERTICAL">
-               <children>
-                  <Label text="Generation" />
-                  <Label fx:id="lblGeneration" prefWidth="100.0" styleClass="label-value" />
-                  <Separator prefWidth="200.0" />
-               </children>
-            </FlowPane>
-            <FlowPane layoutX="10.0" layoutY="10.0" orientation="VERTICAL">
-               <children>
-                  <Label text="Best Fitness" />
-                  <Label fx:id="lblBestFitness" prefWidth="100.0" styleClass="label-value" />
-                  <Separator prefWidth="200.0" />
-               </children>
-            </FlowPane>
-            <FlowPane orientation="VERTICAL" prefWidth="200.0">
-               <children>
-                  <Label text="Average Fitness" />
-                  <Label fx:id="lblAverageFitness" prefWidth="100.0" styleClass="label-value">
+            <Label text="Generation" />
+            <Label fx:id="lblGeneration" styleClass="label-value" />
+            <Separator />
+            <Label text="Best Fitness" />
+            <Label fx:id="lblBestFitness" styleClass="label-value" />
+            <Separator />
+            <Label text="Average Fitness" />
+            <Label fx:id="lblAverageFitness" styleClass="label-value">
                   </Label>
-                   <Separator prefWidth="200.0" />
-               </children>
-            </FlowPane>
-            <FlowPane layoutX="10.0" layoutY="175.0" orientation="VERTICAL">
-               <children>
-                  <Label text="Time" />
-                  <Label fx:id="lblTime" prefWidth="100.0" styleClass="label-value" />
-                  <Separator prefWidth="200.0" />
-               </children>
-            </FlowPane>
-            <FlowPane fx:id="pnlUpdateChart" hgap="5.0" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="NEVER">
+             <Separator />
+            <Label text="Time" />
+            <Label fx:id="lblTime" styleClass="label-value" />
+            <Separator />
+            <FlowPane fx:id="pnlUpdateChart" hgap="5.0" VBox.vgrow="NEVER">
                <children>
                   <Label text="Update chart for each" />
                   <ComboBox fx:id="cmbUpdateChart">
@@ -144,7 +128,7 @@
                   </ComboBox>
                </children>
             </FlowPane>
-            <LineChart fx:id="lineChartFitness" createSymbols="false" horizontalZeroLineVisible="false" legendVisible="false" prefHeight="105.0" prefWidth="200.0" verticalGridLinesVisible="false">
+            <LineChart fx:id="lineChartFitness" createSymbols="false" horizontalZeroLineVisible="false" legendVisible="false" verticalGridLinesVisible="false">
               <xAxis>
                   <NumberAxis minorTickCount="10" minorTickLength="1.0" side="LEFT" tickLabelGap="2.0" tickLength="10.0" tickUnit="0.1" upperBound="1.0" />
               </xAxis>
