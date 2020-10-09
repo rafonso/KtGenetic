@@ -47,6 +47,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
     private val lblAverageFitness       : Label                             by fxid()
     private val lblTime                 : Label                             by fxid()
     private val lineChartFitness        : LineChart<Int, Double>            by fxid()
+    private val cmbUpdateChart          : ComboBox<Int>                     by fxid()
     private val yAxisChartFitness       : NumberAxis                        by fxid()
     // @formatter:on
 
@@ -72,6 +73,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
         lblBestFitness,
         lblAverageFitness,
         lblTime,
+        cmbUpdateChart,
         lineChartFitness,
         yAxisChartFitness
     )
@@ -84,6 +86,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
     init {
         primaryStage.icons.add(geneticIcon)
 
+        @Suppress("LeakingThis")
         processorEventProperty.addListener(this)
         processorEventProperty.addListener(inputsView)
         processorEventProperty.addListener(statisticsView)

@@ -7,11 +7,13 @@ import javafx.event.EventHandler
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
+import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.Pane
-import rafael.ktgenetic.*
+import rafael.ktgenetic.GenerationEvent
+import rafael.ktgenetic.TypeProcessorEvent
 import tornadofx.*
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -24,6 +26,7 @@ internal class StatisticsView(
     private val lblBestFitness: Label,
     private val lblAverageFitness: Label,
     private val lblTime: Label,
+    private val cmbUpdateChart: ComboBox<Int>,
     private val lineChartFitness: LineChart<Int, Double>,
     private val yAxisChartFitness: NumberAxis
 ) : ChangeListener<GenerationEvent> {
@@ -40,7 +43,14 @@ internal class StatisticsView(
 
     private lateinit var t0: LocalDateTime
 
+    private lateinit var updateChart: (Int) -> Boolean
+
     init {
+        cmbUpdateChart.value = 1
+        cmbUpdateChart.valueProperty().onChange { multiple ->
+            updateChart = if (multiple == 1) { _ -> true } else { g -> (g % multiple!! == 0) }
+        }
+
         lineChartFitness.yAxis.isTickMarkVisible = false
         yAxisChartFitness.tooltip(
             "To adjust lower value scroll mouse. " +
@@ -91,6 +101,7 @@ internal class StatisticsView(
         lblBestFitness.text = ""
         lblAverageFitness.textProperty().unbind()
         lblAverageFitness.text = ""
+        cmbUpdateChart.value = 1
         lineChartFitness.data.clear()
         yAxisChartFitness.upperBound = 1.0
         yAxisChartFitness.lowerBound = 0.0
@@ -126,8 +137,10 @@ internal class StatisticsView(
             lblAverageFitness.text =
                 "%.4f (%.4f)".format(event.statistics.averageFitness, event.statistics.averageFitnessDeviation)
 
-            averageSeries.data.add(XYChart.Data(event.generation, event.statistics.averageFitness))
-            bestSeries.data.add(XYChart.Data(event.generation, event.statistics.bestFitness))
+            if (updateChart(event.generation)) {
+                averageSeries.data.add(XYChart.Data(event.generation, event.statistics.averageFitness))
+                bestSeries.data.add(XYChart.Data(event.generation, event.statistics.bestFitness))
+            }
         }
     }
 
