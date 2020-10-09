@@ -10,15 +10,15 @@ import rafael.ktgenetic.processor.GeneticCrossingType
 private const val WORD_PARAMETER = "w"
 private const val FITNESS_PARAMETER = "f"
 
-private const val EQUAL_CHARS_FITNESS_PARAMETER = "e"
-private const val SUBTRACT_CHARS_FITNESS_PARAMETER = "s"
+private val EQUAL_CHARS_FITNESS_PARAMETER = StringFitnessChoice.EQUAL_CHARS.code
+private val SUBTRACT_CHARS_FITNESS_PARAMETER = StringFitnessChoice.SUBSTRACT_CHARS.code
 
 private fun addOptions(options: Options) {
     options.addOption(WORD_PARAMETER, true, "Expression Target, rounded by quotation marks")
     options.addOption(FITNESS_PARAMETER, true, "Fitness function. Values: " +
             "$EQUAL_CHARS_FITNESS_PARAMETER - Equal Chars, " +
             "$SUBTRACT_CHARS_FITNESS_PARAMETER - Subtract Chars " +
-            "(Default Value: ${EQUAL_CHARS_FITNESS_PARAMETER})")
+            "(Default Value: $EQUAL_CHARS_FITNESS_PARAMETER)")
 }
 
 private fun validateParameters(line: CommandLine) {

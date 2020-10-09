@@ -2,9 +2,6 @@ package rafael.ktgenetic.camouflage
 
 import javafx.scene.paint.Color
 import rafael.ktgenetic.Chromosome
-import kotlin.math.abs
-import kotlin.math.min
-import kotlin.math.sqrt
 
 fun validateColor(x: Int, name: String) {
     require(x in 0..MAX_COLOR_VALUE) { "$name must be between 0 and 255" }
@@ -31,7 +28,7 @@ data class Kolor(val r: Int, val g: Int, val b: Int) : Chromosome<Int>() {
     private val gDouble = g.toDouble() / MAX_COLOR_VALUE
     private val bDouble = b.toDouble() / MAX_COLOR_VALUE
 
-    val color = Color.color(rDouble, gDouble, bDouble)
+    val color = Color.color(rDouble, gDouble, bDouble)!!
 
     init {
         validateColor(r, "R")

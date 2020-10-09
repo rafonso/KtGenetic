@@ -1,3 +1,5 @@
+@file:Suppress("DuplicatedCode", "DuplicatedCode")
+
 package rafael.ktgenetic.pallete
 
 import rafael.ktgenetic.Chromosome

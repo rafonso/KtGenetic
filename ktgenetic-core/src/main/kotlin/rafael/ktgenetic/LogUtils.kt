@@ -12,7 +12,7 @@ enum class LogLevel(val level: Level, val code: String) {
     INFO(Level.INFO, 0.toString()),
     DEBUG(Level.DEBUG, 1.toString()),
     TRACE(Level.TRACE, 2.toString()),
-    _TRACER(TRACER, 3.toString())
+    TRACER_LEVEL(TRACER, 3.toString())
 }
 
 fun codeToLogLevel(code: String) = LogLevel.values().first { it.code == code }

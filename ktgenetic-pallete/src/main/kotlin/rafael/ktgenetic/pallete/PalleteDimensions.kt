@@ -33,7 +33,7 @@ data class PalleteDimensions(val rows: Int, val cols: Int) {
 
     val distanceFromCenter: List<Double> = points.map { point -> point.distance(center) }
 
-    val greatestDistanceFromCenter: Double = distanceFromCenter.max() ?: 0.0
+    val greatestDistanceFromCenter: Double = distanceFromCenter.maxOrNull() ?: 0.0
 
     val blocksByRow: Map<Int, List<Int>> =
             (0 until rows).map { r ->

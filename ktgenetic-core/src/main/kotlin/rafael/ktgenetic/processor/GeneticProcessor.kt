@@ -115,6 +115,7 @@ class GeneticProcessor<G, C : Chromosome<G>>(
 
     fun addListener(listener: ProcessorListener): Boolean = listeners.add(listener)
 
+    @Suppress("unused")
     fun removeListener(listener: ProcessorListener): Boolean = listeners.remove(listener)
 
 }

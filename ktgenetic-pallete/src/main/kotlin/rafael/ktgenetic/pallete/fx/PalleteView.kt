@@ -119,7 +119,7 @@ class PalleteView : GeneticView<Box, Pallete>("Pallete", GeneticCrossingType.ORD
     }
 
     private fun fillColorsByBox(weights: List<Int>) {
-        val max = weights.max()!!.toDouble()
+        val max = weights.maxOrNull()!!.toDouble()
         colorsByBox.clear()
         weights.forEach { colorsByBox[it] = gradients[((it / max) * 10).toInt()] }
     }

@@ -16,7 +16,7 @@ class CamouflageEnvironment(
     override var mutationFactor: Double = 0.01
 ) : Environment<Int, Kolor> {
 
-    private val backgroundColorProperty = SimpleObjectProperty<Kolor>(initialBackgroundColor)
+    private val backgroundColorProperty = SimpleObjectProperty(initialBackgroundColor)
     var backgroundColor: Kolor by backgroundColorProperty
 
     private fun randomByte() = randomIntInclusive(MAX_COLOR_VALUE)

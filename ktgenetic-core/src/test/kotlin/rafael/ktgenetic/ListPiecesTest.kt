@@ -31,24 +31,24 @@ internal class ListPiecesTest {
         @JvmStatic
         private fun provideTestMakeCuttingIntoPiecesValidPositions(): Stream<Arguments> = Stream.of(
             Arguments.of(0, 0, listOf<Int>(), listOf<Int>(), baseList),
-            Arguments.of(0, 1, listOf<Int>(), listOf<Int>(1), listOf(2, 3, 4, 5, 6)),
-            Arguments.of(0, 2, listOf<Int>(), listOf<Int>(1, 2), listOf(3, 4, 5, 6)),
-            Arguments.of(0, 5, listOf<Int>(), listOf<Int>(1, 2, 3, 4, 5), listOf(6)),
-            Arguments.of(0, 6, listOf<Int>(), listOf<Int>(1, 2, 3, 4, 5, 6), listOf<Int>()),
+            Arguments.of(0, 1, listOf<Int>(), listOf(1), listOf(2, 3, 4, 5, 6)),
+            Arguments.of(0, 2, listOf<Int>(), listOf(1, 2), listOf(3, 4, 5, 6)),
+            Arguments.of(0, 5, listOf<Int>(), listOf(1, 2, 3, 4, 5), listOf(6)),
+            Arguments.of(0, 6, listOf<Int>(), listOf(1, 2, 3, 4, 5, 6), listOf<Int>()),
 
-            Arguments.of(1, 1, listOf<Int>(1), listOf<Int>(), listOf(2, 3, 4, 5, 6)),
-            Arguments.of(1, 2, listOf<Int>(1), listOf<Int>(2), listOf(3, 4, 5, 6)),
-            Arguments.of(1, 5, listOf<Int>(1), listOf<Int>(2, 3, 4, 5), listOf(6)),
-            Arguments.of(1, 6, listOf<Int>(1), listOf<Int>(2, 3, 4, 5, 6), listOf<Int>()),
+            Arguments.of(1, 1, listOf(1), listOf<Int>(), listOf(2, 3, 4, 5, 6)),
+            Arguments.of(1, 2, listOf(1), listOf(2), listOf(3, 4, 5, 6)),
+            Arguments.of(1, 5, listOf(1), listOf(2, 3, 4, 5), listOf(6)),
+            Arguments.of(1, 6, listOf(1), listOf(2, 3, 4, 5, 6), listOf<Int>()),
 
             Arguments.of(2, 2, listOf(1, 2), listOf<Int>(), listOf(3, 4, 5, 6)),
-            Arguments.of(2, 5, listOf<Int>(1, 2), listOf<Int>(3, 4, 5), listOf(6)),
-            Arguments.of(2, 6, listOf<Int>(1, 2), listOf<Int>(3, 4, 5, 6), listOf<Int>()),
+            Arguments.of(2, 5, listOf(1, 2), listOf(3, 4, 5), listOf(6)),
+            Arguments.of(2, 6, listOf(1, 2), listOf(3, 4, 5, 6), listOf<Int>()),
 
-            Arguments.of(5, 5, listOf<Int>(1, 2, 3, 4, 5), listOf<Int>(), listOf(6)),
-            Arguments.of(5, 6, listOf<Int>(1, 2, 3, 4, 5), listOf<Int>(6), listOf<Int>()),
+            Arguments.of(5, 5, listOf(1, 2, 3, 4, 5), listOf<Int>(), listOf(6)),
+            Arguments.of(5, 6, listOf(1, 2, 3, 4, 5), listOf(6), listOf<Int>()),
 
-            Arguments.of(6, 6, listOf<Int>(1, 2, 3, 4, 5, 6), listOf<Int>(), listOf<Int>()),
+            Arguments.of(6, 6, listOf(1, 2, 3, 4, 5, 6), listOf<Int>(), listOf<Int>()),
         )
 
         @Suppress("unused")

@@ -4,11 +4,11 @@ interface PositionConversor {
 
     fun toRealPicturePosition(pos: Position): Position
 
-    fun toRealPicturePosition(x: Int, y: Int): Position = toRealPicturePosition(Position(x, y))
+//    fun toRealPicturePosition(x: Int, y: Int): Position = toRealPicturePosition(Position(x, y))
 
     fun toResizedPicurePosition(pos: Position): Position
 
-    fun toResizedPicurePosition(x: Int, y: Int): Position = toResizedPicurePosition(Position(x, y))
+//    fun toResizedPicurePosition(x: Int, y: Int): Position = toResizedPicurePosition(Position(x, y))
 
 }
 

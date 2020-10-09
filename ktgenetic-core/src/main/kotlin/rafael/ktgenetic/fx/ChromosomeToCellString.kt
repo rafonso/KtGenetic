@@ -12,5 +12,5 @@ import rafael.ktgenetic.Chromosome
 internal class ChromosomeToCellString<G, C : Chromosome<G>>(private val chromosomeToString: (Chromosome<G>) -> String) :
         Callback<TableColumn.CellDataFeatures<C, String>, ObservableValue<String>> {
     override fun call(param: TableColumn.CellDataFeatures<C, String>?): ObservableValue<String>  //
-            = SimpleObjectProperty<String>(chromosomeToString(param!!.value))
+            = SimpleObjectProperty(chromosomeToString(param!!.value))
 }

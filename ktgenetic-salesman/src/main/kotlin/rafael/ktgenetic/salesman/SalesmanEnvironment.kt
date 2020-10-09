@@ -15,10 +15,10 @@ class SalesmanEnvironment(
 ) : Environment<Point, Path> {
 
     private val maxDistance: Double by lazy {
-        val minX = points.minBy { it.x }!!.x
-        val minY = points.minBy { it.y }!!.y
-        val maxX = points.maxBy { it.x }!!.x
-        val maxY = points.maxBy { it.y }!!.y
+        val minX = points.minByOrNull { it.x }!!.x
+        val minY = points.minByOrNull { it.y }!!.y
+        val maxX = points.maxByOrNull { it.x }!!.x
+        val maxY = points.maxByOrNull { it.y }!!.y
 
         val deltaX = (maxX - minX).toDouble()
         val deltaY = (maxY - minY).toDouble()
