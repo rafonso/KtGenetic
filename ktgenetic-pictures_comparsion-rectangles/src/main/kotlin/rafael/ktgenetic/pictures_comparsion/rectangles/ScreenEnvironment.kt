@@ -75,7 +75,7 @@ class ScreenEnvironment(
     override fun createNewChromosome(sequence: List<Rectangle>): Screen = Screen(sequence)
 
     override fun calculateFitness(chromosome: Screen): Double {
-        val distances = DoubleArray(chromosome.content.size)
+        val distances = IntArray(chromosome.content.size)
         chromosome.content.forEachIndexed { index, rect ->
             distances[index] = rect.kolor.distanceTo(originalRectangles[index].kolor)
         }

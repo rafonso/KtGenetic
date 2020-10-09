@@ -6,7 +6,7 @@ fun validateColor(x: Int, name: String) {
 
 const val MAX_COLOR_VALUE = 255
 
-const val MAX_COLOR_VALUE_D = (MAX_COLOR_VALUE * MAX_COLOR_VALUE).toDouble()
+const val MAX_COLOR_VALUE_D = (MAX_COLOR_VALUE * MAX_COLOR_VALUE)
 
 /**
  * Represents the color in a pixel. Named as 'Kolor" to avoid confusing with JavaFX `Color`.
@@ -25,10 +25,18 @@ data class Kolor(val r: Int, val g: Int, val b: Int) {
 
     override fun toString(): String = "(%3d,%3d,%3d)".format(r, g, b)
 
-    fun distanceTo(other: Kolor): Double {
-        val deltaR = (this.r - other.r).toDouble()
-        val deltaG = (this.g - other.g).toDouble()
-        val deltaB = (this.b - other.b).toDouble()
+    /**
+     * Returns the "distance" between this [Kolor] and another one. This distance is calculate as they were 2 points
+     * in a 3D space, using [Kolor.r], [Kolor.g] and [Kolor.b] as coordinate. Actually, it is returned the quadratic
+     * distance because there is no necessity to extact the square root.
+     *
+     * @param other The other kolor
+     * @return the distance
+     */
+    internal fun distanceTo(other: Kolor): Int {
+        val deltaR = (this.r - other.r)
+        val deltaG = (this.g - other.g)
+        val deltaB = (this.b - other.b)
 
         return (deltaR * deltaR) + (deltaG * deltaG) + (deltaB * deltaB)
     }
