@@ -29,7 +29,10 @@ class CircleNode(radius: Double, circleId: Int) : StackPane() {
     }
 
     private val showData: (String) -> Unit =
-        if (radius >= 50.0) { string -> txtCircle.text = string }
+        if (radius >= 50.0) { string ->
+            txtCircle.text = string
+            txtCircle.fill = (circle.fill as Color).invert().brighter()
+        }
         else { string -> circle.tooltip(string) }
 
     init {
