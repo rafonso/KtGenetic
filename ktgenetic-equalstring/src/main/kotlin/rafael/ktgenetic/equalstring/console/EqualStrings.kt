@@ -15,16 +15,24 @@ private val SUBTRACT_CHARS_FITNESS_PARAMETER = StringFitnessChoice.SUBSTRACT_CHA
 
 private fun addOptions(options: Options) {
     options.addOption(WORD_PARAMETER, true, "Expression Target, rounded by quotation marks")
-    options.addOption(FITNESS_PARAMETER, true, "Fitness function. Values: " +
-            "$EQUAL_CHARS_FITNESS_PARAMETER - Equal Chars, " +
-            "$SUBTRACT_CHARS_FITNESS_PARAMETER - Subtract Chars " +
-            "(Default Value: $EQUAL_CHARS_FITNESS_PARAMETER)")
+    options.addOption(
+        FITNESS_PARAMETER, true, "Fitness function. Values: " +
+                "$EQUAL_CHARS_FITNESS_PARAMETER - Equal Chars, " +
+                "$SUBTRACT_CHARS_FITNESS_PARAMETER - Subtract Chars " +
+                "(Default Value: $EQUAL_CHARS_FITNESS_PARAMETER)"
+    )
 }
 
 private fun validateParameters(line: CommandLine) {
     require(line.hasOption(WORD_PARAMETER)) { "Please provide the word to be processed" }
-    require(!(line.hasOption(FITNESS_PARAMETER) &&
-            !setOf(EQUAL_CHARS_FITNESS_PARAMETER, SUBTRACT_CHARS_FITNESS_PARAMETER).contains(line.getOptionValue(FITNESS_PARAMETER)))) {
+    require(
+        !(line.hasOption(FITNESS_PARAMETER) &&
+                !setOf(EQUAL_CHARS_FITNESS_PARAMETER, SUBTRACT_CHARS_FITNESS_PARAMETER).contains(
+                    line.getOptionValue(
+                        FITNESS_PARAMETER
+                    )
+                ))
+    ) {
         "Fitness parameter should be $EQUAL_CHARS_FITNESS_PARAMETER " +
                 "or $SUBTRACT_CHARS_FITNESS_PARAMETER"
     }
@@ -35,21 +43,24 @@ private fun getFitnessFunction(line: CommandLine): StringFitness {
 
     val fitnessFunction: StringFitness
     fitnessFunction = when (fitnessParameter) {
-        EQUAL_CHARS_FITNESS_PARAMETER    -> EqualCharsFitness()
+        EQUAL_CHARS_FITNESS_PARAMETER -> EqualCharsFitness()
         SUBTRACT_CHARS_FITNESS_PARAMETER -> SubtractCharsFitness()
-        else                             -> throw IllegalArgumentException("Fitness parameter should be $EQUAL_CHARS_FITNESS_PARAMETER " +
-                "or $SUBTRACT_CHARS_FITNESS_PARAMETER")
+        else -> throw IllegalArgumentException(
+            "Fitness parameter should be $EQUAL_CHARS_FITNESS_PARAMETER " +
+                    "or $SUBTRACT_CHARS_FITNESS_PARAMETER"
+        )
     }
 
     return fitnessFunction
 }
 
 private fun getEnvironment(line: CommandLine) =
-        EqualStringEnvironment(
-                line.getOptionValue(WORD_PARAMETER), //
-                getFitnessFunction(line),
-                line.getMaxGenerations(),
-                line.getPopulationByGeneration())
+    EqualStringEnvironment(
+        line.getOptionValue(WORD_PARAMETER), //
+        getFitnessFunction(line),
+        line.getMaxGenerations(),
+        line.getPopulationByGeneration()
+    )
 
 private fun showEnvironmentDetails(environment: Environment<Char, Word>): String {
     val esEnvironment = environment as EqualStringEnvironment
@@ -58,10 +69,10 @@ private fun showEnvironmentDetails(environment: Environment<Char, Word>): String
 }
 
 fun main(args: Array<String>) = executeMain(
-        args,
-        ::addOptions,
-        ::validateParameters,
-        ::getEnvironment,
-        GeneticCrossingType.SIMPLE,
-        ::showEnvironmentDetails
+    args,
+    ::addOptions,
+    ::validateParameters,
+    ::getEnvironment,
+    GeneticCrossingType.SIMPLE,
+    ::showEnvironmentDetails
 )

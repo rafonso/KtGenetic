@@ -15,11 +15,13 @@ fun <G> makeCuttingIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>):
         "Cut positions crescent numbers must be between 0 and sequence size (${sequence.size}): $cutPositions"
     }
 
+    // @formatter:off
     return ListPieces(
-        sequence.subList(0, cutPositions.first),
-        sequence.subList(cutPositions.first, cutPositions.second),
-        sequence.subList(cutPositions.second, sequence.size)
+        sequence.subList(0                  , cutPositions.first    ),
+        sequence.subList(cutPositions.first , cutPositions.second   ),
+        sequence.subList(cutPositions.second, sequence.size         )
     )
+    // @formatter:on
 }
 
 data class ListPieces<out G>(val left: List<G>, val core: List<G>, val right: List<G>) {
