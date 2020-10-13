@@ -15,7 +15,7 @@ import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.CornerRadii
-import javafx.scene.layout.Pane
+import javafx.scene.layout.FlowPane
 import javafx.scene.paint.Color
 import rafael.ktgenetic.Environment
 import rafael.ktgenetic.ProcessorEvent
@@ -30,10 +30,19 @@ class CamouflageApp : App(CamouflageView::class)
 
 class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType.SIMPLE) {
 
-    private fun makeIntSpinner(maxValue: Int) = spinner(0, maxValue, 0, 1, enableScroll = true).also { spn ->
+    private fun makeIntSpinner() = spinner(0, MAX_COLOR_VALUE, 0, 1, enableScroll = true).also { spn ->
         spn.editor.alignment = Pos.CENTER_RIGHT
         spn.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume)
     }
+
+    private val changeColorActions = mapOf<String, (Color) -> Color>(
+        "Brighter" to { it.brighter() },
+        "Darker" to { it.darker() },
+        "Desaturate" to { it.desaturate() },
+        "Grayscale" to { it.grayscale() },
+        "Invert" to { it.invert() },
+        "Staturate" to { it.saturate() }
+    )
 
     // INPUT COMPONENTS
 
@@ -60,17 +69,20 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
         value = KolorDistance.RGB
     }
 
-    private val spnRed = makeIntSpinner(MAX_COLOR_VALUE)
+    private val spnRed = makeIntSpinner()
 
-    private val spnGreen = makeIntSpinner(MAX_COLOR_VALUE)
+    private val spnGreen = makeIntSpinner()
 
-    private val spnBlue = makeIntSpinner(MAX_COLOR_VALUE)
+    private val spnBlue = makeIntSpinner()
 
-    private val spnHue = makeIntSpinner(360)
+    private val btnChangeBackground = button("Change Background to ") {
+        onAction = EventHandler { changeBackground1() }
+    }
 
-    private val spnSaturation = makeIntSpinner(100)
+    private val cmbChangeBackground = combobox(values = changeColorActions.keys.toList()) {
+        value = changeColorActions.keys.first()
+    }
 
-    private val spnBrightness = makeIntSpinner(100)
 
     // OUTPUT COMPONENTS
 
@@ -123,38 +135,12 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
             { newKolor -> backgroundColorPicker.value = newKolor.color },
             { newColor -> backgroundKolor = newColor.toKolor() })
         addComponent("Background Color", backgroundColorPicker)
-        addSpinner("Red", spnRed, { it.r }, { k, v -> k.copy(r = v) }, { k -> Color.rgb(k.r, 0, 0) })
+        addSpinner("Red"  , spnRed  , { it.r }, { k, v -> k.copy(r = v) }, { k -> Color.rgb(k.r, 0, 0) })
         addSpinner("Green", spnGreen, { it.g }, { k, v -> k.copy(g = v) }, { k -> Color.rgb(0, k.g, 0) })
-        addSpinner("Blue", spnBlue, { it.b }, { k, v -> k.copy(b = v) }, { k -> Color.rgb(0, 0, k.b) })
-        addComponent(Pane(), 2)
-
-//        addComponent(Pane())
-//        addSpinner("Hue", spnHue, { it.color.hue.toInt() },
-//            { k, v ->
-//                val c = k.color
-//                Color.hsb(v.toDouble(), c.saturation, c.brightness).toKolor()
-//            },
-//            { k -> Color.hsb(k.color.hue, 0.0, 0.0) }
-//        )
-//        addSpinner("Saturation (%)", spnSaturation, { (100.0 * it.color.saturation).toInt() },
-//            { k, v ->
-//                val c = k.color
-//                Color.hsb(c.hue, (v.toDouble() / 100.0), c.brightness).toKolor()
-//            },
-//            { k -> Color.hsb(0.0, k.color.saturation, 0.0) }
-//        )
-//        addSpinner("Brightness (%)", spnBrightness, { (100.0 * it.color.brightness).toInt() },
-//            { k, v ->
-//                val c = k.color
-//                Color.hsb(c.hue, c.saturation, (v.toDouble() / 100.0)).toKolor()
-//            },
-//            { k -> Color.hsb(0.0, 0.0, k.color.brightness) }
-//        )
-//        addComponent(label().also { lbl ->
-//            backgroundKolorProperty.addListener { _, _, k ->
-//                lbl.text = "HSB(%03.0f, %.2f, %.2f)".format(k.color.hue, k.color.saturation, k.color.brightness)
-//            }
-//        }, 2)
+        addSpinner("Blue" , spnBlue , { it.b }, { k, v -> k.copy(b = v) }, { k -> Color.rgb(0, 0, k.b) })
+        addComponent(FlowPane(btnChangeBackground, cmbChangeBackground).also {
+            it.hgap = 5.0
+        }, 2)
 
         circlesProperty.onChange { reloadBackgound() }
 
@@ -182,9 +168,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
             spnRed,
             spnGreen,
             spnBlue,
-            spnHue,
-            spnSaturation,
-            spnBrightness
+            btnChangeBackground.parent,
         ).map { c -> c.parent }
 
     private fun reloadBackgound() {
@@ -195,6 +179,11 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
     private fun changeBackground() {
         pnlEnvironment.background =
             Background(BackgroundFill(backgroundColorPicker.value, CornerRadii.EMPTY, Insets.EMPTY))
+    }
+
+    private fun changeBackground1() {
+        this.backgroundKolor =
+            changeColorActions[cmbChangeBackground.value]?.let { it(this.backgroundKolor.color) }!!.toKolor()
     }
 
     override fun validate() {
