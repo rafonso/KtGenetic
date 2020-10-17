@@ -33,7 +33,8 @@ internal class TruncateSelectionOperator<C : Chromosome<*>>(
 
     }
 
-    private val selector: (List<C>, Int) -> List<C> = if (allowRepetition) Companion::listSelector else Companion::setSelector
+    private val selector: (List<C>, Int) -> List<C> =
+        if (allowRepetition) Companion::listSelector else Companion::setSelector
 
     override fun select(children: List<C>): List<C> = selector(children, generationSize)
 

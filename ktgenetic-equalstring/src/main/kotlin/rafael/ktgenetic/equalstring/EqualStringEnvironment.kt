@@ -3,7 +3,6 @@ package rafael.ktgenetic.equalstring
 import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.core.utils.createCutPositions
 import rafael.ktgenetic.core.utils.geneticRandom
-import rafael.ktgenetic.core.utils.pMap
 
 class EqualStringEnvironment(val target: String,
                              val fitnessFunction: StringFitness,
@@ -17,7 +16,7 @@ class EqualStringEnvironment(val target: String,
     private fun randomChar(): Char = range[geneticRandom.nextInt(range.size)]
 
     private fun createRandomWord(): Word =
-            Word(1.rangeTo(target.length).pMap { randomChar() }.joinToString(""))
+            Word(1.rangeTo(target.length).map { randomChar() }.joinToString(""))
 
     override fun getFirstGeneration(): List<Word> =
             (1..generationSize).map { createRandomWord() }

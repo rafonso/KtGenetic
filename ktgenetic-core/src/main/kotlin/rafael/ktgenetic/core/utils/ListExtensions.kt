@@ -68,7 +68,7 @@ fun <T> List<T>.randomSwap(): List<T> {
  * @param transform Tranformation function from [T] to [R]
  * @return List transformed from type [T] to [R]
  */
-fun <T, R> Iterable<T>.pMap(transform: (T) -> R): List<R> =
+internal fun <T, R> Iterable<T>.pMap(transform: (T) -> R): List<R> =
         ArrayList(toMutableList()).parallelStream().map { transform(it) }.collect(Collectors.toList()).toList()
 
 /**
@@ -80,5 +80,5 @@ fun <T, R> Iterable<T>.pMap(transform: (T) -> R): List<R> =
  * @param transform Tranformation function from [T] to [R]
  * @return List transformed from type [T] to [R]
  */
-fun <T, R> Iterable<T>.pFlatMap(transform: (T) -> List<R>): List<R> =
+internal fun <T, R> Iterable<T>.pFlatMap(transform: (T) -> List<R>): List<R> =
         ArrayList(toMutableList()).parallelStream().flatMap { ArrayList(transform(it)).stream() }.collect(Collectors.toList()).toList()
