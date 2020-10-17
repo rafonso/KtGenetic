@@ -2,8 +2,6 @@ package rafael.ktgenetic.core.selection
 
 import rafael.ktgenetic.core.Chromosome
 import rafael.ktgenetic.core.utils.geneticRandom
-import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.pow
 
 private const val c = 0.975
@@ -67,7 +65,7 @@ class ExponentialRankingSelectionOperator<C : Chromosome<*>>(
     }
 
     private val getInitialSelected: () -> MutableCollection<C> =
-        if (allowRepetition) { -> ArrayList() } else { -> TreeSet() }
+        if (allowRepetition) { ->  arrayListOf() } else { -> sortedSetOf() }
 
     override fun select(children: List<C>): List<C> {
         val ranking = rankingBySize.computeIfAbsent(children.size) { calculateRanking(it) }

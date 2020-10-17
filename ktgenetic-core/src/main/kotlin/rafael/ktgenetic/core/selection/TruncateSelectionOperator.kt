@@ -1,7 +1,6 @@
 package rafael.ktgenetic.core.selection
 
 import rafael.ktgenetic.core.Chromosome
-import java.util.*
 
 /**
  * https://en.wikipedia.org/wiki/Truncation_selection
@@ -19,7 +18,7 @@ internal class TruncateSelectionOperator<C : Chromosome<*>>(
 
         fun <C : Chromosome<*>> setSelector(children: List<C>, size: Int): List<C> {
 
-            tailrec fun process(remainingChildren: LinkedList<C>, selected: MutableSet<C>): List<C> {
+            tailrec fun process(remainingChildren: ArrayDeque<C>, selected: MutableSet<C>): List<C> {
                 if ((selected.size == size) || remainingChildren.isEmpty()) {
                     return selected.toList().sortedBy { -it.fitness }
                 }
@@ -29,7 +28,7 @@ internal class TruncateSelectionOperator<C : Chromosome<*>>(
                 return process(remainingChildren, selected)
             }
 
-            return process(LinkedList(children), TreeSet())
+            return process(ArrayDeque(children), sortedSetOf())
         }
 
     }

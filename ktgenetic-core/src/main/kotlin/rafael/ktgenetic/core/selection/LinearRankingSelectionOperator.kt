@@ -2,8 +2,6 @@ package rafael.ktgenetic.core.selection
 
 import rafael.ktgenetic.core.Chromosome
 import rafael.ktgenetic.core.utils.geneticRandom
-import java.util.*
-import kotlin.collections.ArrayList
 
 private const val nMin = 0.9
 private const val nMax = 2.0 - nMin
@@ -51,7 +49,7 @@ class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationS
     }
 
     private val getInitialSelected: () -> MutableCollection<C> =
-            if (allowRepetition) { -> ArrayList() } else { -> TreeSet() }
+        if (allowRepetition) { ->  arrayListOf() } else { -> sortedSetOf() }
 
     override fun select(children: List<C>): List<C> {
         assert(allowRepetition || children.size > generationSize) {

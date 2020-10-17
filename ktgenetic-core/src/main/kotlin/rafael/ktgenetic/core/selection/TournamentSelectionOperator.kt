@@ -2,8 +2,6 @@ package rafael.ktgenetic.core.selection
 
 import rafael.ktgenetic.core.Chromosome
 import rafael.ktgenetic.core.utils.createRandomPositions
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * https://en.wikipedia.org/wiki/Tournament_selection
@@ -31,7 +29,8 @@ internal class TournamentSelectionOperator<C : Chromosome<*>>(
         return select(population, selected)
     }
 
-    private val getWinners: () -> MutableCollection<C> = if (allowRepetition) { -> ArrayList() } else { -> TreeSet() }
+    private val getWinners: () -> MutableCollection<C> =
+        if (allowRepetition) { -> arrayListOf() } else { -> sortedSetOf() }
 
     override fun select(children: List<C>): List<C> {
         assert(allowRepetition || children.size > generationSize) {

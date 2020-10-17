@@ -2,8 +2,6 @@ package rafael.ktgenetic.core.selection
 
 import rafael.ktgenetic.core.Chromosome
 import rafael.ktgenetic.core.utils.geneticRandom
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * See https://en.wikipedia.org/wiki/Fitness_proportionate_selection
@@ -32,7 +30,7 @@ internal class RouletteSelectionOperator<C : Chromosome<*>>(
         selected: MutableCollection<C>
     ): List<C> {
         if (remainingQuantity == 0) {
-            return selected.toList().sortedBy { - it.fitness }
+            return selected.toList().sortedBy { -it.fitness }
         }
 
         val sortedValue = geneticRandom.nextDouble() * totalFitness
@@ -50,7 +48,7 @@ internal class RouletteSelectionOperator<C : Chromosome<*>>(
     override fun select(children: List<C>): List<C> {
         val fitnesses = children.map { it.fitness }.toDoubleArray()
         val totalFitness = fitnesses.sum()
-        val selected: MutableCollection<C> = if (allowRepetition) ArrayList() else TreeSet()
+        val selected: MutableCollection<C> = if (allowRepetition) arrayListOf() else sortedSetOf()
 
         return selectElements(ArrayList(children), fitnesses, generationSize, totalFitness, selected)
     }
