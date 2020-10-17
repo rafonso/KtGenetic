@@ -18,9 +18,9 @@ internal class TruncateSelectionOperator<C : Chromosome<*>>(
 
         fun <C : Chromosome<*>> setSelector(children: List<C>, size: Int): List<C> {
 
-            tailrec fun process(remainingChildren: ArrayDeque<C>, selected: MutableSet<C>): List<C> {
+            tailrec fun process(remainingChildren: MutableList<C>, selected: MutableSet<C>): List<C> {
                 if ((selected.size == size) || remainingChildren.isEmpty()) {
-                    return selected.toList().sortedBy { -it.fitness }
+                    return selected.toList()
                 }
 
                 val first = remainingChildren.removeFirst()
@@ -28,7 +28,7 @@ internal class TruncateSelectionOperator<C : Chromosome<*>>(
                 return process(remainingChildren, selected)
             }
 
-            return process(ArrayDeque(children), sortedSetOf())
+            return process(ArrayDeque(children), linkedSetOf())
         }
 
     }
