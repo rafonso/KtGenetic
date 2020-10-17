@@ -1,7 +1,7 @@
 package rafael.ktgenetic.pictures_comparsion
 
-import rafael.ktgenetic.randomIntExclusive
-import rafael.ktgenetic.randomIntInclusive
+import rafael.ktgenetic.core.utils.randomIntExclusive
+import rafael.ktgenetic.core.utils.randomIntInclusive
 import kotlin.math.min
 import kotlin.system.measureTimeMillis
 

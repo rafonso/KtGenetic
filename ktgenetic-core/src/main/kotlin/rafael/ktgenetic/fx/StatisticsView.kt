@@ -12,8 +12,8 @@ import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.Pane
-import rafael.ktgenetic.GenerationEvent
-import rafael.ktgenetic.TypeProcessorEvent
+import rafael.ktgenetic.core.events.GenerationEvent
+import rafael.ktgenetic.core.events.TypeProcessorEvent
 import tornadofx.*
 import java.text.SimpleDateFormat
 import java.time.Duration

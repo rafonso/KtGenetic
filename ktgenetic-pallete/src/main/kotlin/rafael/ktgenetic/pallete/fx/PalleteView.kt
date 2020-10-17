@@ -4,12 +4,12 @@ import javafx.collections.FXCollections
 import javafx.geometry.Pos
 import javafx.scene.control.*
 import javafx.scene.layout.GridPane
-import rafael.ktgenetic.Environment
+import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.chromosomeToTableColumn
 import rafael.ktgenetic.fx.fitnessToTableColumn
 import rafael.ktgenetic.pallete.*
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 import tornadofx.*
 
 /**

@@ -1,6 +1,13 @@
 package rafael.ktgenetic.pallete
 
-import rafael.ktgenetic.*
+import rafael.ktgenetic.core.*
+import rafael.ktgenetic.core.events.ProcessorEvent
+import rafael.ktgenetic.core.events.ProcessorListener
+import rafael.ktgenetic.core.events.TypeProcessorEvent
+import rafael.ktgenetic.core.utils.createCutPositions
+import rafael.ktgenetic.core.utils.geneticRandom
+import rafael.ktgenetic.core.utils.mainLogger
+import rafael.ktgenetic.core.utils.randomSwap
 import kotlin.math.abs
 import kotlin.math.sqrt
 

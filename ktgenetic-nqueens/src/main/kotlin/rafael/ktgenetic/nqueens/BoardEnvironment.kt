@@ -1,8 +1,8 @@
 package rafael.ktgenetic.nqueens
 
-import rafael.ktgenetic.Environment
-import rafael.ktgenetic.createCutPositions
-import rafael.ktgenetic.randomSwap
+import rafael.ktgenetic.core.Environment
+import rafael.ktgenetic.core.utils.createCutPositions
+import rafael.ktgenetic.core.utils.randomSwap
 
 class BoardEnvironment(val boardSize: Int,
                        private val piece: Piece,

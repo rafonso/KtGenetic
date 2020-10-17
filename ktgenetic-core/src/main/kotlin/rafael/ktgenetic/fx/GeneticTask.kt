@@ -1,8 +1,10 @@
 package rafael.ktgenetic.fx
 
 import javafx.concurrent.Task
-import rafael.ktgenetic.*
-import rafael.ktgenetic.processor.GeneticProcessor
+import rafael.ktgenetic.core.Chromosome
+import rafael.ktgenetic.core.utils.LogProcessorListener
+import rafael.ktgenetic.core.events.ProcessorEvent
+import rafael.ktgenetic.core.processor.GeneticProcessor
 
 
 internal class GeneticTask<C : Chromosome<*>>(private val processor: GeneticProcessor<*, C>) :

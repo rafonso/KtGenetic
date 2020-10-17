@@ -2,7 +2,7 @@ package rafael.ktgenetic.camouflage.console
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.Environment
+import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.camouflage.CamouflageEnvironment
 import rafael.ktgenetic.camouflage.Kolor
 import rafael.ktgenetic.camouflage.KolorDistance
@@ -11,7 +11,7 @@ import rafael.ktgenetic.console.executeMain
 import rafael.ktgenetic.console.getIntOptionValue
 import rafael.ktgenetic.console.getMaxGenerations
 import rafael.ktgenetic.console.getPopulationByGeneration
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 import tornadofx.isInt
 
 private const val R_PARAMETER = "r"

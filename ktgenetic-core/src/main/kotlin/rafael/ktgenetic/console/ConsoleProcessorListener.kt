@@ -1,10 +1,10 @@
 package rafael.ktgenetic.console
 
-import rafael.ktgenetic.Chromosome
-import rafael.ktgenetic.ProcessorEvent
-import rafael.ktgenetic.TypeProcessorEvent
-import rafael.ktgenetic.ProcessorListener
-import rafael.ktgenetic.processor.GeneticProcessor
+import rafael.ktgenetic.core.Chromosome
+import rafael.ktgenetic.core.events.ProcessorEvent
+import rafael.ktgenetic.core.events.TypeProcessorEvent
+import rafael.ktgenetic.core.events.ProcessorListener
+import rafael.ktgenetic.core.processor.GeneticProcessor
 import java.util.*
 
 class ConsoleProcessorListener<C: Chromosome<*>>(val processor: GeneticProcessor<*, C>) : ProcessorListener {

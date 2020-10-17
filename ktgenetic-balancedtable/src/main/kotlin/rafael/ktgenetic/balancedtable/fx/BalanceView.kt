@@ -9,14 +9,14 @@ import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Pane
-import rafael.ktgenetic.Environment
+import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.balancedtable.Balance
 import rafael.ktgenetic.balancedtable.BalanceEnvironment
 import rafael.ktgenetic.balancedtable.Box
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.chromosomeToTableColumn
 import rafael.ktgenetic.fx.fitnessToTableColumn
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 import tornadofx.*
 
 /**

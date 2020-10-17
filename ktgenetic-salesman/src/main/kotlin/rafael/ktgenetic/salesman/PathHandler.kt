@@ -1,7 +1,7 @@
 package rafael.ktgenetic.salesman
 
-import rafael.ktgenetic.createCutPositions
-import rafael.ktgenetic.randomSwap
+import rafael.ktgenetic.core.utils.createCutPositions
+import rafael.ktgenetic.core.utils.randomSwap
 
 sealed class PathHandler {
 

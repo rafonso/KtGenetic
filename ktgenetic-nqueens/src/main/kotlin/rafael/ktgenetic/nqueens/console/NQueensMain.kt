@@ -2,14 +2,17 @@ package rafael.ktgenetic.nqueens.console
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.*
 import rafael.ktgenetic.console.executeMain
 import rafael.ktgenetic.console.getMaxGenerations
 import rafael.ktgenetic.console.getPopulationByGeneration
+import rafael.ktgenetic.core.Environment
+import rafael.ktgenetic.core.events.ProcessorEvent
+import rafael.ktgenetic.core.events.ProcessorListener
+import rafael.ktgenetic.core.events.TypeProcessorEvent
 import rafael.ktgenetic.nqueens.Board
 import rafael.ktgenetic.nqueens.BoardEnvironment
 import rafael.ktgenetic.nqueens.Piece
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 import java.lang.Exception
 
 private const val SIZE_PARAMETER = "size"
@@ -64,6 +67,7 @@ fun getProcessorChoice(args: Array<String>): GeneticCrossingType {
     val idx = args.indexOf("-$PIECE_PARAMETER")
     if (idx >= 0) {
         try {
+            @Suppress("NON_EXHAUSTIVE_WHEN")
             when (Piece.QUEEN) {
                 Piece.valueOf(args[idx + 1]) -> result = GeneticCrossingType.ORDERED
             }

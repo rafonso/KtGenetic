@@ -1,6 +1,6 @@
 package rafael.ktgenetic.salesman
 
-import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.core.Chromosome
 
 typealias Segment = Set<Point>
 

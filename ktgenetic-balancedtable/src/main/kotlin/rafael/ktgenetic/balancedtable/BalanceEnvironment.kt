@@ -1,9 +1,9 @@
 package rafael.ktgenetic.balancedtable
 
-import rafael.ktgenetic.Environment
-import rafael.ktgenetic.createCutPositions
-import rafael.ktgenetic.geneticRandom
-import rafael.ktgenetic.randomSwap
+import rafael.ktgenetic.core.Environment
+import rafael.ktgenetic.core.utils.createCutPositions
+import rafael.ktgenetic.core.utils.geneticRandom
+import rafael.ktgenetic.core.utils.randomSwap
 import kotlin.math.abs
 
 class BalanceEnvironment(val originalBoxes: List<Int>,

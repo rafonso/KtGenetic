@@ -1,9 +1,9 @@
 package rafael.ktgenetic.equalstring
 
-import rafael.ktgenetic.Environment
-import rafael.ktgenetic.createCutPositions
-import rafael.ktgenetic.geneticRandom
-import rafael.ktgenetic.pMap
+import rafael.ktgenetic.core.Environment
+import rafael.ktgenetic.core.utils.createCutPositions
+import rafael.ktgenetic.core.utils.geneticRandom
+import rafael.ktgenetic.core.utils.pMap
 
 class EqualStringEnvironment(val target: String,
                              val fitnessFunction: StringFitness,

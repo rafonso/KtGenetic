@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.scene.control.TableColumn
 import javafx.util.Callback
-import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.core.Chromosome
 
 /**
  * Converts a property inside a [Chromosome] to a String to be showed in a TableCell

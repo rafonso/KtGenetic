@@ -5,14 +5,14 @@ import javafx.event.EventHandler
 import javafx.scene.control.Control
 import javafx.scene.control.Spinner
 import javafx.scene.control.TableView
-import rafael.ktgenetic.Environment
+import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.chromosomeToTableColumn
 import rafael.ktgenetic.fx.fitnessToTableColumn
 import rafael.ktgenetic.nqueens.Board
 import rafael.ktgenetic.nqueens.BoardEnvironment
 import rafael.ktgenetic.nqueens.Piece
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 import tornadofx.*
 
 abstract class NPiecesView (private val piece: Piece, _title: String, _processorChoice: GeneticCrossingType): GeneticView<Int, Board>(_title, _processorChoice) {

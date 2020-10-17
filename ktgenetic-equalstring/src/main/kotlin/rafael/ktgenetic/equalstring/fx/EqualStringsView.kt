@@ -6,14 +6,14 @@ import javafx.scene.control.Control
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
 import javafx.util.StringConverter
-import rafael.ktgenetic.Environment
+import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.equalstring.EqualStringEnvironment
 import rafael.ktgenetic.equalstring.StringFitnessChoice
 import rafael.ktgenetic.equalstring.Word
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.chromosomeToTableColumn
 import rafael.ktgenetic.fx.fitnessToTableColumn
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 import tornadofx.*
 
 class EqualStringsViewApp : App(EqualStringsView::class)

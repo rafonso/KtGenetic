@@ -4,7 +4,7 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import rafael.ktgenetic.replace
+import rafael.ktgenetic.core.utils.replace
 
 internal class GridTest {
 

@@ -2,14 +2,14 @@ package rafael.ktgenetic.sudoku.console
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.Environment
-import rafael.ktgenetic.ProcessorEvent
-import rafael.ktgenetic.ProcessorListener
-import rafael.ktgenetic.TypeProcessorEvent
+import rafael.ktgenetic.core.Environment
+import rafael.ktgenetic.core.events.ProcessorEvent
+import rafael.ktgenetic.core.events.ProcessorListener
+import rafael.ktgenetic.core.events.TypeProcessorEvent
 import rafael.ktgenetic.console.executeMain
 import rafael.ktgenetic.console.getMaxGenerations
 import rafael.ktgenetic.console.getPopulationByGeneration
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 import rafael.ktgenetic.sudoku.Grid
 import rafael.ktgenetic.sudoku.MutationStrategy
 import rafael.ktgenetic.sudoku.PuzzleEnvironment

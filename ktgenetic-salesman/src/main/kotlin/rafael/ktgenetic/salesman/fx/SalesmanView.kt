@@ -16,11 +16,11 @@ import javafx.scene.paint.Color
 import javafx.scene.paint.Paint
 import javafx.scene.text.FontWeight
 import javafx.stage.FileChooser
-import rafael.ktgenetic.Environment
-import rafael.ktgenetic.ProcessorEvent
-import rafael.ktgenetic.TypeProcessorEvent
+import rafael.ktgenetic.core.Environment
+import rafael.ktgenetic.core.events.ProcessorEvent
+import rafael.ktgenetic.core.events.TypeProcessorEvent
 import rafael.ktgenetic.fx.GeneticView
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 import rafael.ktgenetic.salesman.Path
 import rafael.ktgenetic.salesman.Point
 import rafael.ktgenetic.salesman.SalesmanEnvironment
@@ -44,6 +44,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticCrossingType.OR
         onAction = EventHandler {
             fillLblPossiblePaths(circles.size)
             circles.forEach(::addContextMenu)
+            @Suppress("UNCHECKED_CAST")
             (it.source as ComboBox<PathTypeOptions>).value.handleSelected(circles)
         }
     }

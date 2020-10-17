@@ -3,8 +3,8 @@ package rafael.ktgenetic.console
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.configureLog
-import rafael.ktgenetic.selection.SelectionOperatorChoice
+import rafael.ktgenetic.core.utils.configureLog
+import rafael.ktgenetic.core.selection.SelectionOperatorChoice
 
 const val GENERATIONS_PARAMETER = "g"
 const val CHILDREN_TO_SURVIVE_PARAMETER = "c"

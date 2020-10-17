@@ -17,13 +17,13 @@ import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.CornerRadii
 import javafx.scene.layout.FlowPane
 import javafx.scene.paint.Color
-import rafael.ktgenetic.Environment
-import rafael.ktgenetic.ProcessorEvent
+import rafael.ktgenetic.core.Environment
+import rafael.ktgenetic.core.events.ProcessorEvent
 import rafael.ktgenetic.camouflage.*
 import rafael.ktgenetic.fx.GeneticView
 import rafael.ktgenetic.fx.bindBidirectional
-import rafael.ktgenetic.processor.GeneticCrossingType
-import rafael.ktgenetic.randomIntInclusive
+import rafael.ktgenetic.core.processor.GeneticCrossingType
+import rafael.ktgenetic.core.utils.randomIntInclusive
 import tornadofx.*
 
 class CamouflageApp : App(CamouflageView::class)

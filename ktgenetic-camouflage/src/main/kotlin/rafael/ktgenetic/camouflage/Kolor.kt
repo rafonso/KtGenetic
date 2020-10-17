@@ -1,7 +1,7 @@
 package rafael.ktgenetic.camouflage
 
 import javafx.scene.paint.Color
-import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.core.Chromosome
 
 fun validateColor(x: Int, name: String) {
     require(x in 0..MAX_COLOR_VALUE) { "$name must be between 0 and 255" }

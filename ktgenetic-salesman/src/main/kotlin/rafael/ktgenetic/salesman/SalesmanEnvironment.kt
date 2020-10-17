@@ -1,6 +1,6 @@
 package rafael.ktgenetic.salesman
 
-import rafael.ktgenetic.Environment
+import rafael.ktgenetic.core.Environment
 import kotlin.math.sqrt
 
 class SalesmanEnvironment(

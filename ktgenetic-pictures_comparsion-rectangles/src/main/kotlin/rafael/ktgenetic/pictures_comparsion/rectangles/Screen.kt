@@ -1,6 +1,6 @@
 package rafael.ktgenetic.pictures_comparsion.rectangles
 
-import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.core.Chromosome
 
 typealias Pixels = List<Rectangle>
 

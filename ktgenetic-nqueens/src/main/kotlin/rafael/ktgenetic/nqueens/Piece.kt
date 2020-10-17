@@ -1,6 +1,6 @@
 package rafael.ktgenetic.nqueens
 
-import rafael.ktgenetic.geneticRandom
+import rafael.ktgenetic.core.utils.geneticRandom
 
 enum class Piece(val symbol: String) {
 

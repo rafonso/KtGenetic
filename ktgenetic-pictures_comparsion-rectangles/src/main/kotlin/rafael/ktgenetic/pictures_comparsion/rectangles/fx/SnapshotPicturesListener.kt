@@ -4,10 +4,10 @@ import javafx.embed.swing.SwingFXUtils
 import javafx.scene.canvas.Canvas
 import javafx.scene.image.Image
 import javafx.scene.image.WritableImage
-import rafael.ktgenetic.ProcessorEvent
-import rafael.ktgenetic.ProcessorListener
-import rafael.ktgenetic.TypeProcessorEvent
-import rafael.ktgenetic.selection.SelectionOperatorChoice
+import rafael.ktgenetic.core.events.ProcessorEvent
+import rafael.ktgenetic.core.events.ProcessorListener
+import rafael.ktgenetic.core.events.TypeProcessorEvent
+import rafael.ktgenetic.core.selection.SelectionOperatorChoice
 import tornadofx.runLater
 import java.awt.image.BufferedImage
 import java.nio.file.Files

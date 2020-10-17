@@ -1,6 +1,10 @@
 package rafael.ktgenetic.pictures_comparsion.rectangles
 
-import rafael.ktgenetic.*
+import rafael.ktgenetic.core.*
+import rafael.ktgenetic.core.utils.createCutPositions
+import rafael.ktgenetic.core.utils.randomIntExclusive
+import rafael.ktgenetic.core.utils.randomIntInclusive
+import rafael.ktgenetic.core.utils.replace
 
 class ScreenEnvironment(
     originalBitmaps: Array<Array<Kolor>>,

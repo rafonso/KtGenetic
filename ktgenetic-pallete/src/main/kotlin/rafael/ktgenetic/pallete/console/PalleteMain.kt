@@ -2,13 +2,13 @@ package rafael.ktgenetic.pallete.console
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.Environment
+import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.console.executeMain
 import rafael.ktgenetic.console.getIntOptionValue
 import rafael.ktgenetic.console.getMaxGenerations
 import rafael.ktgenetic.console.getPopulationByGeneration
 import rafael.ktgenetic.pallete.*
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 
 private const val WEIGHT_PARAMETER = "w"
 private const val ROWS_PARAMETER = "rows"

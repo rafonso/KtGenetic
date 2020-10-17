@@ -1,6 +1,6 @@
 package rafael.ktgenetic.nqueens
 
-import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.core.Chromosome
 
 typealias Collision = Pair<Int, Int>
 

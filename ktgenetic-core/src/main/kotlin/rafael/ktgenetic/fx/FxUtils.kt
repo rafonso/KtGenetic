@@ -3,7 +3,7 @@ package rafael.ktgenetic.fx
 import javafx.scene.control.Control
 import javafx.scene.control.TableColumn
 import javafx.scene.image.Image
-import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.core.Chromosome
 
 val geneticIcon: Image = Image("/view/dna_helix_genetic_gene-32.png")
 

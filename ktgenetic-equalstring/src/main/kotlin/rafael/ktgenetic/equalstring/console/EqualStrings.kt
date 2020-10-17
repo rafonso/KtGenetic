@@ -2,10 +2,10 @@ package rafael.ktgenetic.equalstring.console
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.Environment
+import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.console.*
 import rafael.ktgenetic.equalstring.*
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 
 private const val WORD_PARAMETER = "w"
 private const val FITNESS_PARAMETER = "f"

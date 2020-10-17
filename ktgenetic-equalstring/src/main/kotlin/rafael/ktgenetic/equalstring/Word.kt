@@ -1,6 +1,6 @@
 package rafael.ktgenetic.equalstring
 
-import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.core.Chromosome
 
 data class Word(override val content: List<Char>) : Chromosome<Char>() {
 

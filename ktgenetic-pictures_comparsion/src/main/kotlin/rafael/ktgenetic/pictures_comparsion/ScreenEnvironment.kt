@@ -1,6 +1,9 @@
 package rafael.ktgenetic.pictures_comparsion
 
-import rafael.ktgenetic.*
+import rafael.ktgenetic.core.Environment
+import rafael.ktgenetic.core.utils.createCutPositions
+import rafael.ktgenetic.core.utils.geneticRandom
+import rafael.ktgenetic.core.utils.randomIntInclusive
 import kotlin.math.max
 
 class ScreenEnvironment(

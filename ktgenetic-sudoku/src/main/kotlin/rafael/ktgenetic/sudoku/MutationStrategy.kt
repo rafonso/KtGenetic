@@ -1,7 +1,7 @@
 package rafael.ktgenetic.sudoku
 
-import rafael.ktgenetic.geneticRandom
-import rafael.ktgenetic.randomSwap
+import rafael.ktgenetic.core.utils.geneticRandom
+import rafael.ktgenetic.core.utils.randomSwap
 
 enum class MutationStrategy {
 

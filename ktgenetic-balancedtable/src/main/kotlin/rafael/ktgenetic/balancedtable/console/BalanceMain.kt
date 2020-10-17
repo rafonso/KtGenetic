@@ -2,12 +2,12 @@ package rafael.ktgenetic.balancedtable.console
 
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.Options
-import rafael.ktgenetic.Environment
+import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.balancedtable.Balance
 import rafael.ktgenetic.balancedtable.BalanceEnvironment
 import rafael.ktgenetic.balancedtable.Box
 import rafael.ktgenetic.console.*
-import rafael.ktgenetic.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticCrossingType
 
 private const val WEIGHT_PARAMETER = "w"
 

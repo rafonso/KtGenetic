@@ -1,6 +1,6 @@
 package rafael.ktgenetic.sudoku
 
-import rafael.ktgenetic.Chromosome
+import rafael.ktgenetic.core.Chromosome
 import java.lang.StringBuilder
 
 data class Grid(

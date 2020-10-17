@@ -13,9 +13,9 @@ import javafx.scene.control.Label
 import javafx.scene.layout.FlowPane
 import javafx.scene.layout.GridPane
 import javafx.util.StringConverter
-import rafael.ktgenetic.GenerationEvent
-import rafael.ktgenetic.TypeProcessorEvent
-import rafael.ktgenetic.selection.SelectionOperatorChoice
+import rafael.ktgenetic.core.events.GenerationEvent
+import rafael.ktgenetic.core.events.TypeProcessorEvent
+import rafael.ktgenetic.core.selection.SelectionOperatorChoice
 
 internal class InputsView(
     // @formatter:off

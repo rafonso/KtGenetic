@@ -1,10 +1,10 @@
 package rafael.ktgenetic.camouflage
 
 import javafx.beans.property.SimpleObjectProperty
-import rafael.ktgenetic.Environment
-import rafael.ktgenetic.randomIntExclusive
-import rafael.ktgenetic.randomIntInclusive
-import rafael.ktgenetic.replace
+import rafael.ktgenetic.core.Environment
+import rafael.ktgenetic.core.utils.randomIntExclusive
+import rafael.ktgenetic.core.utils.randomIntInclusive
+import rafael.ktgenetic.core.utils.replace
 import tornadofx.getValue
 import tornadofx.setValue
 

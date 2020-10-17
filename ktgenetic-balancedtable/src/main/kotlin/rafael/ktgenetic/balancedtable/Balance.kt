@@ -1,7 +1,7 @@
 package rafael.ktgenetic.balancedtable
 
-import rafael.ktgenetic.Chromosome
-import rafael.ktgenetic.OrderedGene
+import rafael.ktgenetic.core.Chromosome
+import rafael.ktgenetic.core.OrderedGene
 
 typealias Box = OrderedGene<Int>
 

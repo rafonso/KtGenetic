@@ -1,12 +1,14 @@
 package rafael.ktgenetic.console
 
 import org.apache.commons.cli.*
-import rafael.ktgenetic.*
-import rafael.ktgenetic.processor.GeneticCrossingType
-import rafael.ktgenetic.processor.GeneticProcessor
-import rafael.ktgenetic.selection.SelectionOperator
-import rafael.ktgenetic.selection.SelectionOperatorChoice
-import rafael.ktgenetic.selection.codeToSelectionOperatorChoice
+import rafael.ktgenetic.core.*
+import rafael.ktgenetic.core.processor.GeneticCrossingType
+import rafael.ktgenetic.core.processor.GeneticProcessor
+import rafael.ktgenetic.core.selection.SelectionOperator
+import rafael.ktgenetic.core.selection.SelectionOperatorChoice
+import rafael.ktgenetic.core.selection.codeToSelectionOperatorChoice
+import rafael.ktgenetic.core.utils.LogProcessorListener
+import rafael.ktgenetic.core.utils.mainLogger
 import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 
