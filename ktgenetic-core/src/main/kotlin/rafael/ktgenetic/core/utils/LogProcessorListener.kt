@@ -7,8 +7,6 @@ import rafael.ktgenetic.core.Chromosome
 import rafael.ktgenetic.core.events.ProcessorEvent
 import rafael.ktgenetic.core.events.ProcessorListener
 import rafael.ktgenetic.core.events.TypeProcessorEvent
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 /**
  * Emits log messages according the [ProcessorEvent].
@@ -35,21 +33,13 @@ class LogProcessorListener : ProcessorListener {
             return
         }
 
-        val selected = event.population
-        val averageFitness = selected.pMap { it.fitness }.average()
-        val averageFitnessDeviation = sqrt(
-            selected.pMap { (it.fitness - averageFitness).pow(2.0) }.sum() /
-                    (selected.size * (selected.size - 1))
-        )
-        val bestOption = selected.maxByOrNull { it.fitness }!!
-
         log.debug(
             "Gen %3d - AF %.3f (%.3f). BF: %.3f. Best Opt: %s".format(
                 event.generation,
-                averageFitness,
-                averageFitnessDeviation,
-                bestOption.fitness,
-                bestOption
+                event.statistics.averageFitness,
+                event.statistics.averageFitnessDeviation,
+                event.statistics.bestFitness,
+                event.population.first()
             )
         )
     }

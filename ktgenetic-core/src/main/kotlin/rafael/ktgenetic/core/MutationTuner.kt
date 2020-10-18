@@ -5,9 +5,10 @@ import rafael.ktgenetic.core.events.ProcessorEvent
 import rafael.ktgenetic.core.events.ProcessorListener
 import rafael.ktgenetic.core.events.TypeProcessorEvent
 import rafael.ktgenetic.core.utils.mainLogger
-import rafael.ktgenetic.core.utils.pMap
-import kotlin.math.pow
-import kotlin.math.sqrt
+
+private const val minimunVariation = 0.01
+
+private const val maximumVariation = 0.05
 
 /**
  * Mutation tuner
@@ -17,20 +18,6 @@ import kotlin.math.sqrt
  * @constructor Create empty Mutation tuner
  */
 class MutationTuner<C : Chromosome<*>>(val environment: Environment<*, C>) : ProcessorListener {
-
-    private val minimunVariation = 0.01
-
-    private val maximumVariation = 0.05
-
-    private fun calculateVariationProportion(chromosomes: List<Chromosome<*>>): Double {
-        val averageFitness = chromosomes.pMap { it.fitness }.average()
-        val averageFitnessDeviation = sqrt(
-            chromosomes.pMap { (it.fitness - averageFitness).pow(2.0) }.sum() /
-                    (chromosomes.size * (chromosomes.size - 1))
-        )
-
-        return averageFitnessDeviation / averageFitness
-    }
 
     private fun adjustMutationFactor(proportion: Double) {
         val delta = if ((proportion < minimunVariation) && (environment.mutationFactor <= 0.99)) {
@@ -55,7 +42,7 @@ class MutationTuner<C : Chromosome<*>>(val environment: Environment<*, C>) : Pro
 
     override fun onEvent(event: ProcessorEvent<*>) {
         if (event.eventType == TypeProcessorEvent.GENERATION_EVALUATED) {
-            val proportion = calculateVariationProportion(event.population)
+            val proportion = event.statistics.averageFitnessDeviation / event.statistics.averageFitness
             adjustMutationFactor(proportion)
         }
     }
