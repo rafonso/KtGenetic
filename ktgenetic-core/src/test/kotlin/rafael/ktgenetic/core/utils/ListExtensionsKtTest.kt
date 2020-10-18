@@ -102,16 +102,6 @@ internal class ListExtensionsKtTest {
     }
 
     @Test
-    fun testPMap() {
-        val original = listOf(1, 2, 3, 4)
-        val copy = original.pMap { it * 2 }
-
-        original.indices.forEach {
-            assertEquals(original[it] * 2, copy[it])
-        }
-    }
-
-    @Test
     fun testPFlatMap() {
         val original = listOf(1, 2, 3, 4)
         val copy = original.pFlatMap { listOf(it * 2, it * 3) }
