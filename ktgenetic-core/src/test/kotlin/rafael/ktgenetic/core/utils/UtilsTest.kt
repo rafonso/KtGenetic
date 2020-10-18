@@ -1,7 +1,6 @@
-package rafael.ktgenetic.core
+package rafael.ktgenetic.core.utils
 
 import org.junit.jupiter.api.Test
-import rafael.ktgenetic.core.utils.createCutPositions
 import kotlin.test.assertTrue
 
 class UtilsTest {

@@ -1,8 +1,7 @@
-package rafael.ktgenetic.core
+package rafael.ktgenetic.core.utils
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import rafael.ktgenetic.core.utils.*
 
 internal class ListExtensionsKtTest {
 
