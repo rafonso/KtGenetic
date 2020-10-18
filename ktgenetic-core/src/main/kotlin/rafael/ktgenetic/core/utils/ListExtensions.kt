@@ -69,4 +69,16 @@ fun <T> List<T>.randomSwap(): List<T> {
  * @return List transformed from type [T] to [R]
  */
 internal fun <T, R> Iterable<T>.pFlatMap(transform: (T) -> List<R>): List<R> =
-        ArrayList(toMutableList()).parallelStream().flatMap { ArrayList(transform(it)).stream() }.collect(Collectors.toList()).toList()
+    ArrayList(toMutableList()).parallelStream().flatMap { ArrayList(transform(it)).stream() }
+        .collect(Collectors.toList()).toList()
+
+/**
+ * Do the same as [Iterable.forEach] but using Java's parallel streams.
+ *
+ * @param T [Iterable]´s type
+ * @param action Action to be done for each element of iterable
+ * @receiver [Iterable] of type [T]
+ */
+internal fun <T> Iterable<T>.pForEach(action: (T) -> Unit) {
+    this.toList().parallelStream().forEach(action)
+}

@@ -7,6 +7,7 @@ import rafael.ktgenetic.core.events.ProcessorListener
 import rafael.ktgenetic.core.events.TypeProcessorEvent
 import rafael.ktgenetic.core.selection.SelectionOperator
 import rafael.ktgenetic.core.utils.pFlatMap
+import rafael.ktgenetic.core.utils.pForEach
 
 /**
  * Executes the evolutionary process.
@@ -76,7 +77,7 @@ class GeneticProcessor<G, C : Chromosome<G>>(
 
             notifyEvent(TypeProcessorEvent.REPRODUCING, generation, parents)
             val children = (parents.indices).pFlatMap { i ->
-                ((i + 1) until parents.size).flatMap { j ->
+                ((i + 1) until parents.size).pFlatMap { j ->
                     notifyEvent(TypeProcessorEvent.CROSSING, generation, listOf(parents[i], parents[j]))
                     cross(parents[i], parents[j]).also {
                         notifyEvent(TypeProcessorEvent.CROSSED, generation, it)
@@ -89,12 +90,12 @@ class GeneticProcessor<G, C : Chromosome<G>>(
 
             notifyEvent(TypeProcessorEvent.FITNESS_CALCULATING, generation, mutated)
             // Calculate Fitness
-            mutated.forEach {
+            mutated.pForEach {
                 it.fitness = environment.calculateFitness(it)
             }
 
             notifyEvent(TypeProcessorEvent.SELECTING, generation, mutated)
-            val selected = selectionOperator.select(mutated.sortedBy { it.fitness }.reversed())
+            val selected = selectionOperator.select(mutated.sortedBy { - it.fitness })
 
             notifyEvent(TypeProcessorEvent.GENERATION_EVALUATED, generation, selected)
             return selected
