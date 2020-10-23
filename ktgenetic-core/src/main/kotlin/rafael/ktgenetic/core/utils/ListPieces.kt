@@ -9,7 +9,7 @@ package rafael.ktgenetic.core.utils
  * @return a new [ListPieces]
  * @throws IllegalArgumentException if [cutPositions] does not follow the specification above.
  */
-fun <G> makeCuttingIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>):
+internal fun <G> makeCuttingIntoPieces(sequence: List<G>, cutPositions: Pair<Int, Int>):
         ListPieces<G> {
     require((cutPositions.first >= 0) && (cutPositions.first <= cutPositions.second) && (cutPositions.second <= sequence.size)) {
         "Cut positions crescent numbers must be between 0 and sequence size (${sequence.size}): $cutPositions"
