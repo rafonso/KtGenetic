@@ -23,22 +23,23 @@ selecionado.
 #### Execução
 1. Abra um projeto e vá para `src` -> `main` -> `kotlin` 
 -> `[pacote]` e abre o arquivo com final `View`.
-2. Ao abrir, verifique se ao lado da classe `View` aparece 
+2. Ao abrir, verifique se ao lado da classe `App` aparece 
 o ícone do TornadoFX. 
 3. Sobre esse ícone, clique com o botão direto do mouse 
-e seleciona a opção **Create ???ViewApp ...**
+e seleciona a opção **Create ???App ...**
 4. Ao abrir o diálogo de configuração vá para a aba 
 **Configuration**, opção **Use classpath of module**. 
 ***Verifique que o projeto indicado é o mesmo projeto do 
 view que você vai rodar!!***. Se não configurar dessa 
 forma vai aparecer a mensagem de erro de que não está 
-achando a Classe da view.
+achando a Classe da App.
 
 #### Relação de projetos e de suas Views
 | Projeto                                   | Pacote                                                | Classe                        | Observação    |
 | -------------                             |:-------------                                         |:-----                         | -----         |
-| ktgenetic-balancedtable                   | `rafael.ktgenetic.balancedtable.fx`                   | `BalanceViewApp`              |               |
 | ktgenetic-core                            |                                                       |                               | Projeto pai   |
+| ktgenetic-balancedtable                   | `rafael.ktgenetic.balancedtable.fx`                   | `BalanceViewApp`              |               |
+| ktgenetic-camouflage                      | `rafael.ktgenetic.camouflage.fx`                      | `CamouflageApp`               |               |
 | ktgenetic-equalstring                     | `rafael.ktgenetic.equalstring.fx`                     | `EqualStringsViewApp`         |               |
 | ktgenetic-nqueens                         | `rafael.ktgenetic.nqueens.fx`                         | `NBishopsApp`                 |               |
 | ktgenetic-nqueens                         | `rafael.ktgenetic.nqueens.fx`                         | `NQueensApp`                  |               |
