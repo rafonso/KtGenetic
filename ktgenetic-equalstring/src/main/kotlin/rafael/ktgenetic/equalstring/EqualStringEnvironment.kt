@@ -2,7 +2,7 @@ package rafael.ktgenetic.equalstring
 
 import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.core.utils.createCutPositions
-import rafael.ktgenetic.core.utils.geneticRandom
+import kotlin.random.Random
 
 class EqualStringEnvironment(val target: String,
                              val fitnessFunction: StringFitness,
@@ -13,7 +13,7 @@ class EqualStringEnvironment(val target: String,
 
     private val range = ' '.rangeTo('~') + 192.toChar().rangeTo(255.toChar())
 
-    private fun randomChar(): Char = range[geneticRandom.nextInt(range.size)]
+    private fun randomChar(): Char = range[Random.nextInt(range.size)]
 
     private fun createRandomWord(): Word =
             Word(1.rangeTo(target.length).map { randomChar() }.joinToString(""))
@@ -22,8 +22,8 @@ class EqualStringEnvironment(val target: String,
             (1..generationSize).map { createRandomWord() }
 
     override fun executeMutation(sequence: List<Char>): List<Char> {
-        val mutationPoint = geneticRandom.nextInt(sequence.size)
-        val mutatedGene: Char = range[geneticRandom.nextInt(range.size)]
+        val mutationPoint = Random.nextInt(sequence.size)
+        val mutatedGene: Char = range[Random.nextInt(range.size)]
         val result = sequence.toMutableList()
         result[mutationPoint] = mutatedGene
 

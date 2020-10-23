@@ -2,8 +2,8 @@ package rafael.ktgenetic.sudoku
 
 import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.core.utils.createCutPositions
-import rafael.ktgenetic.core.utils.geneticRandom
 import rafael.ktgenetic.core.utils.replace
+import kotlin.random.Random
 
 class PuzzleEnvironment(
     val gridSize: Int,
@@ -19,7 +19,7 @@ class PuzzleEnvironment(
         tailrec fun createGrid(rows: List<Row> = emptyList()): Grid =
             when (gridSize) {
                 rows.size -> Grid(rows)
-                else -> createGrid(rows + listOf(dictionary.shuffled(geneticRandom)))
+                else -> createGrid(rows + listOf(dictionary.shuffled(Random)))
             }
 
         tailrec fun createGrids(grids: Set<Grid> = setOf()): Set<Grid> =
@@ -34,7 +34,7 @@ class PuzzleEnvironment(
     override fun getCutPositions(): Pair<Int, Int> = createCutPositions(gridSize)
 
     override fun executeMutation(sequence: List<Row>): List<Row> {
-        val index = geneticRandom.nextInt(gridSize)
+        val index = Random.nextInt(gridSize)
         val originalRow = sequence[index]
         val mutatedRow = strategy.getMutation(originalRow)
 

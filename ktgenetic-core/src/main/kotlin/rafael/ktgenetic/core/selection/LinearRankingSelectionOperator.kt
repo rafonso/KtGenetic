@@ -1,7 +1,7 @@
 package rafael.ktgenetic.core.selection
 
 import rafael.ktgenetic.core.Chromosome
-import rafael.ktgenetic.core.utils.geneticRandom
+import kotlin.random.Random
 
 private const val nMin = 0.9
 private const val nMax = 2.0 - nMin
@@ -40,7 +40,7 @@ class LinearRankingSelectionOperator<C : Chromosome<*>>(override val generationS
             return selected.sortedBy { - it.fitness }
         }
 
-        val sortedValue = geneticRandom.nextInt(population.size).toDouble()
+        val sortedValue = Random.nextInt(population.size).toDouble()
         val selectedPosition = selectPosition(ranking, sortedValue)
         val selectedElement = population[selectedPosition]
 

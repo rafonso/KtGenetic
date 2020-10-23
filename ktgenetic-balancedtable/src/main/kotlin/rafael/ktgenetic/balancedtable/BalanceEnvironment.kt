@@ -2,9 +2,9 @@ package rafael.ktgenetic.balancedtable
 
 import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.core.utils.createCutPositions
-import rafael.ktgenetic.core.utils.geneticRandom
 import rafael.ktgenetic.core.utils.randomSwap
 import kotlin.math.abs
+import kotlin.random.Random
 
 class BalanceEnvironment(val originalBoxes: List<Int>,
                          override val maxGenerations: Int = Int.MAX_VALUE,
@@ -22,7 +22,7 @@ class BalanceEnvironment(val originalBoxes: List<Int>,
 
         while (firstGeneration.size < generationSize) {
             val temp = originalBalance.content.toMutableList()
-            temp.shuffle(geneticRandom)
+            temp.shuffle(Random)
             firstGeneration.add(Balance(temp.toList(), dimensions))
         }
 

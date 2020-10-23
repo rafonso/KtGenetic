@@ -2,9 +2,9 @@ package rafael.ktgenetic.pictures_comparsion
 
 import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.core.utils.createCutPositions
-import rafael.ktgenetic.core.utils.geneticRandom
 import rafael.ktgenetic.core.utils.randomIntInclusive
 import kotlin.math.max
+import kotlin.random.Random
 
 class ScreenEnvironment(
     private val originalBitmaps: Array<Array<Kolor>>,
@@ -29,7 +29,7 @@ class ScreenEnvironment(
         val seq = sequence.toMutableList()
 
         (1 until quantMutationPositions + 1)
-            .map { geneticRandom.nextInt(sequence.size) }
+            .map { Random.nextInt(sequence.size) }
             .map { seq[it] = sequence[it].copy(kolor = Kolor(randomByte(), randomByte(), randomByte())) }
 
         return seq

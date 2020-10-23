@@ -1,7 +1,7 @@
 package rafael.ktgenetic.core.selection
 
 import rafael.ktgenetic.core.Chromosome
-import rafael.ktgenetic.core.utils.geneticRandom
+import kotlin.random.Random
 
 /**
  * See https://en.wikipedia.org/wiki/Fitness_proportionate_selection
@@ -33,7 +33,7 @@ internal class RouletteSelectionOperator<C : Chromosome<*>>(
             return selected.toList().sortedBy { -it.fitness }
         }
 
-        val sortedValue = geneticRandom.nextDouble() * totalFitness
+        val sortedValue = Random.nextDouble() * totalFitness
         val selectedPosition = selectPosition(fitnesses, sortedValue)
         val selectedElement = population[selectedPosition]
         fitnesses[selectedPosition] = 0.0

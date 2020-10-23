@@ -1,15 +1,15 @@
 package rafael.ktgenetic.pallete
 
-import rafael.ktgenetic.core.*
+import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.core.events.ProcessorEvent
 import rafael.ktgenetic.core.events.ProcessorListener
 import rafael.ktgenetic.core.events.TypeProcessorEvent
 import rafael.ktgenetic.core.utils.createCutPositions
-import rafael.ktgenetic.core.utils.geneticRandom
 import rafael.ktgenetic.core.utils.mainLogger
 import rafael.ktgenetic.core.utils.randomSwap
 import kotlin.math.abs
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 class PalleteEnvironment(val originalBoxes: List<Int>,
                          val palleteDimension: PalleteDimensions,
@@ -43,7 +43,7 @@ class PalleteEnvironment(val originalBoxes: List<Int>,
 
         while (firstGeneration.size < generationSize) {
             val temp = originalBalance.content.toMutableList()
-            temp.shuffle(geneticRandom)
+            temp.shuffle(Random)
             firstGeneration.add(Pallete(temp.toList(), palleteDimension))
         }
 

@@ -1,6 +1,6 @@
 package rafael.ktgenetic.nqueens
 
-import rafael.ktgenetic.core.utils.geneticRandom
+import kotlin.random.Random
 
 enum class Piece(val symbol: String) {
 
@@ -16,7 +16,7 @@ enum class Piece(val symbol: String) {
             }
         }
 
-        override fun createContent(boardSize: Int): List<Int> = (0 until boardSize).shuffled(geneticRandom)
+        override fun createContent(boardSize: Int): List<Int> = (0 until boardSize).shuffled(Random)
 
 
     },
@@ -29,7 +29,7 @@ enum class Piece(val symbol: String) {
             }
         }
 
-        override fun createContent(boardSize: Int): List<Int> = (0 until boardSize).map { geneticRandom.nextInt(boardSize) }
+        override fun createContent(boardSize: Int): List<Int> = (0 until boardSize).map { Random.nextInt(boardSize) }
 
     };
 

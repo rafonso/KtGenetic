@@ -1,8 +1,8 @@
 package rafael.ktgenetic.core.selection
 
 import rafael.ktgenetic.core.Chromosome
-import rafael.ktgenetic.core.utils.geneticRandom
 import kotlin.math.pow
+import kotlin.random.Random
 
 private const val c = 0.975
 
@@ -56,7 +56,7 @@ class ExponentialRankingSelectionOperator<C : Chromosome<*>>(
             return selected.sortedBy { - it.fitness }
         }
 
-        val sortedValue = geneticRandom.nextDouble()
+        val sortedValue = Random.nextDouble()
         val selectedPosition = selectPosition(ranking, sortedValue)
         val selectedElement = population[selectedPosition]
 
