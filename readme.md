@@ -33,6 +33,10 @@ e seleciona a opção **Create ???App ...**
 view que você vai rodar!!***. Se não configurar dessa 
 forma vai aparecer a mensagem de erro de que não está 
 achando a Classe da App.
+5. Na Opção **VM options** adicione a linha `
+--module-path [JAVAFX_PATH]/lib 
+--add-modules=javafx.controls,javafx.fxml
+`
 
 #### Relação de projetos e de suas Views
 | Projeto                                   | Pacote                                                | Classe                        | Observação    |

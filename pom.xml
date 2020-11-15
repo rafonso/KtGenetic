@@ -12,10 +12,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>10</jdk.version>
-        <!--
+        <jdk.version>11</jdk.version>
         <javafx.version>${jdk.version}</javafx.version>
-        -->
         <kotlin.version>1.4.10</kotlin.version>
         <tornadofx.version>1.7.20</tornadofx.version>
         <junit.version>5.5.2</junit.version>
@@ -38,7 +36,6 @@
             <artifactId>kotlin-reflect</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
-        <!--
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -50,7 +47,6 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-        -->
         <dependency>
             <groupId>no.tornado</groupId>
             <artifactId>tornadofx</artifactId>
