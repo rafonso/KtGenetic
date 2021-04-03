@@ -1,39 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>rafael.ktgenetic</groupId>
     <artifactId>ktgenetic</artifactId>
     <version>0.0.1</version>
     <packaging>pom</packaging>
+
     <name>KTgenetic</name>
+    <url>https://github.com/rafonso/KtGenetic</url>
+    <inceptionYear>2017</inceptionYear>
+
+    <developers>
+        <developer>
+            <id>rafonso</id>
+            <name>Rafael Afonso</name>
+            <email>rafael DOT afonso AT gmail DOT com</email>
+            <roles>
+                <role>Owner</role>
+            </roles>
+            <timezone>Europe/Lisbon</timezone>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>ktgenetic-core</module>
+        <module>ktgenetic-equalstring</module>
+        <module>ktgenetic-balancedtable</module>
+        <module>ktgenetic-pallete</module>
+        <module>ktgenetic-nqueens</module>
+        <module>ktgenetic-pictures_comparsion</module>
+        <module>ktgenetic-sudoku</module>
+        <module>ktgenetic-pictures_comparsion-rectangles</module>
+        <module>ktgenetic-salesman</module>
+        <module>ktgenetic-camouflage</module>
+    </modules>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>11</jdk.version>
         <javafx.version>${jdk.version}</javafx.version>
-        <kotlin.version>1.4.10</kotlin.version>
-        <tornadofx.version>1.7.20</tornadofx.version>
+        <jdk.version>11</jdk.version>
         <junit.version>5.5.2</junit.version>
-        <log4j.version>2.13.2</log4j.version>
-        <maven.compiler.target>${jdk.version}</maven.compiler.target>
-        <maven.compiler.source>${jdk.version}</maven.compiler.source>
-        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.code.style>official</kotlin.code.style>
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+        <kotlin.version>1.4.21</kotlin.version>
+        <log4j.version>2.13.2</log4j.version>
+        <maven.compiler.source>${jdk.version}</maven.compiler.source>
+        <maven.compiler.target>${jdk.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <tornadofx.version>1.7.20</tornadofx.version>
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>no.tornado</groupId>
+            <artifactId>tornadofx</artifactId>
+            <version>${tornadofx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-reflect -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>
@@ -47,32 +94,11 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-        <dependency>
-            <groupId>no.tornado</groupId>
-            <artifactId>tornadofx</artifactId>
-            <version>${tornadofx.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
-        <dependency>
-            <groupId>commons-cli</groupId>
-            <artifactId>commons-cli</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
 
         <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>1.5.2</version>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+            <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -89,9 +115,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
-            <version>${kotlin.version}</version>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.5.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -110,31 +136,34 @@
                             <goal>compile</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
                 </executions>
                 <configuration>
                     <jvmTarget>${jdk.version}</jvmTarget>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.github.ekryd.sortpom</groupId>
+                <artifactId>sortpom-maven-plugin</artifactId>
+                <version>2.11.0</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sort</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <lineSeparator>\n</lineSeparator>
+                    <sortProperties>true</sortProperties>
+                    <keepBlankLines>true</keepBlankLines>
+                    <sortDependencies>scope,groupId,artifactId</sortDependencies>
+                    <nrOfIndentSpace>4</nrOfIndentSpace>
+                    <expandEmptyElements>false</expandEmptyElements>
+                    <verifyFail>stop</verifyFail>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
-    <modules>
-        <module>ktgenetic-core</module>
-        <module>ktgenetic-equalstring</module>
-        <module>ktgenetic-balancedtable</module>
-        <module>ktgenetic-pallete</module>
-        <module>ktgenetic-nqueens</module>
-        <module>ktgenetic-pictures_comparsion</module>
-        <module>ktgenetic-sudoku</module>
-        <module>ktgenetic-pictures_comparsion-rectangles</module>
-        <module>ktgenetic-salesman</module>
-        <module>ktgenetic-camouflage</module>
-    </modules>
 </project>
