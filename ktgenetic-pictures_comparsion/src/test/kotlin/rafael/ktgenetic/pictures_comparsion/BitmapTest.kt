@@ -1,7 +1,9 @@
+@file:Suppress("UnusedDataClassCopyResult")
+
 package rafael.ktgenetic.pictures_comparsion
 
-import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 internal class BitmapTest {
 

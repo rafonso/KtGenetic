@@ -38,11 +38,8 @@ private fun validateParameters(line: CommandLine) {
     }
 }
 
-private fun getFitnessFunction(line: CommandLine): StringFitness {
-    val fitnessParameter = line.getOptionValue(FITNESS_PARAMETER, EQUAL_CHARS_FITNESS_PARAMETER)
-
-    val fitnessFunction: StringFitness
-    fitnessFunction = when (fitnessParameter) {
+private fun getFitnessFunction(line: CommandLine): StringFitness =
+    when (line.getOptionValue(FITNESS_PARAMETER, EQUAL_CHARS_FITNESS_PARAMETER)) {
         EQUAL_CHARS_FITNESS_PARAMETER -> EqualCharsFitness()
         SUBTRACT_CHARS_FITNESS_PARAMETER -> SubtractCharsFitness()
         else -> throw IllegalArgumentException(
@@ -50,9 +47,6 @@ private fun getFitnessFunction(line: CommandLine): StringFitness {
                     "or $SUBTRACT_CHARS_FITNESS_PARAMETER"
         )
     }
-
-    return fitnessFunction
-}
 
 private fun getEnvironment(line: CommandLine) =
     EqualStringEnvironment(
