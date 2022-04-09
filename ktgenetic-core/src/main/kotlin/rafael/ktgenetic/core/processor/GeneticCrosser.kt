@@ -32,7 +32,7 @@ internal class OrderedGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C
     private val basicCrosser = SimpleGeneticCrosser<G, C>()
 
     private fun cross(core: List<G>, parent: List<G>, firstCutPoint: Int, environment: Environment<G, C>): C {
-        val diff = parent - core
+        val diff = parent - core.toSet()
         val part1 = diff.subList(0, firstCutPoint)
         val part2 = diff.subList(firstCutPoint, diff.size)
 
@@ -52,8 +52,8 @@ internal class OrderedGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C
         environment: Environment<G, C>
     ): List<C> {
         val thereIsIntersection =
-            pieces1.core.intersect(pieces2.left + pieces2.right).isNotEmpty() ||
-                    pieces2.core.intersect(pieces1.left + pieces1.right).isNotEmpty()
+            pieces1.core.intersect((pieces2.left + pieces2.right).toSet()).isNotEmpty() ||
+                    pieces2.core.intersect((pieces1.left + pieces1.right).toSet()).isNotEmpty()
 
         return if (thereIsIntersection) executeCross(pieces1, pieces2, environment)
         else basicCrosser.executeCrossing(pieces1, pieces2, environment)

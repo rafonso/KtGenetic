@@ -16,7 +16,7 @@ internal fun <C : Chromosome<*>> getStatistics(event: ProcessorEvent<C>): Genera
     val bestFitness = finesses.maxOrNull()!!
     val averageFitness = finesses.sum() / finesses.size
     val averageFitnessDeviation = sqrt(
-        finesses.map { (it - averageFitness).pow(2) }.sum() /
+        finesses.sumOf { (it - averageFitness).pow(2) } /
                 (finesses.size * (finesses.size - 1))
     )
 

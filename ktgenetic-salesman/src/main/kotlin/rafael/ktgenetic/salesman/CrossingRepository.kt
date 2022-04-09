@@ -144,14 +144,14 @@ enum class CrossingHandler {
     },
     PENALIZE {
         override fun calculateCrossFactor(path: Path): Double {
-            val totalCrossings = (0 until path.pathPoints.size - 1).map { index1 ->
+            val totalCrossings = (0 until path.pathPoints.size - 1).sumOf { index1 ->
                 val pathPointBase = path.pathPoints[index1]
                 (index1 + 1 until path.pathPoints.size).count { index2 ->
                     val pathPoint: Vector = path.pathPoints[index2]
 
                     CrossingRepository.verifyCrossing(pathPointBase, pathPoint)
                 }
-            }.sum()
+            }
 
             return if (totalCrossings == 0) 1.0 else {
                 CROSSING_FACTOR.pow(totalCrossings.toDouble())

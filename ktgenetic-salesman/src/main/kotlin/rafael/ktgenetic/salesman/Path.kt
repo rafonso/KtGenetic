@@ -19,7 +19,7 @@ data class Path(override val content: List<Point>, val pathType: PathType) : Chr
     }
 
     val width: Double by lazy {
-        pathPoints.map { DistanceRepository.getDistance(it.first, it.second) }.sum()
+        pathPoints.sumOf { DistanceRepository.getDistance(it.first, it.second) }
     }
 
     override fun compareTo(other: Chromosome<Point>): Int {

@@ -39,16 +39,16 @@ achando a Classe da App.
 `
 
 #### Relação de projetos e de suas Views
-| Projeto                                   | Pacote                                                | Classe                        | Observação    |
-| -------------                             |:-------------                                         |:-----                         | -----         |
-| ktgenetic-core                            |                                                       |                               | Projeto pai   |
-| ktgenetic-balancedtable                   | `rafael.ktgenetic.balancedtable.fx`                   | `BalanceViewApp`              |               |
-| ktgenetic-camouflage                      | `rafael.ktgenetic.camouflage.fx`                      | `CamouflageApp`               |               |
-| ktgenetic-equalstring                     | `rafael.ktgenetic.equalstring.fx`                     | `EqualStringsViewApp`         |               |
-| ktgenetic-nqueens                         | `rafael.ktgenetic.nqueens.fx`                         | `NBishopsApp`                 |               |
-| ktgenetic-nqueens                         | `rafael.ktgenetic.nqueens.fx`                         | `NQueensApp`                  |               |
-| ktgenetic-pallete                         | `rafael.ktgenetic.pallete.fx`                         | `PalleteViewApp`              |               |
-| ktgenetic-pictures_comparsion             | `rafael.ktgenetic.pictures_comparsion.fx`             | `PicturesComparsionViewApp`   |               |
-| ktgenetic-pictures_comparsion-rectangles  | `rafael.ktgenetic.pictures_comparsion.rectangles.fx`  | `PicturesComparsionViewApp`   |               |
-| ktgenetic-salesman                        | `rafael.ktgenetic.salesman.fx`                        | `SalesmanViewApp`             |               |
-| ktgenetic-sudoku                          |                                                       |                               | Não Funcional |
+| Projeto                                  | Pacote                                               | Classe                      | Observação    |
+|------------------------------------------|:-----------------------------------------------------|:----------------------------|---------------|
+| ktgenetic-core                           |                                                      |                             | Projeto pai   |
+| ktgenetic-balancedtable                  | `rafael.ktgenetic.balancedtable.fx`                  | `BalanceViewApp`            |               |
+| ktgenetic-camouflage                     | `rafael.ktgenetic.camouflage.fx`                     | `CamouflageApp`             |               |
+| ktgenetic-equalstring                    | `rafael.ktgenetic.equalstring.fx`                    | `EqualStringsViewApp`       |               |
+| ktgenetic-nqueens                        | `rafael.ktgenetic.nqueens.fx`                        | `NBishopsApp`               |               |
+| ktgenetic-nqueens                        | `rafael.ktgenetic.nqueens.fx`                        | `NQueensApp`                |               |
+| ktgenetic-pallete                        | `rafael.ktgenetic.pallete.fx`                        | `PalleteViewApp`            |               |
+| ktgenetic-pictures_comparsion            | `rafael.ktgenetic.pictures_comparsion.fx`            | `PicturesComparsionViewApp` |               |
+| ktgenetic-pictures_comparsion-rectangles | `rafael.ktgenetic.pictures_comparsion.rectangles.fx` | `PicturesComparsionViewApp` |               |
+| ktgenetic-salesman                       | `rafael.ktgenetic.salesman.fx`                       | `SalesmanViewApp`           |               |
+| ktgenetic-sudoku                         |                                                      |                             | Não Funcional |

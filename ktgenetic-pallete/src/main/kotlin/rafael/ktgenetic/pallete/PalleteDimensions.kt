@@ -36,14 +36,14 @@ data class PalleteDimensions(val rows: Int, val cols: Int) {
     val greatestDistanceFromCenter: Double = distanceFromCenter.maxOrNull() ?: 0.0
 
     val blocksByRow: Map<Int, List<Int>> =
-            (0 until rows).map { r ->
-                Pair(r, ((r * cols) until ((r + 1) * cols)).toList())
-            }.toMap()
+        (0 until rows).associateWith { r ->
+            ((r * cols) until ((r + 1) * cols)).toList()
+        }
 
     val blocksByColumn: Map<Int, List<Int>> =
-            (0 until cols).map { c ->
-                Pair(c, (c until rows * cols step cols).toList())
-            }.toMap()
+        (0 until cols).associateWith { c ->
+            (c until rows * cols step cols).toList()
+        }
 
     val frontAndBackHalves: Pair<List<Int>, List<Int>> = getHalves(rows, blocksByRow)
 

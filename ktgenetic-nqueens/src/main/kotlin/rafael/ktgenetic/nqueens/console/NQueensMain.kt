@@ -71,7 +71,7 @@ fun getProcessorChoice(args: Array<String>): GeneticCrossingType {
             when (Piece.QUEEN) {
                 Piece.valueOf(args[idx + 1]) -> result = GeneticCrossingType.ORDERED
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
         }
     }
 

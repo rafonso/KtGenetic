@@ -137,7 +137,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticCrossingType.OR
 
             while (change.next()) {
                 if (change.wasRemoved()) {
-                    canvasPane.children.removeAll(change.removed)
+                    canvasPane.children.removeAll(change.removed.toSet())
                 }
             }
 
@@ -173,7 +173,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticCrossingType.OR
     private fun circlePointToPoint(c: CirclePoint) = Point(c.centerX.toInt(), c.centerY.toInt())
 
     private fun selectEdgePoint(selector: (CirclePoint) -> Boolean) =
-            circles.filter(selector).mapNotNull(this::circlePointToPoint).firstOrNull()
+        circles.filter(selector).firstNotNullOfOrNull(this::circlePointToPoint)
 
     private fun fillLblPossiblePaths(size: Int) {
         lblNumberOfPossiblePaths.text = if (size <= 1) {

@@ -6,20 +6,21 @@ import rafael.ktgenetic.core.Chromosome
 import rafael.ktgenetic.core.OrderedGene
 
 private fun getCenterOfMassOfRow(boxes: Boxes, row: Int, dimensions: PalleteDimensions): Double {
-    val rowMass = (0 until dimensions.cols).map { c -> boxes[dimensions.blockToIndex(row, c)].value }.sum()
+    val rowMass = (0 until dimensions.cols).sumOf { c -> boxes[dimensions.blockToIndex(row, c)].value }
     if (rowMass == 0) {
         return dimensions.cols.toDouble() / 2
     }
-    val weightedMass = (0 until dimensions.cols).map { c -> (c + 0.5) * boxes[dimensions.blockToIndex(row, c)].value }.sum()
+    val weightedMass = (0 until dimensions.cols).sumOf { c -> (c + 0.5) * boxes[dimensions.blockToIndex(row, c)].value }
     return weightedMass / rowMass
 }
 
 private fun getCenterOfMassOfColumn(boxes: Boxes, column: Int, dimensions: PalleteDimensions): Double {
-    val colMass = (0 until dimensions.rows).map { r -> boxes[dimensions.blockToIndex(r, column)].value }.sum()
+    val colMass = (0 until dimensions.rows).sumOf { r -> boxes[dimensions.blockToIndex(r, column)].value }
     if (colMass == 0) {
         return dimensions.rows.toDouble() / 2
     }
-    val weightedMass = (0 until dimensions.rows).map { r -> (r + 0.5) * boxes[dimensions.blockToIndex(r, column)].value }.sum()
+    val weightedMass =
+        (0 until dimensions.rows).sumOf { r -> (r + 0.5) * boxes[dimensions.blockToIndex(r, column)].value }
     return weightedMass / colMass
 }
 
@@ -30,23 +31,23 @@ typealias Boxes = List<Box>
 data class Pallete(override val content: Boxes, private val dimensions: PalleteDimensions) : Chromosome<Box>() {
 
     private fun calcHalfMasses(halves: Pair<List<Int>, List<Int>>): Pair<Int, Int> {
-        val mass1 = halves.first.map { content[it].value }.sum()
-        val mass2 = halves.second.map { content[it].value }.sum()
+        val mass1 = halves.first.sumOf { content[it].value }
+        val mass2 = halves.second.sumOf { content[it].value }
 
         return Pair(mass1, mass2)
     }
 
     val totalMass: Int by lazy {
-        content.map { it.value }.sum()
+        content.sumOf { it.value }
     }
 
     val centerOfMass: Point by lazy {
-        val cmRow = (0 until dimensions.rows).map { r ->
+        val cmRow = (0 until dimensions.rows).sumOf { r ->
             getCenterOfMassOfRow(content, r, dimensions)
-        }.sum() / dimensions.rows
-        val cmCol = (0 until dimensions.cols).map { c ->
+        } / dimensions.rows
+        val cmCol = (0 until dimensions.cols).sumOf { c ->
             getCenterOfMassOfColumn(content, c, dimensions)
-        }.sum() / dimensions.cols
+        } / dimensions.cols
 
         Point(cmRow, cmCol)
     }

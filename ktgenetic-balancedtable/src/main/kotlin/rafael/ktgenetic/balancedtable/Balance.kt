@@ -10,24 +10,22 @@ typealias Boxes = List<Box>
 data class Balance(override val content: Boxes, private val dimensions: BalanceDimensions) : Chromosome<Box>() {
 
     private fun calcHalfMasses(): Pair<Int, Int> {
-        val leftMass = dimensions.halves.first.map { content[it].value }.sum()
-        val rightMass = dimensions.halves.second.map { content[it].value }.sum()
+        val leftMass = dimensions.halves.first.sumOf { content[it].value }
+        val rightMass = dimensions.halves.second.sumOf { content[it].value }
 
         return Pair(leftMass, rightMass)
     }
 
     val totalMass: Int
-        get() = content.map { it.value }.sum()
+        get() = content.sumOf { it.value }
 
     val centerOfMass: Double by lazy {
-        (content.indices).map { dimensions.blocks[it] * content[it].value }.sum() /
+        (content.indices).sumOf { dimensions.blocks[it] * content[it].value } /
                 totalMass
     }
 
     val momentOfInertia: Double by lazy {
-        (content.indices).
-                map { dimensions.distanceFromCenter[it] * dimensions.distanceFromCenter[it] * content[it].value }.
-                sum()
+        (content.indices).sumOf { dimensions.distanceFromCenter[it] * dimensions.distanceFromCenter[it] * content[it].value }
     }
 
     val halfMasses: Pair<Int, Int> = calcHalfMasses()
