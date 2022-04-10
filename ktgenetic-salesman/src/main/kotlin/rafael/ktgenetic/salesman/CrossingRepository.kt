@@ -1,6 +1,7 @@
 package rafael.ktgenetic.salesman
 
 import java.lang.IllegalStateException
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -13,7 +14,7 @@ object CrossingRepository {
         COLINEAR, CLOCKWISE, COUNTERCLOCKWISE
     }
 
-    private val crossings = hashMapOf<Pair<Vector, Vector>, Boolean>()
+    private val crossings = ConcurrentHashMap<Pair<Vector, Vector>, Boolean>()
 
     // Based on https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
 

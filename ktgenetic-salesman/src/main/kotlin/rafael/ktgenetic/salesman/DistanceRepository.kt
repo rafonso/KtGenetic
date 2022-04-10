@@ -1,10 +1,11 @@
 package rafael.ktgenetic.salesman
 
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.sqrt
 
 object DistanceRepository {
 
-    private val distances = mutableMapOf<Segment, Double>()
+    private val distances = ConcurrentHashMap<Segment, Double>()
 
     private fun calculate(points: Segment): Double {
         val itPoints = points.iterator()
