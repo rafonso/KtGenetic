@@ -11,7 +11,7 @@
     <artifactId>ktgenetic-sudoku</artifactId>
     <packaging>jar</packaging>
 
-    <properties />
+    <properties/>
 
     <dependencies>
         <dependency>

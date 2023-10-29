@@ -12,9 +12,9 @@
     <packaging>jar</packaging>
     <name>KTgenetic - Core</name>
 
-    <properties />
+    <properties/>
 
-    <dependencies />
+    <dependencies/>
 
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>

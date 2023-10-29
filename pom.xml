@@ -38,12 +38,12 @@
 
     <properties>
         <javafx.version>${jdk.version}</javafx.version>
-        <jdk.version>17</jdk.version>
-        <junit.version>5.8.2</junit.version>
+        <jdk.version>20</jdk.version>
+        <junit.version>5.9.2</junit.version>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <kotlin.version>1.6.20</kotlin.version>
-        <log4j.version>2.17.1</log4j.version>
+        <kotlin.version>1.9.0</kotlin.version>
+        <log4j.version>2.20.0</log4j.version>
         <maven.compiler.source>${jdk.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -117,7 +117,7 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
-            <version>1.8.2</version>
+            <version>1.9.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -125,43 +125,44 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jvmTarget>${jdk.version}</jvmTarget>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>com.github.ekryd.sortpom</groupId>
                 <artifactId>sortpom-maven-plugin</artifactId>
-                <version>2.11.0</version>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sort</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <version>3.3.0</version>
                 <configuration>
                     <lineSeparator>\n</lineSeparator>
                     <sortProperties>true</sortProperties>
                     <keepBlankLines>true</keepBlankLines>
                     <sortDependencies>scope,groupId,artifactId</sortDependencies>
+                    <sortPlugins>scope,groupId,artifactId</sortPlugins>
                     <nrOfIndentSpace>4</nrOfIndentSpace>
                     <expandEmptyElements>false</expandEmptyElements>
                     <verifyFail>stop</verifyFail>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>sort</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <configuration>
+                    <jvmTarget>${jdk.version}</jvmTarget>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
