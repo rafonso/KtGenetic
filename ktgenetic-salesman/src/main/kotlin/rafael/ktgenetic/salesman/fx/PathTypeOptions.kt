@@ -132,6 +132,6 @@ object PathTypeOptionsStingConverter : StringConverter<PathTypeOptions>() {
     override fun toString(option: PathTypeOptions?): String = option!!.title
 
     override fun fromString(string: String?): PathTypeOptions =
-            PathTypeOptions.values().first { (it.title == string) }
+            PathTypeOptions.entries.first { (it.title == string) }
 
 }

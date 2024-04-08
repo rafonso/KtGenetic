@@ -4,7 +4,7 @@
     <parent>
         <groupId>rafael.ktgenetic</groupId>
         <artifactId>ktgenetic</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
     </parent>
 
     <artifactId>ktgenetic-salesman</artifactId>

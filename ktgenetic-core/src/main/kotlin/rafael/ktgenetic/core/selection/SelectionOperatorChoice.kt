@@ -78,7 +78,7 @@ enum class SelectionOperatorChoice(val code: String, val description: String) {
 }
 
 fun codeToSelectionOperatorChoice(code: String): SelectionOperatorChoice {
-    SelectionOperatorChoice.values()
+    SelectionOperatorChoice.entries
         .filter { code == it.code }
         .forEach { return it }
 

@@ -23,7 +23,7 @@ class EqualStringsView : GeneticView<Char, Word>("Equal Strings", GeneticCrossin
     // INPUT COMPONENTS
 
     private val cmbStringFitness: ComboBox<StringFitnessChoice> = combobox {
-        items = FXCollections.observableArrayList(StringFitnessChoice.values().toList())
+        items = FXCollections.observableArrayList(StringFitnessChoice.entries)
         value = StringFitnessChoice.EQUAL_CHARS
         converter = StringFitnessChoiceConverter()
     }
@@ -80,6 +80,6 @@ class StringFitnessChoiceConverter : StringConverter<StringFitnessChoice>() {
 
     override fun toString(choice: StringFitnessChoice?): String = choice!!.description
 
-    override fun fromString(string: String?): StringFitnessChoice = StringFitnessChoice.values().first { it.description == string }
+    override fun fromString(string: String?): StringFitnessChoice = StringFitnessChoice.entries.first { it.description == string }
 
 }

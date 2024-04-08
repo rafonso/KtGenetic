@@ -14,7 +14,6 @@ internal class ListPiecesTest {
 
         private val baseList = listOf(1, 2, 3, 4, 5, 6)
 
-        @Suppress("unused")
         @JvmStatic
         fun provideTestJoinArguments(): Stream<Arguments> = Stream.of(
             Arguments.of(listOf<Int>(), listOf<Int>(), listOf<Int>(), listOf<Int>()),
@@ -27,7 +26,6 @@ internal class ListPiecesTest {
             Arguments.of(listOf(1, 2), listOf(4, 5), listOf(8, 9), listOf(1, 2, 4, 5, 8, 9)),
         )
 
-        @Suppress("unused")
         @JvmStatic
         private fun provideTestMakeCuttingIntoPiecesValidPositions(): Stream<Arguments> = Stream.of(
             Arguments.of(0, 0, listOf<Int>(), listOf<Int>(), baseList),
@@ -51,7 +49,6 @@ internal class ListPiecesTest {
             Arguments.of(6, 6, listOf(1, 2, 3, 4, 5, 6), listOf<Int>(), listOf<Int>()),
         )
 
-        @Suppress("unused")
         @JvmStatic
         private fun provideTestMakeCuttingIntoPiecesInvalidPositions(): Stream<Arguments> = Stream.of(
             Arguments.of(-2, -1),
@@ -73,7 +70,6 @@ internal class ListPiecesTest {
             Arguments.of(6, 8),
         )
 
-        @Suppress("unused")
         @JvmStatic
         private fun provideTestMakeCuttingIntoPiecesEmptyListInvalidPositions(): Stream<Arguments> = Stream.of(
             Arguments.of(-2, -1),

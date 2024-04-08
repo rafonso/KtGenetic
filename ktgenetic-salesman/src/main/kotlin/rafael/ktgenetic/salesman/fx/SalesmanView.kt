@@ -37,7 +37,7 @@ class SalesmanView : GeneticView<Point, Path>("Salesman", GeneticCrossingType.OR
 
     // INPUT COMPONENTS
 
-    private val cmbPathType = combobox(values = PathTypeOptions.values().toList()) {
+    private val cmbPathType = combobox(values = PathTypeOptions.entries) {
         tooltip = tooltip("Specifies if the produced Path must be open or closed.")
         value = PathTypeOptions.OPEN
         converter = PathTypeOptionsStingConverter

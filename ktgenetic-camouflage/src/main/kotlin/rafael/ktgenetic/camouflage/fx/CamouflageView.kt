@@ -65,7 +65,7 @@ class CamouflageView : GeneticView<Int, Kolor>("Camouflage", GeneticCrossingType
     }
 
     private val cmbColorDistance = combobox<KolorDistance> {
-        items = observableListOf(KolorDistance.values().toList())
+        items = observableListOf(KolorDistance.entries)
         value = KolorDistance.RGB
     }
 

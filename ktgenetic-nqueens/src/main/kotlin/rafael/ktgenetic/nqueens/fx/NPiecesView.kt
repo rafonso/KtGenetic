@@ -15,7 +15,7 @@ import rafael.ktgenetic.nqueens.Piece
 import rafael.ktgenetic.core.processor.GeneticCrossingType
 import tornadofx.*
 
-abstract class NPiecesView (private val piece: Piece, _title: String, _processorChoice: GeneticCrossingType): GeneticView<Int, Board>(_title, _processorChoice) {
+abstract class NPiecesView (private val piece: Piece, title: String, processorChoice: GeneticCrossingType): GeneticView<Int, Board>(title, processorChoice) {
 
     // INPUT COMPONENTS
 

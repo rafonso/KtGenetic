@@ -30,7 +30,7 @@ fun getOptions(additionalOptions: (Options) -> Unit): Options {
     options.addOption(LOG_LEVEL_PARAMETER, true, "Log Level: 1 = DEBUG, 2 = TRACE, 3 = TRACER (Default INFO)")
     options.addOption(NO_STOP_PROCESSING_PARAMETER, false, "Process with no console interaction")
     options.addOption(SELECTION_STRATEGY_PARAMETER, true, "Selection operator to be used. " +
-            "Values: ${SelectionOperatorChoice.values().joinToString { it.code + " = " + it.description }} " +
+            "Values: ${SelectionOperatorChoice.entries.joinToString { it.code + " = " + it.description }} " +
             "(Default: ${SelectionOperatorChoice.TRUNCATE.code})")
     options.addOption(ADD_MUTATION_TUNER_PARAMETER, false, "Add Mutation tuner")
 

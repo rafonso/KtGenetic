@@ -63,11 +63,11 @@ class PicturesComparsionView : GeneticView<Rectangle, Screen>("Pictures Comparsi
         style = lblImage.style
     }
 
-    private val cmbColumns = combobox<Int> {
+    private val cmbColumns = combobox {
         configureCombo(MAX_COLS)
     }
 
-    private val cmbRows = combobox<Int> {
+    private val cmbRows = combobox {
         configureCombo(MAX_ROWS)
     }
 

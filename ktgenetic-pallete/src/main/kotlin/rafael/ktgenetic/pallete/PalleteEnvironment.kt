@@ -75,10 +75,10 @@ fun getPallete(weights: Collection<Int>, rows: Int, cols: Int): Pair<List<Int>, 
             val side: Int = sqrtSize + (if (weights.size == sqrtSize * sqrtSize) 0 else 1)
             return Pair(side, side)
         }
-        if (rows == 0 && cols != 0) {
+        if (rows == 0) {
             return Pair((weights.size / cols) + (if (weights.size % cols == 0) 0 else 1), cols)
         }
-        if (rows != 0 && cols == 0) {
+        if (cols == 0) {
             return Pair(rows, (weights.size / rows) + (if (weights.size % rows == 0) 0 else 1))
         }
 

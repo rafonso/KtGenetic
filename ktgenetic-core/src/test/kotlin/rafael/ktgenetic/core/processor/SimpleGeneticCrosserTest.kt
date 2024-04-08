@@ -16,7 +16,6 @@ internal class SimpleGeneticCrosserTest {
 
         private val parent2 = TemplateChromosome("123456")
 
-        @Suppress("unused")
         @JvmStatic
         fun provideWithoutIntersectionValidPositionsArguments(): Stream<Arguments> = Stream.of(
             Arguments.of(0, 0, "123456", "ABCDEF"),

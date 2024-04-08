@@ -25,7 +25,8 @@ private fun addOptions(options: Options) {
     options.addOption(
         STRATEGY_PROPERTY,
         true,
-        "Row mutation strategy ${MutationStrategy.values().joinToString(
+        "Row mutation strategy ${
+            MutationStrategy.entries.joinToString(
             prefix = "(",
             postfix = ")",
             transform = MutationStrategy::name
@@ -40,8 +41,9 @@ private fun validateParameters(line: CommandLine) {
     }
 
     require(line.hasOption(STRATEGY_PROPERTY)) { "Please provide the Mutation strategy" }
-    require(MutationStrategy.values().map { m -> m.name }.contains(line.getOptionValue(STRATEGY_PROPERTY))) {
-        "Mutation strategy must be ${MutationStrategy.values().joinToString(
+    require(MutationStrategy.entries.map { m -> m.name }.contains(line.getOptionValue(STRATEGY_PROPERTY))) {
+        "Mutation strategy must be ${
+            MutationStrategy.entries.joinToString(
             prefix = "",
             postfix = "",
             separator = " or ",

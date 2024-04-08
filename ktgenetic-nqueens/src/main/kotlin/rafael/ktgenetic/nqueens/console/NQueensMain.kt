@@ -33,7 +33,7 @@ private fun validateParameters(line: CommandLine) {
     }
 
     require(line.hasOption(PIECE_PARAMETER)) { "Please provide the Piece (QUEEN or BISHOP)" }
-    require(Piece.values().map { p -> p.toString() }.contains(line.getOptionValue(PIECE_PARAMETER))) {
+    require(Piece.entries.map { p -> p.toString() }.contains(line.getOptionValue(PIECE_PARAMETER))) {
         "Piece must be QUEEN or BISHOP"
     }
     isQueens = line.getOptionValue(PIECE_PARAMETER) == Piece.QUEEN.toString()
@@ -67,9 +67,9 @@ fun getProcessorChoice(args: Array<String>): GeneticCrossingType {
     val idx = args.indexOf("-$PIECE_PARAMETER")
     if (idx >= 0) {
         try {
-            @Suppress("NON_EXHAUSTIVE_WHEN")
             when (Piece.QUEEN) {
                 Piece.valueOf(args[idx + 1]) -> result = GeneticCrossingType.ORDERED
+                else                         -> {}
             }
         } catch (_: Exception) {
         }

@@ -29,7 +29,7 @@ fun <G, C : Chromosome<G>> chromosomeToTableColumn(
     val balanceColumn = TableColumn<C, String>(title)
 
     @Suppress("UNCHECKED_CAST") val converter =
-        chromosomeToString as (@Suppress("UNCHECKED_CAST") Chromosome<G>) -> String
+        chromosomeToString as (Chromosome<G>) -> String
     balanceColumn.cellValueFactory = ChromosomeToCellString(converter)
     balanceColumn.prefWidth = prefWidth
     balanceColumn.styleClass.addAll(classes)

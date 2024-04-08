@@ -94,7 +94,7 @@ internal class InputsView(
         cmbMutationFactor.items = mutationFactors
         cmbMutationFactor.value = 0.1
 
-        cmbSelectionOperator.items = FXCollections.observableArrayList(SelectionOperatorChoice.values().toList())
+        cmbSelectionOperator.items = FXCollections.observableArrayList(SelectionOperatorChoice.entries)
         cmbSelectionOperator.value = SelectionOperatorChoice.TRUNCATE
         cmbSelectionOperator.converter = SelectionOperatorConverter()
     }
@@ -163,7 +163,7 @@ class SelectionOperatorConverter : StringConverter<SelectionOperatorChoice>() {
     override fun toString(choice: SelectionOperatorChoice?): String = choice!!.description
 
     override fun fromString(string: String?): SelectionOperatorChoice =
-        SelectionOperatorChoice.values().first { it.description == string }
+        SelectionOperatorChoice.entries.first { it.description == string }
 
 }
 

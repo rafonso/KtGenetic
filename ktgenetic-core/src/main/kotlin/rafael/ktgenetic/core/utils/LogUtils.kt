@@ -15,7 +15,7 @@ enum class LogLevel(val level: Level, val code: String) {
     TRACER_LEVEL(TRACER, 3.toString())
 }
 
-fun codeToLogLevel(code: String) = LogLevel.values().first { it.code == code }
+fun codeToLogLevel(code: String) = LogLevel.entries.first { it.code == code }
 
 fun configureLog(logLevel: LogLevel) {
     /**

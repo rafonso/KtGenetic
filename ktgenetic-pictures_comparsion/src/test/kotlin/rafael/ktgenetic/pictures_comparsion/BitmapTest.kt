@@ -11,7 +11,7 @@ internal class BitmapTest {
 
     private fun testIllegalBitmap(x: Int = 1, y: Int = 1, r: Int = 1, g: Int = 1, b: Int = 1) {
         assertThrows(IllegalArgumentException::class.java) {
-            legalBitmap.copy(Position(x, y), Kolor(r, g, b))
+            legalBitmap.copy(position = Position(x, y), kolor = Kolor(r, g, b))
         }
     }
 

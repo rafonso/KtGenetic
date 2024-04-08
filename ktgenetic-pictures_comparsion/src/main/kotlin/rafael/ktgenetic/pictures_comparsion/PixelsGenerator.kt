@@ -69,11 +69,11 @@ class PixelsGenerator(width: Int, height: Int, coverage: Double) : Generator {
 
 fun main() {
     print("Width : ")
-    val w = readLine()!!.toInt()
+    val w = readln().toInt()
     print("Height: ")
-    val h = readLine()!!.toInt()
+    val h = readln().toInt()
     print("Cover : ")
-    val c = readLine()!!.toDouble()
+    val c = readln().toDouble()
 
     val time = measureTimeMillis {
         val generator = PixelsGenerator(w, h, c)
