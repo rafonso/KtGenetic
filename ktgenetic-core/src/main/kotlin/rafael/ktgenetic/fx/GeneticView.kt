@@ -25,9 +25,20 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
 
+/**
+ * Extension function to check if a GenerationEvent is in the evaluating state.
+ *
+ * @return `true` if the event is in the evaluating state, `false` otherwise.
+ */
 internal fun GenerationEvent.isEvaluating() =
     ((this.eventType == TypeProcessorEvent.GENERATION_EVALUATING) || this.eventType.ended)
 
+/**
+ * Abstract class for a genetic algorithm view.
+ *
+ * @property title The title of the view.
+ * @property crossingType The type of genetic crossing to be used.
+ */
 abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val crossingType: GeneticCrossingType) :
     View(title), ProcessorListener, ChangeListener<GenerationEvent> {
     final override val root: BorderPane by fxml("/view/Genetic.fxml")
@@ -131,20 +142,51 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
         }.showAndWait()
     }
 
+    /**
+     * Validates the inputs for the genetic algorithm.
+     *
+     * This method should be overridden by subclasses to provide specific validation logic.
+     */
     protected abstract fun validate()
 
+    /**
+     * Gets the environment for the genetic algorithm.
+     *
+     * This method should be overridden by subclasses to provide a specific environment.
+     *
+     * @param maxGenerations The maximum number of generations.
+     * @param generationSize The size of each generation.
+     * @param mutationFactor The mutation factor.
+     * @return The environment for the genetic algorithm.
+     */
     protected abstract fun getEnvironment(
         maxGenerations: Int,
         generationSize: Int,
         mutationFactor: Double
     ): Environment<G, C>
 
+    /**
+     * Fills the view with the given genome.
+     *
+     * This method should be overridden by subclasses to provide specific logic for displaying the genome.
+     *
+     * @param genome The genome to display.
+     */
     protected abstract fun fillOwnComponent(genome: List<C>)
 
+    /**
+     * Resets the components of the view.
+     *
+     * This method should be overridden by subclasses to provide specific logic for resetting the components.
+     */
     protected abstract fun resetComponents()
 
     /**
      * Returns the [Node]s that will not be disabled while processing.
+     *
+     * This method can be overridden by subclasses to provide specific logic for determining which nodes should always be enabled.
+     *
+     * @return A list of nodes that should always be enabled.
      */
     protected open fun alwaysEnabledComponents() = emptyList<Node>()
 
@@ -197,6 +239,13 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
         processorEvent = waitingEvent()
     }
 
+    /**
+     * Handles a change in the generation event.
+     *
+     * @param observable The observable value that has changed.
+     * @param oldValue The old value of the generation event.
+     * @param newValue The new value of the generation event.
+     */
     override fun changed(
         observable: ObservableValue<out GenerationEvent>?,
         oldValue: GenerationEvent?,
@@ -206,6 +255,7 @@ abstract class GeneticView<G, C : Chromosome<G>>(title: String, private val cros
         when {
             event.eventType == TypeProcessorEvent.ERROR ->
                 runLater { showError(event) }
+
             event.isEvaluating() ->
                 runLater {
                     @Suppress("UNCHECKED_CAST")

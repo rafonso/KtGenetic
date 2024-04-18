@@ -20,6 +20,18 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 
+/**
+ * Class responsible for displaying the statistics of a genetic algorithm.
+ *
+ * @property pnlOutput The output panel.
+ * @property lblGeneration The label for the current generation.
+ * @property lblBestFitness The label for the best fitness.
+ * @property lblAverageFitness The label for the average fitness.
+ * @property lblTime The label for the elapsed time.
+ * @property cmbUpdateChart The combo box for selecting the update frequency of the chart.
+ * @property lineChartFitness The line chart for displaying the fitness over time.
+ * @property yAxisChartFitness The y-axis of the fitness chart.
+ */
 internal class StatisticsView(
     @Suppress("unused") private val pnlOutput: Pane,
     private val lblGeneration: Label,
@@ -92,6 +104,9 @@ internal class StatisticsView(
         }
     }
 
+    /**
+     * Resets the view to its initial state.
+     */
     fun reset() {
         lblGeneration.textProperty().unbind()
         lblGeneration.text = ""
@@ -111,6 +126,11 @@ internal class StatisticsView(
         (lineChartFitness.xAxis as NumberAxis).upperBound = 100.0
     }
 
+    /**
+     * Handles the starting of the genetic algorithm.
+     *
+     * @param startingTime The time at which the algorithm started.
+     */
     private fun starting(startingTime: LocalDateTime) {
         t0 = startingTime
 
@@ -126,6 +146,11 @@ internal class StatisticsView(
 
     }
 
+    /**
+     * Displays the data of the current generation.
+     *
+     * @param event The event containing the generation data.
+     */
     private fun showGenerationData(event: GenerationEvent) {
         val dt = Date(Duration.between(t0, event.dateTime).toMillis())
         lblTime.text = formatter.format(dt)
@@ -144,6 +169,13 @@ internal class StatisticsView(
         }
     }
 
+    /**
+     * Handles a change in the generation event.
+     *
+     * @param observable The observable value that has changed.
+     * @param oldValue The old value of the generation event.
+     * @param newValue The new value of the generation event.
+     */
     override fun changed(
         observable: ObservableValue<out GenerationEvent>?,
         oldValue: GenerationEvent?,

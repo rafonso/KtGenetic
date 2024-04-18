@@ -5,6 +5,9 @@ import javafx.scene.control.TableColumn
 import javafx.scene.image.Image
 import rafael.ktgenetic.core.Chromosome
 
+/**
+ * Icon for the Genetic Algorithm.
+ */
 val geneticIcon: Image = Image("/view/dna_helix_genetic_gene-32.png")
 
 /**

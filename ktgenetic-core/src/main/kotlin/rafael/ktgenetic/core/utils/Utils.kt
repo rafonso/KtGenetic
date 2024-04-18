@@ -3,11 +3,11 @@ package rafael.ktgenetic.core.utils
 import kotlin.random.Random
 
 /**
- * Create random positions
+ * Creates a pair of random positions within a given range.
  *
- * @param maxPos
- * @param initialPos
- * @return
+ * @param maxPos The maximum possible position (exclusive).
+ * @param initialPos The minimum possible position (default is 0).
+ * @return A pair of random positions within the range [initialPos, maxPos).
  */
 internal fun createRandomPositions(maxPos: Int, initialPos: Int = 0): Pair<Int, Int> {
     val pos1 = initialPos + Random.nextInt(maxPos - 2)
@@ -20,26 +20,28 @@ internal fun createRandomPositions(maxPos: Int, initialPos: Int = 0): Pair<Int, 
 }
 
 /**
- * Generate a random [Int] from 0 to a max (exclusive)
+ * Generates a random integer from 0 (inclusive) to a given maximum value (exclusive).
  *
- * @param maxExclusive the max value
- * @return random [Int] from 0 until [maxExclusive] - 1
+ * @param maxExclusive The maximum value (exclusive).
+ * @return A random integer within the range [0, maxExclusive).
  */
 fun randomIntExclusive(maxExclusive: Int) = Random.nextInt(maxExclusive)
 
 /**
- * Generate a random [Int] from 0 to a max (inclusive)
+ * Generates a random integer from 0 (inclusive) to a given maximum value (inclusive).
  *
- * @param maxValue the max value
- * @return random [Int] from 0 until [maxValue]
+ * @param maxValue The maximum value (inclusive).
+ * @return A random integer within the range [0, maxValue].
  */
 fun randomIntInclusive(maxValue: Int) = randomIntExclusive(maxValue + 1)
 
 /**
- * Create cut positions
+ * Creates a pair of cut positions within a given range.
  *
- * @param maxPos
- * @return
+ * The range is from 1 (inclusive) to the given maximum position (exclusive).
+ *
+ * @param maxPos The maximum possible position (exclusive).
+ * @return A pair of cut positions within the range [1, maxPos).
  */
 fun createCutPositions(maxPos: Int): Pair<Int, Int> = createRandomPositions(maxPos, 1)
 

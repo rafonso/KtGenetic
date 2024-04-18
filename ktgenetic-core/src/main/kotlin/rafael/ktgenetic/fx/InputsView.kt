@@ -17,6 +17,21 @@ import rafael.ktgenetic.core.events.GenerationEvent
 import rafael.ktgenetic.core.events.TypeProcessorEvent
 import rafael.ktgenetic.core.selection.SelectionOperatorChoice
 
+/**
+ * Class responsible for handling the inputs of a genetic algorithm.
+ *
+ * @property pnlInput The input panel.
+ * @property pnlButtons The buttons panel.
+ * @property cmbGenerations The combo box for selecting the number of generations.
+ * @property cmbPopulation The combo box for selecting the population size.
+ * @property cmbMutationFactor The combo box for selecting the mutation factor.
+ * @property cmbSelectionOperator The combo box for selecting the selection operator.
+ * @property chbElitism The check box for enabling or disabling elitism.
+ * @property chbRepeatedValues The check box for enabling or disabling repeated values.
+ * @property btnStop The stop button.
+ * @property btnReset The reset button.
+ * @property btnStart The start button.
+ */
 internal class InputsView(
     // @formatter:off
     private val pnlInput                : GridPane                          ,
@@ -99,6 +114,14 @@ internal class InputsView(
         cmbSelectionOperator.converter = SelectionOperatorConverter()
     }
 
+    /**
+     * Adds a component to the input panel.
+     *
+     * @param title The title of the component.
+     * @param component The component to add.
+     * @param colspan The number of columns the component should span.
+     * @return The label of the added component.
+     */
     internal fun addComponent(title: String, component: Node, colspan: Int = 1): Label {
         assert(colspan <= maxColumns) { "Colspan must be at least $maxColumns. It was $colspan" }
 
@@ -119,6 +142,11 @@ internal class InputsView(
         return lblTitle
     }
 
+    /**
+     * Disables or enables the input components.
+     *
+     * @param disable Whether to disable the input components.
+     */
     internal fun disableInputComponents(disable: Boolean) {
         btnStart.isDisable = disable
         btnReset.isDisable = disable
@@ -131,6 +159,9 @@ internal class InputsView(
             .forEach { it.isDisable = disable }
     }
 
+    /**
+     * Resets the view to its initial state.
+     */
     fun reset() {
         cmbSelectionOperator.selectionModel.selectFirst()
         cmbGenerations.value = 100
@@ -138,6 +169,13 @@ internal class InputsView(
         cmbPopulation.value = 100
     }
 
+    /**
+     * Handles a change in the generation event.
+     *
+     * @param observable The observable value that has changed.
+     * @param oldValue The old value of the generation event.
+     * @param newValue The new value of the generation event.
+     */
     override fun changed(
         observable: ObservableValue<out GenerationEvent>?,
         oldValue: GenerationEvent?,
@@ -147,10 +185,12 @@ internal class InputsView(
         when {
             event.eventType == TypeProcessorEvent.STARTING ->
                 disableInputComponents(true)
+
             event.eventType == TypeProcessorEvent.ERROR -> {
                 btnStop.isDisable = true
                 btnReset.isDisable = false
             }
+
             event.eventType.ended ->
                 disableInputComponents(false)
         }
@@ -158,10 +198,25 @@ internal class InputsView(
 
 }
 
+/**
+ * Converter for the selection operator choice.
+ */
 class SelectionOperatorConverter : StringConverter<SelectionOperatorChoice>() {
 
+    /**
+     * Converts a selection operator choice to a string.
+     *
+     * @param choice The selection operator choice to convert.
+     * @return The string representation of the selection operator choice.
+     */
     override fun toString(choice: SelectionOperatorChoice?): String = choice!!.description
 
+    /**
+     * Converts a string to a selection operator choice.
+     *
+     * @param string The string to convert.
+     * @return The selection operator choice represented by the string.
+     */
     override fun fromString(string: String?): SelectionOperatorChoice =
         SelectionOperatorChoice.entries.first { it.description == string }
 

@@ -5,17 +5,22 @@ import rafael.ktgenetic.core.GenerationStatistics
 import rafael.ktgenetic.core.getStatistics
 import java.time.LocalDateTime
 
+/**
+ * Alias for ProcessorEvent with a wildcard type parameter.
+ */
 typealias GenerationEvent = ProcessorEvent<*>
 
 /**
- * Represents a eventType occurred during the evolutionary process in [rafael.ktgenetic.core.processor.GeneticProcessor].
+ * Represents an event that occurred during the evolutionary process in the [rafael.ktgenetic.core.processor.GeneticProcessor].
  *
- * Implementation based on https://github.com/dbacinski/Design-Patterns-In-Kotlin#observer--listener
  *
- * @param eventType Event type.
- * @param generation the generation number
- * @param population This `generation` population
- * @param error Eventual [Exception] thrown (may be null)
+ * This class is based on the Observer/Listener design pattern.
+ * More information about this design pattern can be found at: https://github.com/dbacinski/Design-Patterns-In-Kotlin#observer--listener
+ *
+ * @property eventType The type of the event.
+ * @property generation The generation number.
+ * @property population The population of chromosomes for this generation.
+ * @property error An optional Exception that may have been thrown during the event (may be null).
  */
 data class ProcessorEvent<out C : Chromosome<*>>(
     val eventType: TypeProcessorEvent,
@@ -23,8 +28,15 @@ data class ProcessorEvent<out C : Chromosome<*>>(
     val population: List<C>,
     val error: Throwable? = null
 ) {
+    /**
+     * The date and time when the event was created.
+     */
     val dateTime: LocalDateTime = LocalDateTime.now()
 
+    /**
+     * The statistics for the generation associated with this event.
+     * The statistics are calculated lazily, i.e., they are calculated and cached the first time this property is accessed.
+     */
     val statistics: GenerationStatistics by lazy { getStatistics(this) }
 
 }

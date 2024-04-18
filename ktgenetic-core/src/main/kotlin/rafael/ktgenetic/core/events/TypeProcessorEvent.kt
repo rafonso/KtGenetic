@@ -3,6 +3,8 @@ package rafael.ktgenetic.core.events
 /**
  * Represents the type of eventType that occurs during the evolutionary process in [rafael.ktgenetic.core.processor.GeneticProcessor].
  * Each type of eventType is accompanied by a specific kind of object in [ProcessorEvent] class.
+ *
+ * @property ended A boolean flag indicating whether the event type signifies the end of processing.
  */
 enum class TypeProcessorEvent(val ended: Boolean = false) {
     /**

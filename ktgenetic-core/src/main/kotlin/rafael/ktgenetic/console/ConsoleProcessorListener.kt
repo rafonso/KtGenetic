@@ -7,6 +7,12 @@ import rafael.ktgenetic.core.events.ProcessorListener
 import rafael.ktgenetic.core.processor.GeneticProcessor
 import java.util.*
 
+/**
+ * ConsoleProcessorListener is a class that listens to the events of a GeneticProcessor and provides console interaction.
+ *
+ * @property processor The GeneticProcessor that this listener is attached to.
+ * @constructor Creates a new ConsoleProcessorListener with the given GeneticProcessor.
+ */
 class ConsoleProcessorListener<C: Chromosome<*>>(val processor: GeneticProcessor<*, C>) : ProcessorListener {
 
     private val scanner = Scanner(System.`in`)
@@ -15,6 +21,11 @@ class ConsoleProcessorListener<C: Chromosome<*>>(val processor: GeneticProcessor
 
     private var currentGeneration: Int = 0
 
+    /**
+     * Handles the events from the GeneticProcessor.
+     *
+     * @param event The event from the GeneticProcessor.
+     */
     override fun onEvent(event: ProcessorEvent<*>) {
         if (event.eventType == TypeProcessorEvent.GENERATION_EVALUATED) {
             currentGeneration++
@@ -38,4 +49,5 @@ class ConsoleProcessorListener<C: Chromosome<*>>(val processor: GeneticProcessor
             }
         }
     }
+
 }

@@ -4,8 +4,22 @@ import rafael.ktgenetic.core.Chromosome
 import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.core.utils.ListPieces
 
+/**
+ * This sealed class represents a Genetic Crosser used in genetic algorithms.
+ * Genetic Crosser is responsible for crossing two parent chromosomes to generate offspring.
+ *
+ * @param <G> The type of the Gene
+ * @param <C> The type of the Chromosome
+ */
 internal sealed class GeneticCrosser<G, C : Chromosome<G>> {
 
+    /**
+     * Executes the crossing of two parent chromosomes.
+     * @param pieces1 The pieces of the first parent chromosome
+     * @param pieces2 The pieces of the second parent chromosome
+     * @param environment The environment of the genetic algorithm
+     * @return The list of offspring chromosomes
+     */
     abstract fun executeCrossing(
         pieces1: ListPieces<G>,
         pieces2: ListPieces<G>,
@@ -14,8 +28,24 @@ internal sealed class GeneticCrosser<G, C : Chromosome<G>> {
 
 }
 
+/**
+ * This class represents a Simple Genetic Crosser used in genetic algorithms.
+ * Simple Genetic Crosser crosses two parent chromosomes by simply swapping their genes.
+ *
+ * @param <G> The type of the Gene
+ * @param <C> The type of the Chromosome
+ *
+ * @see GeneticCrosser
+ */
 internal class SimpleGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C>() {
 
+    /**
+     * Executes the crossing of two parent chromosomes by simply swapping their genes.
+     * @param pieces1 The pieces of the first parent chromosome
+     * @param pieces2 The pieces of the second parent chromosome
+     * @param environment The environment of the genetic algorithm
+     * @return The list of offspring chromosomes
+     */
     override fun executeCrossing(
         pieces1: ListPieces<G>,
         pieces2: ListPieces<G>,
@@ -27,6 +57,15 @@ internal class SimpleGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C>
 
 }
 
+/**
+ * This class represents an Ordered Genetic Crosser used in genetic algorithms.
+ * Ordered Genetic Crosser crosses two parent chromosomes by preserving the relative order of their genes.
+ *
+ * @param <G> The type of the Gene
+ * @param <C> The type of the Chromosome
+ *
+ * @see GeneticCrosser
+ */
 internal class OrderedGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C>() {
 
     private val basicCrosser = SimpleGeneticCrosser<G, C>()
@@ -46,6 +85,15 @@ internal class OrderedGeneticCrosser<G, C : Chromosome<G>> : GeneticCrosser<G, C
         return listOf(child1, child2)
     }
 
+    /**
+     * Executes the crossing of two parent chromosomes by preserving the relative order of their genes.
+     * If there is an intersection between the genes of the parents, it uses the executeCross method.
+     * Otherwise, it uses the basicCrosser's executeCrossing method.
+     * @param pieces1 The pieces of the first parent chromosome
+     * @param pieces2 The pieces of the second parent chromosome
+     * @param environment The environment of the genetic algorithm
+     * @return The list of offspring chromosomes
+     */
     override fun executeCrossing(
         pieces1: ListPieces<G>,
         pieces2: ListPieces<G>,
