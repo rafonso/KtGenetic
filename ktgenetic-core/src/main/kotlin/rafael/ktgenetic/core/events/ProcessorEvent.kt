@@ -1,8 +1,6 @@
 package rafael.ktgenetic.core.events
 
 import rafael.ktgenetic.core.Chromosome
-import rafael.ktgenetic.core.GenerationStatistics
-import rafael.ktgenetic.core.getStatistics
 import java.time.LocalDateTime
 
 /**

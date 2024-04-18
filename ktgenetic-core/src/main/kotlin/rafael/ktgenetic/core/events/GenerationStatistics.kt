@@ -1,6 +1,6 @@
-package rafael.ktgenetic.core
+package rafael.ktgenetic.core.events
 
-import rafael.ktgenetic.core.events.ProcessorEvent
+import rafael.ktgenetic.core.Chromosome
 import kotlin.math.pow
 import kotlin.math.sqrt
 
