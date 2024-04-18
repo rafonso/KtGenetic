@@ -74,7 +74,7 @@ abstract class AbstractSelectionOperatorTest {
         parentsType: ParentsType,
         size: Int,
         hasRepetition: Boolean,
-        @Suppress("UNUSED_PARAMETER") exClass: Class<E>
+        @Suppress("UNUSED_PARAMETER") ignoredExClass: Class<E>
     ) {
         val operator = createOperator(size, hasRepetition)
         val parents = parentsType.getParents()

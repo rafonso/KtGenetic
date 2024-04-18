@@ -25,6 +25,7 @@ interface SelectionOperator<C : Chromosome<*>> {
      * the Children size can be less than the generationSize.
      */
     // TODO: Transformar em not null
+    @Suppress("SameReturnValue")
     val allowRepetition: Boolean?
         get() = false
 

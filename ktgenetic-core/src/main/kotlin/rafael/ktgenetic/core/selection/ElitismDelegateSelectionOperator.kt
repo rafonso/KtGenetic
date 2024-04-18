@@ -13,7 +13,6 @@ import kotlin.reflect.KFunction
  * @property generationSize The size of the generation to be created
  * @property allowRepetition If the same Chromosome can be selected more than once. If this value is false,
  * the Children size can be less than the generationSize.
- * @property delegatedClass The class of the delegated selection operator
  * @property eliteChildrenSize The number of best fit individuals guaranteed to be selected
  * @property delegatedSelector The delegated selection operator
  *

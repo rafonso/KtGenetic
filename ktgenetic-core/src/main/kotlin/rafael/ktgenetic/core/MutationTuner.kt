@@ -1,10 +1,10 @@
 package rafael.ktgenetic.core
 
-import org.apache.logging.log4j.util.Supplier
 import rafael.ktgenetic.core.events.ProcessorEvent
 import rafael.ktgenetic.core.events.ProcessorListener
 import rafael.ktgenetic.core.events.TypeProcessorEvent
 import rafael.ktgenetic.core.utils.mainLogger
+import java.util.function.Supplier
 
 // Minimum variation for mutation factor adjustment
 private const val minimunVariation = 0.01

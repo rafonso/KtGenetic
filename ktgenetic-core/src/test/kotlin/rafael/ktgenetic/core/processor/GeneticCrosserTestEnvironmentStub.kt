@@ -25,7 +25,7 @@ class GeneticCrosserTestEnvironmentStub : Environment<Char, TemplateChromosome> 
         throw NotImplementedError("Not Used")
     }
 
-    override fun executeMutation(sequence: List<Char>): List<Char> {
+    override fun executeMutation(ignoredSequence: List<Char>): List<Char> {
         throw NotImplementedError("Not Used")
     }
 

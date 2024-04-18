@@ -2,11 +2,11 @@ package rafael.ktgenetic.core.utils
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.apache.logging.log4j.util.Supplier
 import rafael.ktgenetic.core.Chromosome
 import rafael.ktgenetic.core.events.ProcessorEvent
 import rafael.ktgenetic.core.events.ProcessorListener
 import rafael.ktgenetic.core.events.TypeProcessorEvent
+import java.util.function.Supplier
 
 /**
  * Emits log messages according the [ProcessorEvent].

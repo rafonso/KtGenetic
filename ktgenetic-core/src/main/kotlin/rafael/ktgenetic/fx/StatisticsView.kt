@@ -23,7 +23,7 @@ import java.util.*
 /**
  * Class responsible for displaying the statistics of a genetic algorithm.
  *
- * @property pnlOutput The output panel.
+ * @property ignoredPnlOutput The output panel.
  * @property lblGeneration The label for the current generation.
  * @property lblBestFitness The label for the best fitness.
  * @property lblAverageFitness The label for the average fitness.
@@ -33,7 +33,7 @@ import java.util.*
  * @property yAxisChartFitness The y-axis of the fitness chart.
  */
 internal class StatisticsView(
-    @Suppress("unused") private val pnlOutput: Pane,
+    private val ignoredPnlOutput: Pane,
     private val lblGeneration: Label,
     private val lblBestFitness: Label,
     private val lblAverageFitness: Label,
