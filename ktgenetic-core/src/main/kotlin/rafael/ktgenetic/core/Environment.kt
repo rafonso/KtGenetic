@@ -11,7 +11,7 @@ import rafael.ktgenetic.core.utils.makeCuttingIntoPieces
  * @param G The type of the gene values.
  * @param C The type of the chromosomes in the environment.
  */
-@Suppress("SameReturnValue", "SameReturnValue")
+@Suppress("SameReturnValue")
 interface Environment<G, C : Chromosome<G>> {
 
     /**

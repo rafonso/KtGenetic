@@ -1,6 +1,7 @@
 package rafael.ktgenetic.core.utils
 
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 
 internal class ListExtensionsKtTest {
@@ -60,6 +61,26 @@ internal class ListExtensionsKtTest {
         assertSame(l[1], swapped[0])
         assertNotSame(l, swapped)
     }
+
+    @RepeatedTest(100)
+    fun randSwapListGreaterThan2() {
+        val l = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+        val swapped = l.randomSwap()
+
+        // Check that the swapped list has the same size as the original list
+        assertEquals(l.size, swapped.size)
+
+        // Check that the swapped list contains all elements from the original list
+        assertTrue(swapped.containsAll(l))
+
+        // Check that the original list contains all elements from the swapped list
+        assertTrue(l.containsAll(swapped))
+
+        // Check that exactly two elements have been swapped
+        val diffPositions = l.indices.filter { l[it] != swapped[it] }
+        assertEquals(2, diffPositions.size,
+            "Two positions should have been swapped. original = $l, swapped = $swapped")    }
 
     @Test
     fun replaceNegativeIndex() {

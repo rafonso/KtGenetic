@@ -48,9 +48,9 @@ internal class SimpleGeneticCrosserTest {
     @ParameterizedTest
     @MethodSource("provideWithoutIntersectionValidPositionsArguments")
     fun withoutIntersectionValidPositions(cutPosition1: Int, cutPosition2: Int, child0: String, child1: String) {
-        val cutPositons = Pair(cutPosition1, cutPosition2)
-        val pieces1 = makeCuttingIntoPieces(parent1.content, cutPositons)
-        val pieces2 = makeCuttingIntoPieces(parent2.content, cutPositons)
+        val cutPositions = Pair(cutPosition1, cutPosition2)
+        val pieces1 = makeCuttingIntoPieces(parent1.content, cutPositions)
+        val pieces2 = makeCuttingIntoPieces(parent2.content, cutPositions)
 
         val result = geneticCrosser.executeCrossing(pieces1, pieces2, environmentStub)
 

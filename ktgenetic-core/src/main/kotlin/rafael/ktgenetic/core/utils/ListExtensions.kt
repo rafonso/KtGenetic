@@ -48,7 +48,7 @@ internal fun <T> List<T>.swap(index1: Int, index2: Int): List<T> {
  * @receiver [List] of type [T]
  * @param T List type
  * @return A copy of this list where the values of 2 random indexes are swapped. If it is empty or has
- * size 1, itself is returned. If if has size 2
+ * size 1, itself is returned. If it  has size 2
  */
 fun <T> List<T>.randomSwap(): List<T> {
     if (this.isEmpty()) return this
@@ -65,7 +65,7 @@ fun <T> List<T>.randomSwap(): List<T> {
  * @receiver [Iterable] of type [T]
  * @param T [Iterable]´s type
  * @param R Type to be returned
- * @param transform Tranformation function from [T] to [R]
+ * @param transform Transformation function from [T] to [R]
  * @return List transformed from type [T] to [R]
  */
 internal fun <T, R> Iterable<T>.pFlatMap(transform: (T) -> List<R>): List<R> =

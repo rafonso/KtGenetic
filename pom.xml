@@ -61,6 +61,20 @@
             <groupId>no.tornado</groupId>
             <artifactId>tornadofx</artifactId>
             <version>${tornadofx.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>kotlin-reflect</artifactId>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>kotlin-stdlib</artifactId>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>kotlin-stdlib-jdk8</artifactId>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -119,6 +133,12 @@
             <artifactId>junit-platform-launcher</artifactId>
             <version>1.10.2</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>junit-platform-engine</artifactId>
+                    <groupId>org.junit.platform</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

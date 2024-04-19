@@ -55,4 +55,13 @@ class ProcessorEventTest {
         assertEquals(0.0, statistics.averageFitnessDeviation)
     }
 
+    @Test
+    fun `waitingEvent must return a event of type WAITING`() {
+        val event = waitingEvent()
+
+        assert(event.eventType == TypeProcessorEvent.WAITING)
+        assert(event.generation == Int.MIN_VALUE)
+        assert(event.population.isEmpty())
+    }
+
 }

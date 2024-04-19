@@ -31,6 +31,7 @@ class MutationTuner<C : Chromosome<*>>(val environment: Environment<*, C>) : Pro
      * @param proportion The proportion of the average fitness deviation to the average fitness.
      */
     private fun adjustMutationFactor(proportion: Double) {
+
         val delta = if ((proportion < minimunVariation) && (environment.mutationFactor <= 0.99)) {
             1
         } else if ((proportion > maximumVariation) && (environment.mutationFactor >= 0.01)) {
