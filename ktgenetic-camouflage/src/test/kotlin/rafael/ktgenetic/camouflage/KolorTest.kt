@@ -51,7 +51,14 @@ class KolorTest {
     }
 
     @ParameterizedTest
-    @CsvSource("WHITE, 255, 255, 255", "BLACK, 0, 0, 0", "RED, 255, 0, 0", "LIME, 0, 255, 0", "GREEN, 0, 128, 0", "BLUE, 0, 0, 255")
+    @CsvSource(
+        "WHITE, 255, 255, 255",
+        "BLACK, 0, 0, 0",
+        "RED, 255, 0, 0",
+        "LIME, 0, 255, 0",
+        "GREEN, 0, 128, 0",
+        "BLUE, 0, 0, 255"
+    )
     fun `toKolor converts a JavaFX color to a Kolor`(colorName: String, r: Int, g: Int, b: Int) {
         // gets the JavaFX color from the name
         val javaFXColor = Color.valueOf(colorName)
@@ -61,5 +68,18 @@ class KolorTest {
         assertEquals(r, kolor.r)
         assertEquals(g, kolor.g)
         assertEquals(b, kolor.b)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "  1,   1,   1, '  1,  1,  1'",
+        "10 ,  20,  30, ' 10, 20, 30'",
+        "100, 150, 200, '100,150,200'",
+        "255, 255, 255, '255,255,255'")
+    fun `test Kolor toString format`(r:Int, g:Int, b:Int, expectedString: String) {
+        assertEquals(
+            "[0,000, ($expectedString)]",
+            Kolor(r, g, b).toString()
+        )
     }
 }
