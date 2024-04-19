@@ -63,16 +63,16 @@
             <version>${tornadofx.version}</version>
             <exclusions>
                 <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
                     <artifactId>kotlin-reflect</artifactId>
-                    <groupId>org.jetbrains.kotlin</groupId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
                     <artifactId>kotlin-stdlib</artifactId>
-                    <groupId>org.jetbrains.kotlin</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>kotlin-stdlib-jdk8</artifactId>
                     <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib-jdk8</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -135,12 +135,39 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <artifactId>junit-platform-engine</artifactId>
                     <groupId>org.junit.platform</groupId>
+                    <artifactId>junit-platform-engine</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Mockito -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Mockito Kotlin wrapper dependency -->
+        <dependency>
+            <groupId>org.mockito.kotlin</groupId>
+            <artifactId>mockito-kotlin</artifactId>
+            <version>5.3.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>maven</id>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -186,11 +213,5 @@
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>maven</id>
-            <url>https://repo.maven.apache.org/maven2/</url>
-        </repository>
-    </repositories>
 
 </project>
