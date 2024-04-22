@@ -6,6 +6,13 @@ import rafael.ktgenetic.core.utils.randomIntExclusive
 import rafael.ktgenetic.core.utils.randomIntInclusive
 import rafael.ktgenetic.core.utils.replace
 
+/**
+ * Represents the environment for a screen of rectangles.
+ *
+ * @property maxGenerations The maximum number of generations.
+ * @property generationSize The size of each generation.
+ * @property mutationFactor The mutation factor.
+ */
 class ScreenEnvironment(
     originalBitmaps: Array<Array<Kolor>>,
     rows: Int, cols: Int,
@@ -14,15 +21,37 @@ class ScreenEnvironment(
     override var mutationFactor: Double = 0.01
 ) : Environment<Rectangle, Screen> {
 
+
+    /**
+     * Generates a random byte.
+     *
+     * @return A random byte.
+     */
     private fun randomByte() = randomIntInclusive(MAX_COLOR_VALUE)
 
+    /**
+     * Generates a random color.
+     *
+     * @return A random color.
+     */
     private fun randomKolor(): Kolor = Kolor(randomByte(), randomByte(), randomByte())
 
+    /**
+     * The original rectangles of the screen.
+     */
     private val originalRectangles: Pixels = generateOriginalRectangles(
         originalBitmaps,
         rows, cols
     )
 
+    /**
+     * Generates the original rectangles of the screen.
+     *
+     * @param originalBitmaps The original bitmaps.
+     * @param rows The number of rows.
+     * @param cols The number of columns.
+     * @return The original rectangles of the screen.
+     */
     private fun generateOriginalRectangles(
         originalBitmaps: Array<Array<Kolor>>,
         rows: Int,
@@ -30,11 +59,11 @@ class ScreenEnvironment(
     ): List<Rectangle> {
 
         fun averageColor(h0: Int, h1: Int, w0: Int, w1: Int, extractor: (Kolor) -> Int) =
-                (h0 until h1).flatMap { h ->
-                    (w0 until w1).map { w ->
-                        originalBitmaps[h][w]
-                    }.map(extractor)
-                }.average().toInt()
+            (h0 until h1).flatMap { h ->
+                (w0 until w1).map { w ->
+                    originalBitmaps[h][w]
+                }.map(extractor)
+            }.average().toInt()
 
 
         val deltaW = originalBitmaps[0].size / cols
@@ -57,6 +86,11 @@ class ScreenEnvironment(
     }
 
 
+    /**
+     * Generates the first generation of screens.
+     *
+     * @return The first generation of screens.
+     */
     override fun getFirstGeneration(): List<Screen> = (0..generationSize).map {
         originalRectangles.map {
             it.copy(
@@ -65,9 +99,19 @@ class ScreenEnvironment(
         }
     }.map { Screen(it) }
 
-
+    /**
+     * Generates the cut positions for the genetic algorithm.
+     *
+     * @return The cut positions for the genetic algorithm.
+     */
     override fun getCutPositions(): Pair<Int, Int> = createCutPositions(originalRectangles.size)
 
+    /**
+     * Executes a mutation on a sequence of rectangles.
+     *
+     * @param sequence The sequence of rectangles.
+     * @return The mutated sequence of rectangles.
+     */
     override fun executeMutation(sequence: List<Rectangle>): List<Rectangle> {
         val pos = randomIntExclusive(sequence.size)
         val kolor = randomKolor()
@@ -76,8 +120,20 @@ class ScreenEnvironment(
         return sequence.replace(pos, rect)
     }
 
+    /**
+     * Creates a new chromosome from a sequence of rectangles.
+     *
+     * @param sequence The sequence of rectangles.
+     * @return The new chromosome.
+     */
     override fun createNewChromosome(sequence: List<Rectangle>): Screen = Screen(sequence)
 
+    /**
+     * Calculates the fitness of a chromosome.
+     *
+     * @param chromosome The chromosome.
+     * @return The fitness of the chromosome.
+     */
     override fun calculateFitness(chromosome: Screen): Double {
         val distances = IntArray(chromosome.content.size)
         chromosome.content.forEachIndexed { index, rect ->

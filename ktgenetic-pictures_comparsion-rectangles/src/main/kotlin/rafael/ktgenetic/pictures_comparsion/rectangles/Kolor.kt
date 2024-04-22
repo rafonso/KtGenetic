@@ -1,15 +1,25 @@
 package rafael.ktgenetic.pictures_comparsion.rectangles
 
+/**
+ * Validates the color value to be within the range 0 to 255.
+ *
+ * @param x The color value to be validated.
+ * @param name The name of the color.
+ * @throws IllegalArgumentException if the color value is not within the range 0 to 255.
+ */
 fun validateColor(x: Int, name: String) {
     require(x in 0..255) { "$name must be between 0 and 255" }
 }
 
+
+// Maximum value a color can have.
 const val MAX_COLOR_VALUE = 255
 
+// Square of the maximum color value.
 const val MAX_COLOR_VALUE_D = (MAX_COLOR_VALUE * MAX_COLOR_VALUE)
 
 /**
- * Represents the color in a pixel. Named as 'Kolor" to avoid confusing with JavaFX `Color`.
+ * Represents the color in a pixel. Named as 'Kolor' to avoid confusing with JavaFX `Color`.
  *
  * @param r Red value
  * @param g Green value
@@ -23,6 +33,9 @@ data class Kolor(val r: Int, val g: Int, val b: Int) {
         validateColor(b, "B")
     }
 
+    /**
+     * Returns a string representation of the color in the format "(R,G,B)".
+     */
     override fun toString(): String = "(%3d,%3d,%3d)".format(r, g, b)
 
     /**
