@@ -1,6 +1,6 @@
 package rafael.ktgenetic.pictures_comparsion.rectangles
 
-import rafael.ktgenetic.core.*
+import rafael.ktgenetic.core.Environment
 import rafael.ktgenetic.core.utils.createCutPositions
 import rafael.ktgenetic.core.utils.randomIntExclusive
 import rafael.ktgenetic.core.utils.randomIntInclusive
@@ -91,13 +91,9 @@ class ScreenEnvironment(
      *
      * @return The first generation of screens.
      */
-    override fun getFirstGeneration(): List<Screen> = (0..generationSize).map {
-        originalRectangles.map {
-            it.copy(
-                kolor = randomKolor()
-            )
-        }
-    }.map { Screen(it) }
+    override fun getFirstGeneration(): List<Screen> = List(generationSize) {
+        Screen(originalRectangles.map { it.copy(kolor = randomKolor()) })
+    }
 
     /**
      * Generates the cut positions for the genetic algorithm.
@@ -135,11 +131,12 @@ class ScreenEnvironment(
      * @return The fitness of the chromosome.
      */
     override fun calculateFitness(chromosome: Screen): Double {
-        val distances = IntArray(chromosome.content.size)
+        var average = 0.0
+        val size = chromosome.content.size
         chromosome.content.forEachIndexed { index, rect ->
-            distances[index] = rect.kolor.distanceTo(originalRectangles[index].kolor)
+            average += rect.kolor.distanceTo(originalRectangles[index].kolor).toDouble() / size
         }
 
-        return (MAX_COLOR_VALUE_D - distances.average()) / MAX_COLOR_VALUE_D
+        return (MAX_COLOR_VALUE_D - average) / MAX_COLOR_VALUE_D
     }
 }
